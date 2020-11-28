@@ -36,4 +36,17 @@
     <string name="submit">submit</string>
     <string name="location">Localização</string>
     <string name="date">Data</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="searchAnimal">Pesquisar Animais</string>
+    <string name="searchAssociation">Pesquisar Associações</string>
+    <string name="myAnimals">Meus Animais</string>
+    <string name="postWanderingAnimal">Reportar Animal Errante</string>
+    <string name="postLostAnimal">Reportar Animal Perdido</string>
+    <string name="ndOpen">Abrir</string>
+    <string name="ndClose">Fechar</string>
+    <string name="home">Home</string>
+    <string name="search">Pesquisar</string>
+    <string name="report">Reportar</string>
+    <string name="user">Utilizador</string>
 </resources>
