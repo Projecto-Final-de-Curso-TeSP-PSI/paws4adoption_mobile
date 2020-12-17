@@ -27,7 +27,7 @@
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="insertEmail">Introduza o email</string>
+    <string name="insertUsername">Introduza o username</string>
     <string name="insertPassword">Introduza a password</string>
     <string name="login">Login</string>
     <string name="insert_name">Introduza o nome no animal</string>
@@ -49,4 +49,6 @@
     <string name="search">Pesquisar</string>
     <string name="report">Reportar</string>
     <string name="user">Utilizador</string>
+    <string name="invalidUsername">Username Inválido</string>
+    <string name="invalidPassword">Password Inválida</string>
 </resources>

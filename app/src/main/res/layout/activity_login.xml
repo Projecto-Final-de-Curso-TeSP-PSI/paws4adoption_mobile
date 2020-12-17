@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity"
+    tools:context=".views.LoginActivity"
     android:orientation="vertical">
 
     <Space
@@ -23,12 +23,12 @@
         android:layout_height="75dp" />
 
     <EditText
-        android:id="@+id/etEmail"
+        android:id="@+id/etUsername"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/insertEmail"
-        android:inputType="textEmailAddress"
+        android:hint="@string/insertUsername"
+        android:inputType="textPersonName"
         android:layout_gravity="center"
         android:textAlignment="center" />
     <Space
@@ -54,7 +54,8 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/login" />
+        android:text="@string/login"
+        android:onClick="onClickLogin"/>
 
 
 

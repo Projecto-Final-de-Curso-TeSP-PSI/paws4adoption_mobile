@@ -8,8 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.app.Activity;
-import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,10 +17,16 @@ import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationView;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
+import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 
 public class MenuMainActivity
         extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String USERNAME = null;
+    public static final String TOKEN = null;
+    public static final String USER_PREFERENCES = null;
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -29,6 +34,8 @@ public class MenuMainActivity
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,9 @@ public class MenuMainActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         fragmentManager = getSupportFragmentManager();
+
+        navigationView.setCheckedItem(R.id.navHome);
+
         carregarCabecalho();
         carregarMenuInicial();
 
@@ -67,7 +77,6 @@ public class MenuMainActivity
             previousSelectedItem.setChecked(false);
 
         menuItem.setChecked(true);
-        menuItem.
 
         switch (menuItem .getItemId()) {
             case R.id.navHome:
@@ -84,6 +93,7 @@ public class MenuMainActivity
             case R.id.navPostLostAnimal:
                 break;
             case R.id.navLogin:
+                intent = new Intent(getApplicationContext(), LoginActivity.class);
                 break;
 
             default:
@@ -116,8 +126,9 @@ public class MenuMainActivity
     }
 
     private void carregarMenuInicial(){
-        navigationView.setCheckedItem(R.id.navHome);
+
         //Fragment fragment = new ListaLivrosFragment();
         //fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
     }
+
 }

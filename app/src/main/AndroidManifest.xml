@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="amsi.dei.estg.ipleiria.paws4adoption">
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <!--Permissions for camera usage-->
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <!--Permissions for location usage-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!--Permissions for internet access-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +24,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic = "true"
+        tools:targetApi="m">
 
         <activity android:name=".views.MenuMainActivity"
             android:label="Paws4adoption"
@@ -45,7 +55,7 @@
         <activity android:name=".views.AnimalDetailsActivity" />
         <activity android:name=".OrgDetailActivity" />
         <activity android:name=".OrganizationActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".views.LoginActivity" />
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".SignupActivity" />
 
