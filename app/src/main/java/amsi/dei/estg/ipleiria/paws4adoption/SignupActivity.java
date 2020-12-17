@@ -13,6 +13,7 @@ public class SignupActivity extends AppCompatActivity {
     private ImageView iv;
     private EditText username, email, password;
 
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
