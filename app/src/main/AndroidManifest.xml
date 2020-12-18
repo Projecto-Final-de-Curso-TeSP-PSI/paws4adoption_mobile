@@ -55,11 +55,13 @@
         <activity android:name=".views.AnimalDetailsActivity" />
         <activity android:name=".OrgDetailActivity" />
         <activity android:name=".OrganizationActivity" />
-        <activity android:name=".views.LoginActivity" />
+        <activity android:name=".views.LoginActivity"
+            android:parentActivityName=".views.MenuMainActivity"/>
+
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".SignupActivity" />
 
-        <service android:name=".FetchAddressIntentService" />
+        <service android:name=".services.FetchAddressIntentService" />
     </application>
 
 </manifest>
