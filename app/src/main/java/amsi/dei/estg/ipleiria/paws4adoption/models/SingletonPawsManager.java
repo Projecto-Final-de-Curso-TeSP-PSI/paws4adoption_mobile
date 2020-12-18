@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.UploadPhotoListener;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.JsonParser;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
@@ -34,6 +35,7 @@ public class SingletonPawsManager {
 
     //Listeners declaration
     LoginListener loginListener;
+    UploadPhotoListener uploadPhotoListener;
 
     //Endpoints for requests
     private static final String mUrlAPILogin = API_LOCAL_URL + "user/login";
@@ -114,4 +116,5 @@ public class SingletonPawsManager {
         };
         volleyQueue.add(request);
     }
+
 }

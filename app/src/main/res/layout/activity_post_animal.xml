@@ -18,17 +18,29 @@ android:orientation="vertical">
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/ivPhoto"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="10dp"
+            android:onClick="onTakePhoto_OnClick"
             android:padding="20dp"
-            android:id="@+id/ivPhoto"
-            android:onClick="onTakePhoto_OnClick"/>
+            app:srcCompat="@drawable/ic_take_photo_foreground" />
+
+        <Button
+            android:id="@+id/btnUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:drawableLeft="@mipmap/ic_action_upload"
+            android:padding="10dp"
+            android:text=" Upload Imagem "
+            android:textColor="@android:color/white" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
+            android:inputType="textPersonName"
             android:padding="20dp"
             android:layout_marginTop="10dp"
             android:hint="@string/insert_name"
@@ -43,20 +55,25 @@ android:orientation="vertical">
             android:hint="@string/id_chip"
             android:id="@+id/etChipId"/>
 
+
         <EditText
+            android:id="@+id/etDescription"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:padding="20dp"
+            android:layout_height="200dp"
             android:layout_marginTop="10dp"
+            android:gravity="top|left"
             android:hint="@string/description"
-            android:id="@+id/etDescription"/>
+            android:inputType="textMultiLine"
+            android:lines="8"
+            android:maxLines="10"
+            android:minLines="6"
+            android:padding="20dp" />
 
         <Spinner
             android:id="@+id/spinnerNature"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"/>
 
         <Spinner
             android:layout_marginTop="10dp"
@@ -88,14 +105,43 @@ android:orientation="vertical">
             android:layout_height="wrap_content"
             android:id="@+id/spinnerSex"/>
 
-        <EditText
+
+        <ImageView
+            android:id="@+id/ivLocation"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginTop="10dp"
+            android:onClick="onGetLocation_OnClick"
+            app:srcCompat="@drawable/ic_get_location_foreground" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:padding="20dp"
+                android:hint="-"
+                android:id="@+id/tvLat"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:padding="20dp"
+                android:hint="-"
+                android:id="@+id/tvLong"/>
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:padding="20dp"
             android:layout_marginTop="10dp"
-            android:hint="@string/location"
-            android:id="@+id/etLocation"/>
+            android:id="@+id/tvAddress"/>
 
         <EditText
             android:layout_width="match_parent"

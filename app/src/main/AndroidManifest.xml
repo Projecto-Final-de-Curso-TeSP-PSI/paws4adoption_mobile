@@ -7,6 +7,11 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <!--Permissions for read and write external storage-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
     <!--Permissions for camera usage-->
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -25,6 +30,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+
+        android:requestLegacyExternalStorage="true"
+
         android:usesCleartextTraffic = "true"
         tools:targetApi="m">
 
@@ -61,7 +69,19 @@
         <activity android:name=".UserProfileActivity" />
         <activity android:name=".SignupActivity" />
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <service android:name=".services.FetchAddressIntentService" />
     </application>
+
+
 
 </manifest>
