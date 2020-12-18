@@ -5,8 +5,9 @@ import android.content.SharedPreferences;
 
 import amsi.dei.estg.ipleiria.paws4adoption.views.LoginActivity;
 
-public class Whrench{
-
-
+/**
+ * Class tha implements several static method that iun one way or another works as tools
+ */
+public class Wrench {
 
 }

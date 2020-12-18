@@ -7,6 +7,9 @@ import android.net.NetworkInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Class that implements several parsing methods related to Json format
+ */
 public class JsonParser {
 
 
@@ -28,15 +31,4 @@ public class JsonParser {
         return token;
     }
 
-    /**
-     * Method that checks if the mobile equipments has internet connection
-     * @param context
-     * @return
-     */
-    public static boolean isConnectionInternet(Context context){
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
 }

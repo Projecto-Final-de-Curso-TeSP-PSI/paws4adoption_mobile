@@ -51,4 +51,8 @@
     <string name="user">Utilizador</string>
     <string name="invalidUsername">Username Inválido</string>
     <string name="invalidPassword">Password Inválida</string>
+    <string name="logout">Logout</string>
+    <string name="internet_connection_down">Sem ligaçao de internet</string>
+    <string name="empty" />
+    <string name="user_prefix">Utilizador autenticado: </string>
 </resources>

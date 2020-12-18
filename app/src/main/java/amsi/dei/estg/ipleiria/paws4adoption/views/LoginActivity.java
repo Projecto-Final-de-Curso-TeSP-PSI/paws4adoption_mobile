@@ -1,24 +1,22 @@
 package amsi.dei.estg.ipleiria.paws4adoption.views;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import amsi.dei.estg.ipleiria.paws4adoption.MainActivity;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
-import amsi.dei.estg.ipleiria.paws4adoption.utils.Whrench;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
 public class LoginActivity extends AppCompatActivity implements LoginListener{
-
-    private static final String USERNAME = "username";
-    private static final String TOKEN = "token";
-    private static final String USER_PREFERENCES = "user_preferences";
 
     private EditText etUsername;
     private EditText etPassword;
@@ -64,52 +62,37 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
      * @param view
      */
     public void onClickLogin(View view) {
-        String email = etUsername.getText().toString();
+
+        String username = etUsername.getText().toString();
         String password = etPassword.getText().toString();
 
-        if(isUsernameValid(email)){
+        if(isUsernameValid(username) == false) {
             etUsername.setError(getString(R.string.invalidUsername));
+            return;
         }
 
-        if(isPasswordValid(password)){
+        if(isPasswordValid(password) == false){
             etPassword.setError(getString(R.string.invalidPassword));
+            return;
         }
 
-        SingletonPawsManager.getInstance(getApplicationContext()).loginRequest(email, password, getApplicationContext());
+        SingletonPawsManager.getInstance(getApplicationContext()).loginRequest(username, password, getApplicationContext());
     }
 
     /**
-     * Method that implements a method from loginListener
+     * Method that implements an event for valid login of the loginListener
      * @param token
      * @param username
      */
     @Override
-    public void onLoginResquest(String token, String username) {
+    public void onValidLogin(String token, String username) {
         if(token != null){
-            saveSharedPreferencesUserInfo(token, username);
+            Vault.saveUserPreferences(getApplicationContext(), token, username);
 
-            /* Intent intent = new Intent(getApplicationContext(), MenuMainActivity.class);
-            intent.putExtra(USERNAME, username);*/
-            //startActivity(intent);
-
+            Intent intent = new Intent(getApplicationContext(), MenuMainActivity.class);
+            startActivity(intent);
             finish();
-
         }
-    }
-
-    /**
-     * Method for saving the USERNAME and TOKEN on the shared preferences
-     * @param token
-     * @param username
-     */
-    public void saveSharedPreferencesUserInfo(String token, String username){
-        SharedPreferences sharedPreferencesInfoUser =
-                getSharedPreferences(USER_PREFERENCES,
-                        Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferencesInfoUser.edit();
-        editor.putString(USERNAME, username);
-        editor.putString(TOKEN, token);
-        editor.apply();
     }
 
 }
