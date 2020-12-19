@@ -159,7 +159,7 @@ public class SingletonPawsManager {
                         params.put("postalCode", userProfile.getPostalCode());
                         params.put("streetCode", userProfile.getStreetCode());
                         params.put("city", userProfile.getCity());
-                        params.put("districtId", userProfile.getDistrictId());
+                        params.put("districtId", "" + userProfile.getDistrictId());
                         return params;
                     }
                 };
