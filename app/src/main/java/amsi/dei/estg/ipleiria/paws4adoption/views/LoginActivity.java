@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import amsi.dei.estg.ipleiria.paws4adoption.MainActivity;
+
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;

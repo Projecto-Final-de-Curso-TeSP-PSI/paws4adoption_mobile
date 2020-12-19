@@ -41,13 +41,6 @@
 
         </activity>
 
-        <activity android:name=".MainActivity"
-            android:label="Paws4adoption"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
         <activity android:name=".views.PostAnimalActivity"
             android:parentActivityName=".views.MenuMainActivity"/>
 
