@@ -97,6 +97,8 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             case R.id.navSearchAnimals:
                 break;
             case R.id.navSearchAssociations:
+                fragment = new ListOrganizationsFragment();
+                setTitle(menuItem.getTitle());
                 break;
             case R.id.navMyAnimals:
                 break;

@@ -1,4 +1,4 @@
-package amsi.dei.estg.ipleiria.paws4adoption;
+package amsi.dei.estg.ipleiria.paws4adoption.views;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import amsi.dei.estg.ipleiria.paws4adoption.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ItemListOrganizations#newInstance} factory method to
+ * Use the {@link ItemListOrganization#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ItemListOrganizations extends Fragment {
+public class ItemListOrganization extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class ItemListOrganizations extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ItemListOrganizations() {
+    public ItemListOrganization() {
         // Required empty public constructor
     }
 
@@ -37,8 +39,8 @@ public class ItemListOrganizations extends Fragment {
      * @return A new instance of fragment ItemListOrganizations.
      */
     // TODO: Rename and change types and number of parameters
-    public static ItemListOrganizations newInstance(String param1, String param2) {
-        ItemListOrganizations fragment = new ItemListOrganizations();
+    public static ItemListOrganization newInstance(String param1, String param2) {
+        ItemListOrganization fragment = new ItemListOrganization();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -59,6 +61,6 @@ public class ItemListOrganizations extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_item_list_organizations, container, false);
+        return inflater.inflate(R.layout.fragment_item_list_organization, container, false);
     }
 }

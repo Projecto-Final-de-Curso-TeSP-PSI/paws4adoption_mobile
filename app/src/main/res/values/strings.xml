@@ -55,4 +55,7 @@
     <string name="internet_connection_down">Sem ligaçao de internet</string>
     <string name="empty" />
     <string name="user_prefix">Utilizador autenticado: </string>
+    <string name="org_name">nome organização</string>
+    <string name="address">endereço</string>
+    <string name="phone">telefone</string>
 </resources>

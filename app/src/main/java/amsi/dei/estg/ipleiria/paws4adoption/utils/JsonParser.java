@@ -4,8 +4,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
 
 /**
  * Class that implements several parsing methods related to Json format
@@ -14,11 +19,92 @@ import amsi.dei.estg.ipleiria.paws4adoption.models.UserProfile;
 
 public class JsonParser {
 
+    /**
+     * Get's a Json response wih all organizations and parses to an organization object
+     * @param response
+     * @return all organizations array list
+     */
+    public static ArrayList<Organization> toOrganizations(JSONArray response){
+        ArrayList<Organization> organizationsList= new ArrayList<>();
+
+        try{
+            for(int i = 0; i < response.length(); i++){
+
+                JSONObject organization = (JSONObject) response.get(i);
+                int id =  organization.getInt("id");
+                String name =  organization.getString("name");
+                String nif =  organization.getString("nif");
+                String email =  organization.getString("email");
+                String phone =  organization.getString("phone");
+
+                JSONObject address = organization.getJSONObject("address");
+                int address_id =  address.getInt("id");
+                String street =  address.getString("street");
+                String door_number =  address.getString("door_number");
+                String floor =  address.getString("floor");
+                int postal_code =  address.getInt("postal_code");
+                int street_code =  address.getInt("street_code");
+                String city =  address.getString("city");
+
+                JSONObject district = address.getJSONObject("district");
+                int district_id =  district.getInt("id");
+                String district_name =  district.getString("name");
+
+                Organization auxOrg = new Organization(id, name, nif, email, phone, address_id, street, door_number, floor, postal_code, street_code, city, district_id, district_name);
+
+                organizationsList.add(auxOrg);
+            }
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        return organizationsList;
+    }
 
     /**
-     * Method that receives a string in Json format, and parses to object
+     * Get a Json response and parses to an organization object
      * @param response
-     * @returns the token
+     * @return an organization object
+     */
+    public static Organization toOrganization(String response){
+        Organization auxOrg = null;
+
+        try{
+
+            JSONObject organization = new JSONObject(response);
+
+            int id =  organization.getInt("id");
+            String name =  organization.getString("name");
+            String nif =  organization.getString("nif");
+            String email =  organization.getString("email");
+            String phone =  organization.getString("phone");
+
+            JSONObject address = organization.getJSONObject("address");
+            int address_id =  address.getInt("id");
+            String street =  address.getString("street");
+            String door_number =  address.getString("door_number");
+            String floor =  address.getString("floor");
+            int postal_code =  address.getInt("postal_code");
+            int street_code =  address.getInt("street_code");
+            String city =  address.getString("city");
+
+            JSONObject district = address.getJSONObject("district");
+            int district_id =  district.getInt("id");
+            String district_name =  district.getString("name");
+
+            auxOrg = new Organization(id, name, nif, email, phone, address_id, street, door_number, floor, postal_code, street_code, city, district_id, district_name);
+
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        return auxOrg;
+    }
+
+    /**
+     * Method that receives the login response in Json format, and parses to object
+     * @param response
+     * @returns the token received on the JSON object response
      */
     public static String parserJsonLogin (String response){
         String token = null;
