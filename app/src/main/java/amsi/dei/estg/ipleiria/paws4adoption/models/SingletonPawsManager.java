@@ -1,7 +1,12 @@
 package amsi.dei.estg.ipleiria.paws4adoption.models;
 
 import android.content.Context;
+import java.util.Base64;
+
+import android.os.Build;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -15,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.JsonParser;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
@@ -34,9 +40,11 @@ public class SingletonPawsManager {
 
     //Listeners declaration
     LoginListener loginListener;
+    UserProfileListener userProfileListener;
 
     //Endpoints for requests
-    private static final String mUrlAPILogin = API_LOCAL_URL + "user/login";
+    private static final String mUrlAPILogin = API_LOCAL_URL + "users/token";
+    private static final String mUrlAPIUserProfile = API_LOCAL_URL + "users";
 
     //Static constants declaration for DB
     private static final int INSERT_DB = 1;
@@ -76,14 +84,16 @@ public class SingletonPawsManager {
         this.loginListener = loginListener;
     }
 
+    public void setUserProfileListener(UserProfileListener userProfileListener){
+        this.userProfileListener = userProfileListener;
+    }
     //############################################# API ##################################################
 
 
     //################ LOGIN ################
 
     /**
-     * Method that makes a login request to the api a receives the access token
-     *
+     * Method that makes a login request to the api and receives the access token
      * @param username
      * @param password
      * @param context
@@ -113,5 +123,57 @@ public class SingletonPawsManager {
             }
         };
         volleyQueue.add(request);
+    }
+
+    // Criar novo utilizador na API
+    public void addUserAPI(final UserProfile userProfile, final Context context) {
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                mUrlAPIUserProfile,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("token", userProfile.getToken());
+                        params.put("email", userProfile.getEmail());
+                        params.put("username", userProfile.getUsername());
+                        params.put("firstName", userProfile.getFirstName());
+                        params.put("lastName", userProfile.getLastName());
+                        params.put("nif", userProfile.getNif());
+                        params.put("phone", userProfile.getPhone());
+                        params.put("street", userProfile.getStreet());
+                        params.put("doorNumber", userProfile.getDoorNumber());
+                        params.put("floor", userProfile.getFloor());
+                        params.put("postalCode", userProfile.getPostalCode());
+                        params.put("streetCode", userProfile.getStreetCode());
+                        params.put("city", userProfile.getCity());
+                        params.put("districtId", userProfile.getDistrictId());
+                        return params;
+                    }
+                };
+    }
+
+    // Converter para base64 username e password
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String createBasicAuth(final String username,
+                                     final String password)
+    {
+        final String pair = username + ":" + password;
+
+        Base64.Encoder encoder = Base64.getEncoder();
+
+        return "Basic " + encoder.encodeToString(pair.getBytes());
     }
 }
