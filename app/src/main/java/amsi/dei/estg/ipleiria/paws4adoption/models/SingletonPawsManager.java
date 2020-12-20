@@ -37,7 +37,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 public class SingletonPawsManager implements OrganizationsListener{
 
     //API local address (may change each time you start your machine)
-    private static final String COMPUTER_LOCAL_IP = "192.168.1.70";
+    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
     private static final String API_LOCAL_URL = "http://" + COMPUTER_LOCAL_IP + "/pet-adoption/paws4adoption_web/backend/web/api/";
 
     //Singleton instance
@@ -93,8 +93,6 @@ public class SingletonPawsManager implements OrganizationsListener{
 
 
     //############################################# LISTENERS IMPLEMENTATION ##################################################
-
-
 
     /**
      * Method for register the login listener
@@ -153,7 +151,7 @@ public class SingletonPawsManager implements OrganizationsListener{
      * Get's all organizations from the SQLiteDatabase
      * @return
      */
-    public ArrayList<Organization> getAllOrganizationsBD(){
+    public ArrayList<Organization> getAllOrganizationsDB(){
         organizations = organizationsDBHelper.getAllOrganizationsDB();
         return organizations;
     }
@@ -277,6 +275,8 @@ public class SingletonPawsManager implements OrganizationsListener{
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    System.out.println("--> Organizations: " + error.getStackTrace());
                 }
             });
             volleyQueue.add(request);
@@ -471,9 +471,7 @@ public class SingletonPawsManager implements OrganizationsListener{
 
     // Converter para base64 username e password
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private String createBasicAuth(final String username,
-                                     final String password)
-    {
+    private String createBasicAuth(final String username, final String password) {
         final String pair = username + ":" + password;
 
         Base64.Encoder encoder = Base64.getEncoder();

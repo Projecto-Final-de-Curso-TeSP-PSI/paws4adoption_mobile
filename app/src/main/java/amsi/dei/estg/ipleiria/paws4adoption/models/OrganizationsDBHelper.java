@@ -62,12 +62,12 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
                         PHONE + " TEXT, " +
                         ADDRESS_ID + " TEXT NOT NULL, " +
                         STREET + " TEXT NOT NULL, " +
-                        DOOR_NUMBER + " TEXT NOT NULL, " +
-                        FLOOR + " TEXT NOT NULL, " +
-                        POSTAL_CODE + " TEXT NOT NULL, " +
-                        STREET_CODE + " TEXT NOT NULL, " +
+                        DOOR_NUMBER + " TEXT, " +
+                        FLOOR + " TEXT, " +
+                        POSTAL_CODE + " INTEGER NOT NULL, " +
+                        STREET_CODE + " INTEGER NOT NULL, " +
                         CITY + " TEXT NOT NULL, " +
-                        DISTRICT_ID + " INT NOT NULL, " +
+                        DISTRICT_ID + " INTEGER NOT NULL, " +
                         DISTRICT_NAME + " TEXT NOT NULL" +
                         ");";
         sqLiteDatabase.execSQL(createOrganizationsTable);
@@ -93,18 +93,18 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
         ContentValues values= new ContentValues();
 
         values.put(NAME, organization.getName());
-        values.put(NIF, organization.getName());
-        values.put(EMAIL, organization.getName());
-        values.put(PHONE, organization.getName());
-        values.put(ADDRESS_ID, organization.getName());
-        values.put(STREET, organization.getName());
-        values.put(DOOR_NUMBER, organization.getName());
-        values.put(FLOOR, organization.getName());
-        values.put(POSTAL_CODE, organization.getName());
-        values.put(STREET_CODE, organization.getName());
-        values.put(CITY, organization.getName());
-        values.put(DISTRICT_ID, organization.getName());
-        values.put(DISTRICT_NAME, organization.getName());
+        values.put(NIF, organization.getNif());
+        values.put(EMAIL, organization.getEmail());
+        values.put(PHONE, organization.getPhone());
+        values.put(ADDRESS_ID, organization.getAddress_id());
+        values.put(STREET, organization.getStreet());
+        values.put(DOOR_NUMBER, organization.getDoor_number());
+        values.put(FLOOR, organization.getFloor());
+        values.put(POSTAL_CODE, organization.getPostal_code());
+        values.put(STREET_CODE, organization.getStreet_code());
+        values.put(CITY, organization.getCity());
+        values.put(DISTRICT_ID, organization.getDistrict_id());
+        values.put(DISTRICT_NAME, organization.getDistrict_name());
 
         this.sqLiteDatabase.insert(TABLE_NAME, null, values);
     }
@@ -118,18 +118,18 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
         ContentValues values= new ContentValues();
 
         values.put(NAME, organization.getName());
-        values.put(NIF, organization.getName());
-        values.put(EMAIL, organization.getName());
-        values.put(PHONE, organization.getName());
-        values.put(ADDRESS_ID, organization.getName());
-        values.put(STREET, organization.getName());
-        values.put(DOOR_NUMBER, organization.getName());
-        values.put(FLOOR, organization.getName());
-        values.put(POSTAL_CODE, organization.getName());
-        values.put(STREET_CODE, organization.getName());
-        values.put(CITY, organization.getName());
-        values.put(DISTRICT_ID, organization.getName());
-        values.put(DISTRICT_NAME, organization.getName());
+        values.put(NIF, organization.getNif());
+        values.put(EMAIL, organization.getEmail());
+        values.put(PHONE, organization.getPhone());
+        values.put(ADDRESS_ID, organization.getAddress_id());
+        values.put(STREET, organization.getStreet());
+        values.put(DOOR_NUMBER, organization.getDoor_number());
+        values.put(FLOOR, organization.getFloor());
+        values.put(POSTAL_CODE, organization.getPostal_code());
+        values.put(STREET_CODE, organization.getStreet_code());
+        values.put(CITY, organization.getCity());
+        values.put(DISTRICT_ID, organization.getDistrict_id());
+        values.put(DISTRICT_NAME, organization.getDistrict_name());
 
         return this.sqLiteDatabase.update(TABLE_NAME, values,"id = ?", new String[]{"" + organization.getId()}) > 0;
     }
@@ -164,17 +164,18 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
                         cursor.getString(2),
                         cursor.getString(3),
                         cursor.getString(4),
-                        cursor.getInt(5),
+                        cursor.getString(5),
                         cursor.getString(6),
                         cursor.getString(7),
                         cursor.getString(8),
-                        cursor.getInt(9),
-                        cursor.getInt(10),
+                        cursor.getString(9),
+                        cursor.getString(10),
                         cursor.getString(11),
-                        cursor.getInt(12),
+                        cursor.getString(12),
                         cursor.getString(13)
                 );
 
+                organizations.add(auxOrg);
             } while (cursor.moveToNext());
         }
 

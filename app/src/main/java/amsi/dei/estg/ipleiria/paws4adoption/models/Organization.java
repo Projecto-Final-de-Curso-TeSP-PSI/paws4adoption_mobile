@@ -8,19 +8,19 @@ public class Organization {
     private String email;
     private String phone;
 
-    private int address_id;
+    private String address_id;
     private String street;
     private String door_number;
     private String floor;
-    private int postal_code;
-    private int street_code;
+    private String postal_code;
+    private String street_code;
     private String city;
 
-    private int district_id;
+    private String district_id;
     private String district_name;
 
-    public Organization(int id, String name, String nif, String email, String phone, int address_id, String street, String door_number,
-                        String floor, int postal_code, int street_code, String city, int district_id, String district_name){
+    public Organization(int id, String name, String nif, String email, String phone, String address_id, String street, String door_number,
+                        String floor, String postal_code, String street_code, String city, String district_id, String district_name){
         this.id = id;
         this.name = name;
         this.nif = nif;
@@ -79,11 +79,11 @@ public class Organization {
         this.phone = phone;
     }
 
-    public int getAddress_id() {
+    public String getAddress_id() {
         return address_id;
     }
 
-    public void setAddress_id(int address_id) {
+    public void setAddress_id(String address_id) {
         this.address_id = address_id;
     }
 
@@ -111,19 +111,19 @@ public class Organization {
         this.floor = floor;
     }
 
-    public int getPostal_code() {
+    public String getPostal_code() {
         return postal_code;
     }
 
-    public void setPostal_code(int postal_code) {
+    public void setPostal_code(String postal_code) {
         this.postal_code = postal_code;
     }
 
-    public int getStreet_code() {
+    public String getStreet_code() {
         return street_code;
     }
 
-    public void setStreet_code(int street_code) {
+    public void setStreet_code(String street_code) {
         this.street_code = street_code;
     }
 
@@ -135,11 +135,11 @@ public class Organization {
         this.city = city;
     }
 
-    public int getDistrict_id() {
+    public String getDistrict_id() {
         return district_id;
     }
 
-    public void setDistrict_id(int district_id) {
+    public void setDistrict_id(String district_id) {
         this.district_id = district_id;
     }
 

@@ -9,6 +9,6 @@ public class OrgDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_org_detail);
+        setContentView(R.layout.activity_organization_details);
     }
 }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 
 public class OrganizationListAdapter extends BaseAdapter {
 
@@ -72,7 +73,14 @@ public class OrganizationListAdapter extends BaseAdapter {
 
         public void update(Organization organization){
             name.setText(organization.getName());
-            address.setText(organization.getStreet() + " " + organization.getDoor_number() + ", " + organization.getFloor() + " - " + organization.getPostal_code() + " - " + organization.getStreet_code() + " " + organization.getCity() );
+            address.setText(
+                Wrench.encode("", organization.getStreet(), "")+
+                Wrench.encode(" ", organization.getDoor_number(), "") +
+                Wrench.encode(" ", organization.getFloor(), "") +
+                Wrench.encode(" ", organization.getPostal_code() + "", "") +
+                Wrench.encode(" - ", organization.getStreet_code() + "", "") +
+                Wrench.encode(" ", organization.getCity() + "", "")
+            );
             phone.setText(organization.getPhone());
             email.setText(organization.getEmail());
         }

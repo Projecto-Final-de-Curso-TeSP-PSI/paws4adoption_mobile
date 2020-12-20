@@ -32,23 +32,23 @@ public class JsonParser {
 
                 JSONObject organization = (JSONObject) response.get(i);
                 int id =  organization.getInt("id");
-                String name =  organization.getString("name");
-                String nif =  organization.getString("nif");
-                String email =  organization.getString("email");
-                String phone =  organization.getString("phone");
+                String name =  Wrench.purify(organization.getString("name"));
+                String nif =  Wrench.purify(organization.getString("nif"));
+                String email =  Wrench.purify(organization.getString("email"));
+                String phone =  Wrench.purify(organization.getString("phone"));
 
                 JSONObject address = organization.getJSONObject("address");
-                int address_id =  address.getInt("id");
-                String street =  address.getString("street");
-                String door_number =  address.getString("door_number");
-                String floor =  address.getString("floor");
-                int postal_code =  address.getInt("postal_code");
-                int street_code =  address.getInt("street_code");
-                String city =  address.getString("city");
+                String address_id =  Wrench.purify(address.getString("id"));
+                String street =  Wrench.purify(address.getString("street"));
+                String door_number =  Wrench.purify(address.getString("door_number"));
+                String floor = Wrench.purify(address.getString("floor"));
+                String postal_code =  Wrench.purify(address.getString("postal_code"));
+                String street_code =  Wrench.purify(address.getString("street_code"));
+                String city =  Wrench.purify(address.getString("city"));
 
                 JSONObject district = address.getJSONObject("district");
-                int district_id =  district.getInt("id");
-                String district_name =  district.getString("name");
+                String district_id =  Wrench.purify(district.getString("id"));
+                String district_name =  Wrench.purify(district.getString("name"));
 
                 Organization auxOrg = new Organization(id, name, nif, email, phone, address_id, street, door_number, floor, postal_code, street_code, city, district_id, district_name);
 
@@ -72,25 +72,24 @@ public class JsonParser {
         try{
 
             JSONObject organization = new JSONObject(response);
-
             int id =  organization.getInt("id");
-            String name =  organization.getString("name");
-            String nif =  organization.getString("nif");
-            String email =  organization.getString("email");
-            String phone =  organization.getString("phone");
+            String name =  Wrench.purify(organization.getString("name"));
+            String nif =  Wrench.purify(organization.getString("nif"));
+            String email =  Wrench.purify(organization.getString("email"));
+            String phone =  Wrench.purify(organization.getString("phone"));
 
             JSONObject address = organization.getJSONObject("address");
-            int address_id =  address.getInt("id");
-            String street =  address.getString("street");
-            String door_number =  address.getString("door_number");
-            String floor =  address.getString("floor");
-            int postal_code =  address.getInt("postal_code");
-            int street_code =  address.getInt("street_code");
-            String city =  address.getString("city");
+            String address_id =  Wrench.purify(address.getString("id"));
+            String street =  Wrench.purify(address.getString("street"));
+            String door_number =  Wrench.purify(address.getString("door_number"));
+            String floor = Wrench.purify(address.getString("floor"));
+            String postal_code =  Wrench.purify(address.getString("postal_code"));
+            String street_code =  Wrench.purify(address.getString("street_code"));
+            String city =  Wrench.purify(address.getString("city"));
 
             JSONObject district = address.getJSONObject("district");
-            int district_id =  district.getInt("id");
-            String district_name =  district.getString("name");
+            String district_id =  Wrench.purify(district.getString("id"));
+            String district_name =  Wrench.purify(district.getString("name"));
 
             auxOrg = new Organization(id, name, nif, email, phone, address_id, street, door_number, floor, postal_code, street_code, city, district_id, district_name);
 

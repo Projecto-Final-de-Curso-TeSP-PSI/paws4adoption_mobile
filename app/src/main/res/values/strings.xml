@@ -58,4 +58,7 @@
     <string name="org_name">nome organização</string>
     <string name="address">endereço</string>
     <string name="phone">telefone</string>
+    <string name="organization_photo">Foto da organização</string>
+    <string name="get_animals">Ver Animais para Adoção</string>
+    <string name="search_by_district">Pesquisar por distrito</string>
 </resources>
