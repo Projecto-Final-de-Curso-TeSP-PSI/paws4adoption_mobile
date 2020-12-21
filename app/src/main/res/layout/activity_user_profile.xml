@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".UserProfileActivity">
+    tools:context=".views.UserProfileActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
 
                     <EditText
                         android:id="@+id/etFirstName"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="Nome"
@@ -47,22 +47,41 @@
 
                     <EditText
                         android:id="@+id/etLastName"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
                         android:hint="Apelido"
                         android:inputType="textPersonName" />
 
-                    <EditText
-                        android:id="@+id/etPhone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="Telefone"
-                        android:inputType="phone" />
-
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="25dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etNif"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="NIF"
+                    android:inputType="textPersonName"
+                    android:text="Name" />
+
+                <EditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Telefone"
+                    android:inputType="phone" />
             </LinearLayout>
 
             <Space
@@ -155,6 +174,14 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="25dp" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:onClick="onClickSignup"
+                android:text="@string/registar" />
 
         </LinearLayout>
 
