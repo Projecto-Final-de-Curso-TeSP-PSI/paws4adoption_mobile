@@ -1,7 +1,5 @@
 package amsi.dei.estg.ipleiria.paws4adoption.models;
 
-import android.content.SyncRequest;
-
 public class UserProfile {
 
     private int id, districtId;
@@ -144,19 +142,19 @@ public class UserProfile {
         this.districtId = districtId;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getToken() {
         return token;
     }
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
