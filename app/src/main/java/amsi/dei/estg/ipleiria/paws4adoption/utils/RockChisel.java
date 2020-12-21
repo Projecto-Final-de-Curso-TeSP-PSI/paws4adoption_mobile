@@ -6,6 +6,7 @@ package amsi.dei.estg.ipleiria.paws4adoption.utils;
  */
 public class RockChisel {
 
+
     //Package related constants
     private static final String PACKAGE_NAME = "amsi.dei.estg.ipleiria.paws4adoption";
 
@@ -21,6 +22,7 @@ public class RockChisel {
     //Login related constants
     public static final String USER_PREFERENCES = "user_preferences";
     public static final String USERNAME = "username";
+    public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
     public static final String TOKEN = "token";
 
