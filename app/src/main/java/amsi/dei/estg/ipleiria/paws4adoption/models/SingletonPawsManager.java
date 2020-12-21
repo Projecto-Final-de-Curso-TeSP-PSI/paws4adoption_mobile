@@ -398,11 +398,12 @@ public class SingletonPawsManager implements OrganizationsListener{
      * @param context
      */
     public void loginRequest(final String username, final String password, final Context context) {
-        StringRequest request = new StringRequest(Request.Method.POST, mUrlAPILogin + "",
+        StringRequest request = new StringRequest(Request.Method.POST, mUrlAPILogin,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         String token = JsonParser.parserJsonLogin(response);
+                        Toast.makeText(context, token, Toast.LENGTH_SHORT).show();
                         loginListener.onValidLogin(token, username);
                     }
                 },
@@ -412,7 +413,19 @@ public class SingletonPawsManager implements OrganizationsListener{
                         Toast.makeText(context, "Erro de login", Toast.LENGTH_SHORT).show();
                         error.getStackTrace();
                     }
-                }) {
+                })
+        {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                System.out.println("--> método getHeaders");
+                Map<String, String> headers = new HashMap<>();
+                headers.putIfAbsent("Cookie", "XDEBUG_SESSION_START=PHPSTORM");
+                headers.putIfAbsent("authorization", createBasicAuth(username, password));
+                return headers;
+            }
+        };
+        /*{
             //Passagem dos dados por parametro no pedido à API
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -421,7 +434,8 @@ public class SingletonPawsManager implements OrganizationsListener{
                 params.put(RockChisel.PASSWORD, password);
                 return params;
             }
-        };
+        };*/
+
         volleyQueue.add(request);
     }
 
