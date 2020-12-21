@@ -6,6 +6,7 @@ import android.content.Context;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Base64;
+import android.util.Base64;
 
 import android.media.MediaSync;
 import android.os.Build;
@@ -447,36 +448,52 @@ public class SingletonPawsManager implements OrganizationsListener{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                        try {
+                            Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                            UserProfile userProfileVindoDaAPI = JsonParser.parserJsonUserProfile(response);
+                            userProfileListener.onUserProfileRequest(userProfileVindoDaAPI);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Erro na resposta.", Toast.LENGTH_SHORT).show();
+                        error.printStackTrace();
                     }
                 })
                 {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.putIfAbsent("authorization", createBasicAuth(userProfile.getUsername(),
+                                                                             userProfile.getPassword()));
+                        return headers;
+                    }
+
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> params = new HashMap<>();
-                        params.put("token", userProfile.getToken());
                         params.put("email", userProfile.getEmail());
-                        params.put("username", userProfile.getUsername());
                         params.put("firstName", userProfile.getFirstName());
                         params.put("lastName", userProfile.getLastName());
                         params.put("nif", userProfile.getNif());
                         params.put("phone", userProfile.getPhone());
                         params.put("street", userProfile.getStreet());
-                        params.put("doorNumber", userProfile.getDoorNumber());
+                        params.put("door_number", userProfile.getDoorNumber());
                         params.put("floor", userProfile.getFloor());
-                        params.put("postalCode", userProfile.getPostalCode());
-                        params.put("streetCode", userProfile.getStreetCode());
+                        params.put("postal_code", userProfile.getPostalCode());
+                        params.put("street_code", userProfile.getStreetCode());
                         params.put("city", userProfile.getCity());
-                        params.put("districtId", "" + userProfile.getDistrictId());
+                        params.put("district_id", "" + userProfile.getDistrictId());
+
                         return params;
                     }
                 };
+        volleyQueue.add(request);
     }
 
     // Converter para base64 username e password
@@ -484,9 +501,7 @@ public class SingletonPawsManager implements OrganizationsListener{
     private String createBasicAuth(final String username, final String password) {
         final String pair = username + ":" + password;
 
-        Base64.Encoder encoder = Base64.getEncoder();
-
-        return "Basic " + encoder.encodeToString(pair.getBytes());
+        return "Basic " + Base64.encodeToString(pair.getBytes(), Base64.DEFAULT);
     }
 
 }
