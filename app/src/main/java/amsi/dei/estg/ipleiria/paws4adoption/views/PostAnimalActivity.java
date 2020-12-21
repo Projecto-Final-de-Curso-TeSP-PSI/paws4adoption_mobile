@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -199,7 +201,7 @@ public class PostAnimalActivity extends AppCompatActivity {
         if (photoFile != null) {
             Uri photoURI = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(intent, CAMERA_REQUEST);
+            startActivityForResult(intent, GALLERY_REQUEST);
         }
     }
 
@@ -271,48 +273,50 @@ public class PostAnimalActivity extends AppCompatActivity {
         switch(requestCode){
             case GALLERY_REQUEST:
                 if (resultCode == RESULT_OK) {
+                    String[] paths = new String[]{currentPhotoPath};
                     Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                     ivPhoto.setImageBitmap(bitmap);
 
-//                    MediaScannerConnection.scanFile(this, paths, null,
-//                        new MediaScannerConnection.MediaScannerConnectionClient() {
-//                            @Override
-//                            public void onMediaScannerConnected() {
-//                                Log.d("Detalhes", "onScanCompleted");
-//                            }
-//
-//                            @Override
-//                            public void onScanCompleted(String path, Uri uri) {
-//                                Log.d("Detalhes", "onScanCompleted");
-//                            }
-//                        });
+                    MediaScannerConnection.scanFile(this, paths, null,
+                        new MediaScannerConnection.MediaScannerConnectionClient() {
+                            @Override
+                            public void onMediaScannerConnected() {
+                                Log.d("Detalhes", "onScanCompleted");
+                            }
+
+                            @Override
+                            public void onScanCompleted(String path, Uri uri) {
+                                Log.d("Detalhes", "onScanCompleted");
+                            }
+                        });
                 }
                 break;
 
             case CAMERA_REQUEST:
 
                 if (resultCode == RESULT_OK) {
+                    String[] paths = new String[]{currentPhotoPath};
                     Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                     ivPhoto.setImageBitmap(bitmap);
 
-//                    MediaScannerConnection.scanFile(this, paths, null,
-//                        new MediaScannerConnection.MediaScannerConnectionClient() {
-//                            @Override
-//                            public void onMediaScannerConnected() {
-//                                Log.d("Detalhes", "onScanCompleted");
-//                            }
-//
-//                            @Override
-//                            public void onScanCompleted(String path, Uri uri) {
-//                                Log.d("Detalhes", "onScanCompleted");
-//                            }
-//                        });
+                    MediaScannerConnection.scanFile(this, paths, null,
+                        new MediaScannerConnection.MediaScannerConnectionClient() {
+                            @Override
+                            public void onMediaScannerConnected() {
+                                Log.d("Detalhes", "onScanCompleted");
+                            }
+
+                            @Override
+                            public void onScanCompleted(String path, Uri uri) {
+                                Log.d("Detalhes", "onScanCompleted");
+                            }
+                        });
 
                 }
                 break;
-//            case LOCATION_REQUEST:
-//                getLocation();
-//                break;
+            case LOCATION_REQUEST:
+                //getLocation();
+                break;
         }
     }
 
@@ -343,8 +347,8 @@ public class PostAnimalActivity extends AppCompatActivity {
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imgNomeFich = "JPEG_" + timeStamp + "_";
-        File storageDir = new
-                File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        File storageDir = new File(Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                 .getParentFile(),"Animals");
         storageDir.mkdirs();
         File image = File.createTempFile(imgNomeFich, ".jpg", storageDir);
