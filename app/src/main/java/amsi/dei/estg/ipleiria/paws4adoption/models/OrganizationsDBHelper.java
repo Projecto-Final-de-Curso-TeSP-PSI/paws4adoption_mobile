@@ -87,7 +87,7 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
 
     /**
      * Inserts an organizartion into the organizations table
-     * @param organization
+     * @param organization to insert into the database
      */
     public void insertOrganizationDB(Organization organization){
         ContentValues values= new ContentValues();
@@ -111,8 +111,8 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
 
     /**
      * Updates an organization into the organizations table
-     * @param organization
-     * @return
+     * @param organization to update on the database
+     * @return true if successfully updated
      */
     public boolean updateOrganizationDB(Organization organization){
         ContentValues values= new ContentValues();
@@ -135,9 +135,9 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Deletes an organization from teh organizations tables
-     * @param id
-     * @return
+     * Deletes an organization from the organizations tables
+     * @param id of the record to delete
+     * @return true if successfully deleted, or false otherwise
      */
     public boolean deleteOrganizationDB(int id){
         return (this.sqLiteDatabase.delete(TABLE_NAME, "id = ?", new String[]{"" + id})) == 1;
@@ -145,7 +145,7 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
 
     /**
      * Get all organizations
-     * @return
+     * @return all the organizations on the database
      */
     public ArrayList<Organization> getAllOrganizationsDB(){
         ArrayList<Organization> organizations = new ArrayList<>();
@@ -164,14 +164,14 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
                         cursor.getString(2),
                         cursor.getString(3),
                         cursor.getString(4),
-                        cursor.getString(5),
+                        cursor.getInt(5),
                         cursor.getString(6),
                         cursor.getString(7),
                         cursor.getString(8),
-                        cursor.getString(9),
-                        cursor.getString(10),
+                        cursor.getInt(9),
+                        cursor.getInt(10),
                         cursor.getString(11),
-                        cursor.getString(12),
+                        cursor.getInt(12),
                         cursor.getString(13)
                 );
 

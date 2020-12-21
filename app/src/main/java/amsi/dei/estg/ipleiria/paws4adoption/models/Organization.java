@@ -2,25 +2,25 @@ package amsi.dei.estg.ipleiria.paws4adoption.models;
 
 public class Organization {
 
-    private int id;
+    private Integer id;
     private String name;
     private String nif;
     private String email;
     private String phone;
 
-    private String address_id;
+    private Integer address_id;
     private String street;
     private String door_number;
     private String floor;
-    private String postal_code;
-    private String street_code;
+    private Integer postal_code;
+    private Integer street_code;
     private String city;
 
-    private String district_id;
+    private Integer district_id;
     private String district_name;
 
-    public Organization(int id, String name, String nif, String email, String phone, String address_id, String street, String door_number,
-                        String floor, String postal_code, String street_code, String city, String district_id, String district_name){
+    public Organization(Integer id, String name, String nif, String email, String phone, Integer address_id, String street, String door_number,
+                        String floor, Integer postal_code, Integer street_code, String city, Integer district_id, String district_name){
         this.id = id;
         this.name = name;
         this.nif = nif;
@@ -39,11 +39,12 @@ public class Organization {
         this.district_name = district_name;
     }
 
-    public int getId() {
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -79,11 +80,11 @@ public class Organization {
         this.phone = phone;
     }
 
-    public String getAddress_id() {
+    public Integer getAddress_id() {
         return address_id;
     }
 
-    public void setAddress_id(String address_id) {
+    public void setAddress_id(Integer address_id) {
         this.address_id = address_id;
     }
 
@@ -111,19 +112,19 @@ public class Organization {
         this.floor = floor;
     }
 
-    public String getPostal_code() {
+    public Integer getPostal_code() {
         return postal_code;
     }
 
-    public void setPostal_code(String postal_code) {
+    public void setPostal_code(Integer postal_code) {
         this.postal_code = postal_code;
     }
 
-    public String getStreet_code() {
+    public Integer getStreet_code() {
         return street_code;
     }
 
-    public void setStreet_code(String street_code) {
+    public void setStreet_code(Integer street_code) {
         this.street_code = street_code;
     }
 
@@ -135,11 +136,11 @@ public class Organization {
         this.city = city;
     }
 
-    public String getDistrict_id() {
+    public Integer getDistrict_id() {
         return district_id;
     }
 
-    public void setDistrict_id(String district_id) {
+    public void setDistrict_id(Integer district_id) {
         this.district_id = district_id;
     }
 
@@ -150,5 +151,4 @@ public class Organization {
     public void setDistrict_name(String district_name) {
         this.district_name = district_name;
     }
-
 }

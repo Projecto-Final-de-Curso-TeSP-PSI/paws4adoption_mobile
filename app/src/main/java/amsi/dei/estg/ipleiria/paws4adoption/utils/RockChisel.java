@@ -24,7 +24,10 @@ public class RockChisel {
     public static final String PASSWORD = "password";
     public static final String TOKEN = "token";
 
-    //Databade related constants
+    //Database related constants
     public static final int DB_VERSION =1;
     public static final String DB_NAME = "paws4adoptionDB";
+    public static final int INSERT_DB = 1;
+    public static final int UPDATE_DB = 2;
+    public static final int DELETE_BD = 3;
 }

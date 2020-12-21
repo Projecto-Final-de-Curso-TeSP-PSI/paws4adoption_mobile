@@ -37,7 +37,8 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 public class SingletonPawsManager implements OrganizationsListener{
 
     //API local address (may change each time you start your machine)
-    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
+    //private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
+    private static final String COMPUTER_LOCAL_IP = "192.168.1.70";
     private static final String API_LOCAL_URL = "http://" + COMPUTER_LOCAL_IP + "/pet-adoption/paws4adoption_web/backend/web/api/";
 
     //Singleton instance
@@ -61,11 +62,6 @@ public class SingletonPawsManager implements OrganizationsListener{
     private static final String mUrlAPILogin = API_LOCAL_URL + "users/token";
     private static final String mUrlAPIUserProfile = API_LOCAL_URL + "users";
     private static final String mUrlAPIOrganizations = API_LOCAL_URL + "organizations";
-
-    //Static constants declaration for DB
-    private static final int INSERT_DB = 1;
-    private static final int UPDATE_DB = 2;
-    private static final int DELETE_BD = 3;
 
     /**
      * Gets the one and only instance of the singleton
@@ -131,13 +127,13 @@ public class SingletonPawsManager implements OrganizationsListener{
     @Override
     public void onUpdateOrganizationsList(Organization organization, int operation) {
         switch(operation){
-            case INSERT_DB:
+            case RockChisel.INSERT_DB:
                 insertOrganizationDB(organization);
                 break;
-            case UPDATE_DB:
+            case RockChisel.UPDATE_DB:
                 updateOrganizationDB(organization);
                 break;
-            case DELETE_BD:
+            case RockChisel.DELETE_BD:
                 deleteOrganizationDB(organization.getId());
                 break;
         }
@@ -251,10 +247,8 @@ public class SingletonPawsManager implements OrganizationsListener{
      */
     public void getAllOrganizationsAPI(final Context context){
 
-        if(!FortuneTeller.isThereInternetConnection(context)){
+        if(FortuneTeller.isThereInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
-
-            //Loads data from teh database
             if(organizationsListener != null){
                 organizationsListener.onRefreshOrganizationsList(organizationsDBHelper.getAllOrganizationsDB());
             }
@@ -294,7 +288,7 @@ public class SingletonPawsManager implements OrganizationsListener{
                 @Override
                 public void onResponse(String response) {
                     Organization auxOrg = JsonParser.toOrganization(response);
-                    onUpdateOrganizationsList(auxOrg, INSERT_DB);
+                    onUpdateOrganizationsList(auxOrg, RockChisel.INSERT_DB);
                 }
             },
             new Response.ErrorListener() {
@@ -338,7 +332,7 @@ public class SingletonPawsManager implements OrganizationsListener{
                     @Override
                     public void onResponse(String response) {
                         Organization auxOrg = JsonParser.toOrganization(response);
-                        onUpdateOrganizationsList(auxOrg, INSERT_DB);
+                        onUpdateOrganizationsList(auxOrg, RockChisel.UPDATE_DB);
                     }
                 },
                 new Response.ErrorListener() {
@@ -381,7 +375,7 @@ public class SingletonPawsManager implements OrganizationsListener{
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        onUpdateOrganizationsList(organization, DELETE_BD);
+                        onUpdateOrganizationsList(organization, RockChisel.DELETE_BD);
                     }
                 },
                 new Response.ErrorListener() {
