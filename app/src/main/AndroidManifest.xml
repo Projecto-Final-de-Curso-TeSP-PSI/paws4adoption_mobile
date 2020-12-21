@@ -54,8 +54,8 @@
         <activity android:name=".views.LoginActivity"
             android:parentActivityName=".views.MenuMainActivity"/>
 
-        <activity android:name=".UserProfileActivity" />
-        <activity android:name=".SignupActivity" />
+        <activity android:name=".views.UserProfileActivity" />
+        <activity android:name=".views.SignupActivity" />
 
         <service android:name=".services.FetchAddressIntentService" />
     </application>
