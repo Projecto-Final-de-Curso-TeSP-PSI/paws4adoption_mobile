@@ -37,8 +37,10 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 public class SingletonPawsManager implements OrganizationsListener{
 
     //API local address (may change each time you start your machine)
-    //private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
-    private static final String COMPUTER_LOCAL_IP = "192.168.1.70";
+    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
+//    private static final String COMPUTER_LOCAL_IP = "192.168.42.129";
+
+    //private static final String COMPUTER_LOCAL_IP = "localhost";
     private static final String API_LOCAL_URL = "http://" + COMPUTER_LOCAL_IP + "/pet-adoption/paws4adoption_web/backend/web/api/";
 
     //Singleton instance
