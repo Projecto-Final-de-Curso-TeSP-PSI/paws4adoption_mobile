@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
 
 /**
@@ -159,6 +160,36 @@ public class JsonParser {
         }
         return userProfile;
     }
+
+    public static ArrayList<Animal> toAnimals(JSONArray response){
+        ArrayList<Animal> animalsList= new ArrayList<>();
+
+        try{
+            for(int i = 0; i < response.length(); i++){
+
+                JSONObject animal = (JSONObject) response.get(i);
+                Integer id =  Wrench.purifyInteger(animal.getString("id"));
+                String name =  Wrench.purifyString(animal.getString("name"));
+                String chipId =  Wrench.purifyString(animal.getString("chipId"));
+                Integer nature_id =  Wrench.purifyInteger(animal.getString("nature_id"));
+                String nature_name =  Wrench.purifyString(animal.getString("nature_name"));
+
+
+
+
+               // Animal animalAux = new Animal(id, name, chipId, nature_id, nature_name);
+
+                //animalsList.add(animal);
+            }
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        return animalsList;
+    }
+
+
+
 
     /**
      * Method that checks if the mobile equipments has internet connection

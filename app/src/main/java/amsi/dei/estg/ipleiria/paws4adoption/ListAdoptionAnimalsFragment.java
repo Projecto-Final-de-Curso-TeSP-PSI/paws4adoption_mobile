@@ -2,63 +2,75 @@ package amsi.dei.estg.ipleiria.paws4adoption;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SearchView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ListAdoptionAnimalsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ListAdoptionAnimalsFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListAnimalsAdapter;
+import amsi.dei.estg.ipleiria.paws4adoption.adapters.OrganizationListAdapter;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
+import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
+import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
+import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-    public ListAdoptionAnimalsFragment() {
-        // Required empty public constructor
+public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AnimalListener {
+
+    private ListView lvListAdoptionAnimal;
+
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        setHasOptionsMenu(true);
+
+        View rootView = inflater.inflate(R.layout.fragment_list_adoption_animals, container, false);
+
+        lvListAdoptionAnimal = rootView.findViewById(R.id.lvListAdoptionAnimal);
+
+        lvListAdoptionAnimal.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
+                Animal hasAnimal = (Animal) parent.getItemAtPosition(i);
+                System.out.println("--> " + hasAnimal.getName());
+            }
+        });
+
+
+        return rootView;
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListAdoptionAnimalsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListAdoptionAnimalsFragment newInstance(String param1, String param2) {
-        ListAdoptionAnimalsFragment fragment = new ListAdoptionAnimalsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+
+
+    @Override
+    public void onRefresh() {
+        //TODO::
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
+        if(animalsList != null)
+            lvListAdoptionAnimal.setAdapter(new ListAnimalsAdapter(getContext(), animalsList));
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_adoption_animals, container, false);
+    public void onUpdateAnimalsList(Animal animal, int operation) {
+
     }
 }

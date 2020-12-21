@@ -10,34 +10,14 @@ import java.util.ArrayList;
 
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
-public class OrganizationsDBHelper extends SQLiteOpenHelper {
+public class AnimalsDBHelper extends SQLiteOpenHelper {
 
     //Tables name declaration
-    private static final String TABLE_NAME = "organizations";
-    private static final String ANIMAL_TABLE_NAME = "animals";
-
-
-    //commom animal and organization tables fields declaration
-    private static final String ID = "id";
-    private static final String NAME= "name";
-
-    //Organizations table fields declaration
-    private static final String NIF = "nif";
-    private static final String EMAIL = "email";
-    private static final String PHONE = "phone";
-
-    private static final String ADDRESS_ID = "address_id";
-    private static final String STREET = "street";
-    private static final String DOOR_NUMBER = "door_number";
-    private static final String FLOOR = "floor";
-    private static final String POSTAL_CODE = "postal_code";
-    private static final String STREET_CODE = "street_code";
-    private static final String CITY = "city";
-
-    private static final String DISTRICT_ID = "distric_id";
-    private static final String DISTRICT_NAME = "district_name";
+    private static final String ANIMAL_TABLE_NAME = "Animals";
 
     //animal table fields declaration
+    private static final String ID = "id";
+    private static final String NAME = "name";
     private static final String CHIP_ID = "chipId";
     private static final String NATURE_ID = "nature_id";
     private static final String NATURE_NAME = "nature_name";
@@ -86,39 +66,22 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
 
     /**
      * Constructor for this class
+     *
      * @param context
      */
-    public OrganizationsDBHelper(Context context){
+    public AnimalsDBHelper (Context context){
         super(context, RockChisel.DB_NAME, null, RockChisel.DB_VERSION);
         this.sqLiteDatabase = this.getReadableDatabase();
     }
 
     /**
-     * Create's an organizations table on the SQLiteDataBase
+     * Create's an animals table on the SQLiteDataBase
+     *
      * @param sqLiteDatabase
      */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String createOrganizationsTable =
-                "CREATE TABLE " + TABLE_NAME + "(" +
-                        ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        NAME + " TEXT NOT NULL, " +
-                        NIF + " TEXT NOT NULL, " +
-                        EMAIL + " TEXT, " +
-                        PHONE + " TEXT, " +
-                        ADDRESS_ID + " TEXT NOT NULL, " +
-                        STREET + " TEXT NOT NULL, " +
-                        DOOR_NUMBER + " TEXT, " +
-                        FLOOR + " TEXT, " +
-                        POSTAL_CODE + " INTEGER NOT NULL, " +
-                        STREET_CODE + " INTEGER NOT NULL, " +
-                        CITY + " TEXT NOT NULL, " +
-                        DISTRICT_ID + " INTEGER NOT NULL, " +
-                        DISTRICT_NAME + " TEXT NOT NULL" +
-                        ");";
-        sqLiteDatabase.execSQL(createOrganizationsTable);
-
-        String createAnimalsTable =
                 "CREATE TABLE " + ANIMAL_TABLE_NAME + "(" +
                         ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         NAME + " TEXT, " +
@@ -161,44 +124,20 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
                         ORGANIZATION_DISTRICT_ID + " INT," +
                         ORGANIZATION_DISTRICT_NAME + " TEXT" +
                         ");";
-        sqLiteDatabase.execSQL(createAnimalsTable);
+        sqLiteDatabase.execSQL(createOrganizationsTable);
     }
 
     /**
      * Drops and recreates an organitions tables on the SQLiteDataBase
+     *
      * @param db
      * @param oldVersion
      * @param newVersion
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ANIMAL_TABLE_NAME);
         this.onCreate(sqLiteDatabase);
-    }
-
-    /**
-     * Inserts an organizartion into the organizations table
-     * @param organization to insert into the database
-     */
-    public void insertOrganizationDB(Organization organization){
-        ContentValues values= new ContentValues();
-
-        values.put(NAME, organization.getName());
-        values.put(NIF, organization.getNif());
-        values.put(EMAIL, organization.getEmail());
-        values.put(PHONE, organization.getPhone());
-        values.put(ADDRESS_ID, organization.getAddress_id());
-        values.put(STREET, organization.getStreet());
-        values.put(DOOR_NUMBER, organization.getDoor_number());
-        values.put(FLOOR, organization.getFloor());
-        values.put(POSTAL_CODE, organization.getPostal_code());
-        values.put(STREET_CODE, organization.getStreet_code());
-        values.put(CITY, organization.getCity());
-        values.put(DISTRICT_ID, organization.getDistrict_id());
-        values.put(DISTRICT_NAME, organization.getDistrict_name());
-
-        this.sqLiteDatabase.insert(TABLE_NAME, null, values);
     }
 
     /**
@@ -249,32 +188,6 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
         values.put(ORGANIZATION_DISTRICT_NAME, animal.getOrganization_district_name());
 
         this.sqLiteDatabase.insert(ANIMAL_TABLE_NAME, null, values);
-    }
-
-
-    /**
-     * Updates an organization into the organizations table
-     * @param organization to update on the database
-     * @return true if successfully updated
-     */
-    public boolean updateOrganizationDB(Organization organization){
-        ContentValues values= new ContentValues();
-
-        values.put(NAME, organization.getName());
-        values.put(NIF, organization.getNif());
-        values.put(EMAIL, organization.getEmail());
-        values.put(PHONE, organization.getPhone());
-        values.put(ADDRESS_ID, organization.getAddress_id());
-        values.put(STREET, organization.getStreet());
-        values.put(DOOR_NUMBER, organization.getDoor_number());
-        values.put(FLOOR, organization.getFloor());
-        values.put(POSTAL_CODE, organization.getPostal_code());
-        values.put(STREET_CODE, organization.getStreet_code());
-        values.put(CITY, organization.getCity());
-        values.put(DISTRICT_ID, organization.getDistrict_id());
-        values.put(DISTRICT_NAME, organization.getDistrict_name());
-
-        return this.sqLiteDatabase.update(TABLE_NAME, values,"id = ?", new String[]{"" + organization.getId()}) > 0;
     }
 
     /**
@@ -328,68 +241,16 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
         return this.sqLiteDatabase.update(ANIMAL_TABLE_NAME, values,"id = ?", new String[]{"" + animal.getId()}) > 0;
     }
 
-
-    /**
-     * Deletes an organization from the organizations tables
-     * @param id of the record to delete
-     * @return true if successfully deleted, or false otherwise
-     */
-    public boolean deleteOrganizationDB(int id){
-        return (this.sqLiteDatabase.delete(TABLE_NAME, "id = ?", new String[]{"" + id})) == 1;
-    }
-
     /**
      *
-     * @param idAnimal
+     * @param id
      * @return
      */
-    public boolean deleteAnimalDB(int idAnimal){
-        return (this.sqLiteDatabase.delete(ANIMAL_TABLE_NAME, "id = ?", new String[]{"" + idAnimal})) == 1;
+    public boolean deleteAnimalDB(int id){
+        return (this.sqLiteDatabase.delete(ANIMAL_TABLE_NAME, "id = ?", new String[]{"" + id})) == 1;
     }
 
-    /**
-     * Get all organizations
-     * @return all the organizations on the database
-     */
-    public ArrayList<Organization> getAllOrganizationsDB(){
-        ArrayList<Organization> organizations = new ArrayList<>();
 
-        Cursor cursor = this.sqLiteDatabase.query(TABLE_NAME, new String[]{
-           ID, NAME, NIF, EMAIL, PHONE, ADDRESS_ID, STREET, DOOR_NUMBER, FLOOR, POSTAL_CODE, STREET_CODE, CITY, DISTRICT_ID, DISTRICT_NAME},
-                null, null, null, null, null
-        );
-
-        if(cursor.moveToFirst()) {
-
-            do {
-                Organization auxOrg = new Organization(
-                        cursor.getInt(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getString(4),
-                        cursor.getInt(5),
-                        cursor.getString(6),
-                        cursor.getString(7),
-                        cursor.getString(8),
-                        cursor.getInt(9),
-                        cursor.getInt(10),
-                        cursor.getString(11),
-                        cursor.getInt(12),
-                        cursor.getString(13)
-                );
-
-                organizations.add(auxOrg);
-            } while (cursor.moveToNext());
-        }
-
-        return organizations;
-    }
-
-    /**
-     * Get all animals
-     * @return
-     */
     public ArrayList<Animal> getAllAnimalsDB(){
         ArrayList<Animal> animals = new ArrayList<>();
 
@@ -455,15 +316,9 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
      *
      */
     public void deleteAllOrganizationsDB(){
-        this.sqLiteDatabase.delete(TABLE_NAME, null, null);
-    }
-
-    /**
-     * Deletes all Animals from the animal table
-     *
-     */
-    public void deleteAllAnimalsDB(){
         this.sqLiteDatabase.delete(ANIMAL_TABLE_NAME, null, null);
     }
+
+
 
 }
