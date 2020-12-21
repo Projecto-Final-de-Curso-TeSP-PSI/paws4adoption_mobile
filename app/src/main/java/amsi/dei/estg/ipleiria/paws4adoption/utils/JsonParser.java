@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.android.volley.toolbox.StringRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -127,24 +129,31 @@ public class JsonParser {
         UserProfile userProfile = null;
         try{
             JSONObject result = new JSONObject(response);
-            if(result.getBoolean("success")){
-                userProfile = new UserProfile(
-                        result.getInt("id"),
-                        result.getString("email"),
-                        result.getString("username"),
-                        result.getString("firstName"),
-                        result.getString("lastName"),
-                        result.getString("nif"),
-                        result.getString("phone"),
-                        result.getString("street"),
-                        result.getString("door_number"),
-                        result.getString("floor"),
-                        result.getString("postal_code"),
-                        result.getString("street_code"),
-                        result.getString("city"),
-                        result.getInt("address.district.id")
-                );
-            }
+            int id = result.getInt("id");
+            String email = result.getString("email");
+            String username = result.getString("username");
+            String firstName = result.getString("firstName");
+            String lastName = result.getString("lastName");
+            String nif = result.getString("nif");
+            String phone = result.getString("phone");
+
+            JSONObject address = result.getJSONObject("address");
+            String street = address.getString("street");
+            String door_number = address.getString("door_number");
+            String floor = address.getString("floor");
+            String postal_code = address.getString("postal_code");
+            String street_code = address.getString("street_code");
+            String city = address.getString("city");
+
+            JSONObject district = address.getJSONObject("district");
+            int districtId = district.getInt("id");
+            String districtName = district.getString("name");
+
+            userProfile = new UserProfile(
+                   id, email, username,
+                   firstName, lastName, nif, phone,
+                   street, door_number, floor, postal_code, street_code, city, districtId);
+
         }catch (JSONException e){
             e.printStackTrace();
         }
