@@ -247,7 +247,7 @@ public class SingletonPawsManager implements OrganizationsListener{
      */
     public void getAllOrganizationsAPI(final Context context){
 
-        if(FortuneTeller.isThereInternetConnection(context)){
+        if(!FortuneTeller.isThereInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
             if(organizationsListener != null){
                 organizationsListener.onRefreshOrganizationsList(organizationsDBHelper.getAllOrganizationsDB());

@@ -58,17 +58,17 @@ public class ListOrganizationsFragment extends Fragment implements SwipeRefreshL
 
         lvOrganizations = rootView.findViewById(R.id.lvOrganizations);
 
-//        lvOrganizations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
-//                Organization hasOrganization = (Organization) parent.getItemAtPosition(i);
-//                System.out.println("--> " + hasOrganization.getName());
-//
-//                Intent intent = new Intent(getContext(), OrganizationDetailsActivity.class);
-//                intent.putExtra(OrganizationDetailsActivity.ORG_DETAILS, hasOrganization.getId());
-//                startActivity(intent);
-//            }
-//        });
+        lvOrganizations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
+                Organization hasOrganization = (Organization) parent.getItemAtPosition(i);
+                System.out.println("--> " + hasOrganization.getName());
+
+                Intent intent = new Intent(getContext(), OrganizationDetailsActivity.class);
+                intent.putExtra(OrganizationDetailsActivity.ORG_DETAILS, hasOrganization.getId());
+                startActivity(intent);
+            }
+        });
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipe);
         swipeRefreshLayout.setOnRefreshListener(this);

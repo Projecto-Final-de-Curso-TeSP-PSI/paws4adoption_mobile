@@ -3,11 +3,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
         <item
-
             android:id="@+id/searchByDistrict"
-            android:icon="@android:drawable/ic_menu_search"
+            android:icon="@android:drawable/ic_dialog_dialer"
             android:title="@string/search_by_district"
             app:actionViewClass="android.widget.SearchView"
             app:showAsAction="always" />
-
 </menu>
