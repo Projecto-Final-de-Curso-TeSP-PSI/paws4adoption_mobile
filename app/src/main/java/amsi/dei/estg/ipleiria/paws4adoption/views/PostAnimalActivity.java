@@ -2,11 +2,9 @@ package amsi.dei.estg.ipleiria.paws4adoption.views;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
@@ -16,7 +14,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +22,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,13 +36,9 @@ import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.Permission;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import amsi.dei.estg.ipleiria.paws4adoption.MainActivity;
-import amsi.dei.estg.ipleiria.paws4adoption.listeners.UploadPhotoListener;
-import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.services.FetchAddressIntentService;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
@@ -58,7 +50,8 @@ public class PostAnimalActivity extends AppCompatActivity {
     private static final int LOCATION_REQUEST = 3;
 
     private ImageView ivPhoto;
-    private Button btnUpload;
+    private Button btnUploadPhoto;
+    private Button btnLocation;
 
     private EditText etNome;
     private EditText etIdChip;
@@ -75,7 +68,6 @@ public class PostAnimalActivity extends AppCompatActivity {
 
     private String currentPhotoPath;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +75,8 @@ public class PostAnimalActivity extends AppCompatActivity {
 
         ivPhoto = findViewById(R.id.ivPhoto);
 
-        btnUpload = findViewById(R.id.btnUpload);
-        btnUpload.setOnClickListener(new View.OnClickListener() {
+        btnUploadPhoto = findViewById(R.id.btnUpload);
+        btnUploadPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(PostAnimalActivity.this);
@@ -95,14 +87,17 @@ public class PostAnimalActivity extends AppCompatActivity {
                 builder.setItems(options, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+                        switch (which) {
                             case 0:
                                 if (Build.VERSION.SDK_INT >= 23 &&
                                         ActivityCompat.checkSelfPermission(getApplicationContext(),
-                                                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                                                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                                     ActivityCompat.requestPermissions(PostAnimalActivity.this,
-                                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, GALLERY_REQUEST);
+                                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                            GALLERY_REQUEST
+                                    );
+
                                     return;
                                 }
 
@@ -110,9 +105,9 @@ public class PostAnimalActivity extends AppCompatActivity {
                                 break;
                             case 1:
                                 if (Build.VERSION.SDK_INT >= 23 &&
-                                    (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                                    || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                                    || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)){
+                                        (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                                                || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                                                || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
 
                                     ActivityCompat.requestPermissions(PostAnimalActivity.this,
                                             new String[]{
@@ -120,7 +115,9 @@ public class PostAnimalActivity extends AppCompatActivity {
                                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                                     Manifest.permission.CAMERA
                                             },
-                                            CAMERA_REQUEST);
+                                            CAMERA_REQUEST
+                                    );
+
                                     return;
                                 }
 
@@ -136,53 +133,34 @@ public class PostAnimalActivity extends AppCompatActivity {
             }
         });
 
+        btnLocation = findViewById(R.id.btnLocation);
+        btnLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= 23 &&
+                        (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                                && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+
+                    ActivityCompat.requestPermissions(PostAnimalActivity.this,
+                            new String[]{
+                                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                            },
+                            LOCATION_REQUEST);
+                }
+
+                getLocation();
+            }
+        });
+
 
         tvLat = findViewById(R.id.tvLat);
         tvLong = findViewById(R.id.tvLong);
         tvAddress = findViewById(R.id.tvAddress);
 
-
         resultReceiver = new AddressResultReceiver(new Handler());
-
-//        //PERMISSAO LEITURA DE DADOS DA GALERIA
-//        int readExternalPermission = ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE;
-//        if (Build.VERSION.SDK_INT >= 23 && readExternalPermission != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(PostAnimalActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CAMERA_REQUEST);
-//        }
-//
-//        //PERMISSAO ESCRITA DE DADOS NA GALERIA
-//        int writeExternalPermission = ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE;
-//        if (Build.VERSION.SDK_INT >= 23 && writeExternalPermission != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CAMERA_REQUEST);
-//        }
-//
-//        //PERMISSAO CAMERA
-//        int cameraPermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
-//        if (cameraPermission != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-//        }
-
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void onTakePhoto_OnClick(View view) {
-
-        int cameraPermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
-        if (cameraPermission == PackageManager.PERMISSION_DENIED) {
-
-            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-            } else {
-                Toast.makeText(this, "Não tem permissão para utilizar a camara, altera nas definições da aplicação", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, CAMERA_REQUEST);
-        }
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -200,13 +178,13 @@ public class PostAnimalActivity extends AppCompatActivity {
                 }
                 break;
 
-//            case LOCATION_REQUEST:
-//                if (grantResults.length > 0) {
-//                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                        getLocation();
-//                    }
-//                }
-//                break;
+            case LOCATION_REQUEST:
+                if (grantResults.length > 0) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        getLocation();
+                    }
+                }
+                break;
         }
     }
 
@@ -240,65 +218,62 @@ public class PostAnimalActivity extends AppCompatActivity {
         }
     }
 
-//    @RequiresApi(api = Build.VERSION_CODES.M)
-//    private void getLocation() {
-//        LocationRequest locationRequest = new LocationRequest();
-//        locationRequest.setInterval(10000);
-//        locationRequest.setFastestInterval(3000);
-//        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//
-//            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-//                Toast.makeText(this, "Não tem permissão para utilizar a localização, altere nas definições da aplicação", Toast.LENGTH_SHORT).show();
-//            } else{
-//                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
-//            }
-//
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-//            return;
-//        }
-//
-//
-//        LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
-//                .requestLocationUpdates(locationRequest, new LocationCallback() {
-//                    @Override
-//                    public void onLocationResult(LocationResult locationResult) {
-//                        super.onLocationResult(locationResult);
-//
-//                        LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
-//                                .removeLocationUpdates(this);
-//
-//                        if (locationResult != null && locationResult.getLocations().size() > 0) {
-//                            int latestLocationIndex = locationResult.getLocations().size() - 1;
-//                            latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
-//                            longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
-//                            tvLat.setText("" + latitude);
-//                            tvLong.setText("" + longitude);
-//
-//                            Location location = new Location("providerNA");
-//                            location.setLatitude(latitude);
-//                            location.setLongitude(longitude);
-//                            fetchAddressFromLatLong(location);
-//
-//                        } else {
-//                            //
-//                        }
-//                    }
-//                }, Looper.getMainLooper());
-//    }
+    private void getLocation() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        switch(requestCode){
-//            case GALLERY_REQUEST:
-//                if (resultCode == RESULT_OK) {
-//                    Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-//                    ivPhoto.setImageBitmap(bitmap);
-//
+        if (Build.VERSION.SDK_INT >= 23 &&
+                (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+
+            ActivityCompat.requestPermissions(PostAnimalActivity.this,
+                    new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                    },
+                    LOCATION_REQUEST);
+        }
+
+        LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
+                .requestLocationUpdates(locationRequest, new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+
+                        LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
+                                .removeLocationUpdates(this);
+
+                        if (locationResult != null && locationResult.getLocations().size() > 0) {
+                            int latestLocationIndex = locationResult.getLocations().size() - 1;
+                            latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                            longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                            tvLat.setText("" + latitude);
+                            tvLong.setText("" + longitude);
+
+                            Location location = new Location("providerNA");
+                            location.setLatitude(latitude);
+                            location.setLongitude(longitude);
+                            fetchAddressFromLatLong(location);
+
+                        } else {
+                            //
+                        }
+                    }
+                }, Looper.getMainLooper());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode){
+            case GALLERY_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                    ivPhoto.setImageBitmap(bitmap);
+
 //                    MediaScannerConnection.scanFile(this, paths, null,
 //                        new MediaScannerConnection.MediaScannerConnectionClient() {
 //                            @Override
@@ -311,53 +286,35 @@ public class PostAnimalActivity extends AppCompatActivity {
 //                                Log.d("Detalhes", "onScanCompleted");
 //                            }
 //                        });
-//                }
-//                break;
-//
-////            case CAMERA_REQUEST:
-////
-////                if (resultCode == RESULT_OK) {
-////                    Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-////                    ivPhoto.setImageBitmap(bitmap);
-////
-////                    MediaScannerConnection.scanFile(this, paths, null,
-////                        new MediaScannerConnection.MediaScannerConnectionClient() {
-////                            @Override
-////                            public void onMediaScannerConnected() {
-////                                Log.d("Detalhes", "onScanCompleted");
-////                            }
-////
-////                            @Override
-////                            public void onScanCompleted(String path, Uri uri) {
-////                                Log.d("Detalhes", "onScanCompleted");
-////                            }
-////                        });
-////
-////                }
-////                break;
-//
-//        }
-//    }
+                }
+                break;
 
+            case CAMERA_REQUEST:
+
+                if (resultCode == RESULT_OK) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                    ivPhoto.setImageBitmap(bitmap);
+
+//                    MediaScannerConnection.scanFile(this, paths, null,
+//                        new MediaScannerConnection.MediaScannerConnectionClient() {
+//                            @Override
+//                            public void onMediaScannerConnected() {
+//                                Log.d("Detalhes", "onScanCompleted");
+//                            }
 //
-//    public void onGetLocation_OnClick(View view) {
-//
-//
-//
-//        int currentPermission = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION);
-//        if (currentPermission == PackageManager.PERMISSION_DENIED) {
-//            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                        LOCATION_REQUEST);
-//            } else {
-//                Toast.makeText(this, "Não tem permissão para utilizar a localização, altere nas definições da aplicação", Toast.LENGTH_SHORT).show();
-//            }
-//        } else {
-//
-//
-//        }
-//    }
+//                            @Override
+//                            public void onScanCompleted(String path, Uri uri) {
+//                                Log.d("Detalhes", "onScanCompleted");
+//                            }
+//                        });
+
+                }
+                break;
+//            case LOCATION_REQUEST:
+//                getLocation();
+//                break;
+        }
+    }
 
     private class AddressResultReceiver extends ResultReceiver{
 
@@ -394,7 +351,6 @@ public class PostAnimalActivity extends AppCompatActivity {
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
-
 
 }
 
