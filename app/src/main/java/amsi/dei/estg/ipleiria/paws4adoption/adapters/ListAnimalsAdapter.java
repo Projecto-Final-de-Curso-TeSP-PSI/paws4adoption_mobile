@@ -59,25 +59,42 @@ public class ListAnimalsAdapter extends BaseAdapter {
     }
 
     private class ListAnimalViewHolder{
-        private TextView name, breed, size, sex, postDate;
+        private TextView type, name, breed, size, sex, postDate;
         private ImageView imageAnimal;
 
         public ListAnimalViewHolder(View convertView){
+            type = convertView.findViewById(R.id.textView_type);
             name = convertView.findViewById(R.id.textView_name);
             breed = convertView.findViewById(R.id.textView_breed);
             size = convertView.findViewById(R.id.textView_size);
             sex = convertView.findViewById(R.id.textView_sex);
             postDate = convertView.findViewById(R.id.textView_postDate);
-            imageAnimal = convertView.findViewById(R.id.imgAnimalPhoto);
+           // imageAnimal = convertView.findViewById(R.id.imgAnimalPhoto);
         }
 
         public void update(Animal animal){
+            switch (animal.getType()){
+                case "adoptionAnimal":
+                    type.setText("Animal para Adoção");
+                    break;
+                case "missingAnimal":
+                    type.setText("Animal Perdido");
+                    break;
+                case "foundAnimal":
+                    type.setText("Animal Errante");
+                    break;
+                default:
+                    break;
+
+
+            }
+
             name.setText(animal.getName());
-            breed.setText(animal.getNature_parent_name());
+            breed.setText(animal.getNature_name());
             size.setText(animal.getSize());
             sex.setText(animal.getSex());
             postDate.setText(animal.getCreateAt());
-            imageAnimal.setImageResource(animal.getPhoto());
+            //imageAnimal.setImageResource(animal.getPhoto());
         }
     }
 }

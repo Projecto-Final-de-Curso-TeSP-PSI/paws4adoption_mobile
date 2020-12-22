@@ -30,7 +30,11 @@ public class Wrench {
     public static Integer purifyInteger(String str) {
         if (str == null || str.length() == 0 || str.equals("null"))
             return null;
-        else
+        else if (str.equals("false")){
+            return 0;
+        }else if (str.equals("true")){
+            return 1;
+        }else
             return Integer.parseInt(str);
     }
 

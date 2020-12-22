@@ -1,4 +1,4 @@
-package amsi.dei.estg.ipleiria.paws4adoption;
+package amsi.dei.estg.ipleiria.paws4adoption.views;
 
 import android.os.Bundle;
 
@@ -19,6 +19,7 @@ import android.widget.SearchView;
 import java.util.ArrayList;
 import java.util.List;
 
+import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListAnimalsAdapter;
 import amsi.dei.estg.ipleiria.paws4adoption.adapters.OrganizationListAdapter;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
@@ -37,7 +38,7 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        setHasOptionsMenu(true);
+        //setHasOptionsMenu(true);
 
         View rootView = inflater.inflate(R.layout.fragment_list_adoption_animals, container, false);
 
@@ -51,6 +52,8 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
             }
         });
 
+        SingletonPawsManager.getInstance(getContext()).setAnimalListener(this);
+        SingletonPawsManager.getInstance(getContext()).getAllAnimalsAPI(getContext());
 
         return rootView;
 

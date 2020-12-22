@@ -5,7 +5,7 @@ import android.content.Context;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Base64;
+//import java.util.Base64;
 import android.util.Base64;
 
 import android.media.MediaSync;
@@ -40,6 +40,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
 
     //API local address (may change each time you start your machine)
     private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
+    //private static final String COMPUTER_LOCAL_IP = "192.168.1.69";
 //    private static final String COMPUTER_LOCAL_IP = "192.168.42.129";
 
     //private static final String COMPUTER_LOCAL_IP = "localhost";
@@ -541,24 +542,24 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 animalListener.onRefreshAnimalsList(organizationsDBHelper.getAllAnimalsDB());
             }
         } else{
-            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, mUrlAPIOrganizations, null, new Response.Listener<JSONArray>() {
+            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, mUrlAPIAnimals, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
-                    organizations = JsonParser.toOrganizations(response);
-                    insertAllOrganizationsDB(organizations);
+                    animals = JsonParser.toAnimals(response);
+                    insertAllAnimalsDB(animals);
 
-                    if (organizationsListener != null) {
-                        organizationsListener.onRefreshOrganizationsList(organizations);
+                    if (animalListener != null) {
+                        animalListener.onRefreshAnimalsList(animals);
                     }
 
-                    System.out.println("--> Organizations: " + response);
+                    System.out.println("--> Animals: " + response);
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
 
-                    System.out.println("--> Organizations: " + error.getStackTrace());
+                    System.out.println("--> Animals: " + error.getStackTrace());
                 }
             });
             volleyQueue.add(request);
