@@ -62,4 +62,15 @@
     <string name="get_animals">Ver Animais para Adoção</string>
     <string name="search_by_district">Pesquisar por distrito</string>
     <string name="continuar">Continuar</string>
+    <string name="descriptionimganimal">DescriptionImgAnimal</string>
+    <string name="detailsAnimal_name">Nome:</string>
+    <string name="detailsAnimal_ChipiId">ChipId:</string>
+    <string name="detailsAnimal_nature">Naturesa:</string>
+    <string name="detailsAnimal_breed">Raça:</string>
+    <string name="detailsAnimal_sex">Sexo:</string>
+    <string name="detailsAnimal_size">Porte:</string>
+    <string name="detailsAnimal_furColor">Cor:</string>
+    <string name="detailsAnimal_furLength">Pelo:</string>
+    <string name="detailsAnimal_type">Tipo:</string>
+    <string name="detailsAnimal_createAt">Postado em:</string>
 </resources>
