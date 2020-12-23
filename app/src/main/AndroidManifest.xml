@@ -49,25 +49,21 @@
 
         </activity>
 
-        <activity android:name=".MainActivity"
-            android:label="Paws4adoption"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
         <activity android:name=".views.PostAnimalActivity"
             android:parentActivityName=".views.MenuMainActivity"/>
 
         <activity android:name=".views.SubmRequestActivity" />
         <activity android:name=".views.AnimalDetailsActivity" />
         <activity android:name=".OrgDetailActivity" />
-        <activity android:name=".OrganizationActivity" />
+
+        <activity android:name=".views.OrganizationDetailsActivity"
+            android:parentActivityName=".views.MenuMainActivity"/>
+
         <activity android:name=".views.LoginActivity"
             android:parentActivityName=".views.MenuMainActivity"/>
 
-        <activity android:name=".UserProfileActivity" />
-        <activity android:name=".SignupActivity" />
+        <activity android:name=".views.UserProfileActivity" />
+        <activity android:name=".views.SignupActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

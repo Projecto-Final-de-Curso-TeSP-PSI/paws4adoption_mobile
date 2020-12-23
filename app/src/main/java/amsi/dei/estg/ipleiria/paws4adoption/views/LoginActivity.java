@@ -6,10 +6,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import amsi.dei.estg.ipleiria.paws4adoption.MainActivity;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
 
     private EditText etUsername;
     private EditText etPassword;
+    private Button btnSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
 
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
+        btnSignup = findViewById(R.id.btnSignup);
 
         SingletonPawsManager.getInstance(getApplicationContext()).setLoginListener(this);
     }
@@ -95,4 +97,8 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         }
     }
 
+    public void onClickSignup(View view) {
+        Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+        startActivity(intent);
+    }
 }

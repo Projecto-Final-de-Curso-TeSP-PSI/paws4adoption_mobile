@@ -14,6 +14,7 @@ public class Vault {
 
     /**
      * Method for saving the USERNAME and TOKEN on the shared preferences
+     * @param context
      * @param token
      * @param username
      */
@@ -37,6 +38,10 @@ public class Vault {
         sharedPreferences.edit().clear().apply();
     }
 
+    /**
+     * CL
+     * @param context
+     */
     public static void clearUserPreferences(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(RockChisel.USER_PREFERENCES, Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();

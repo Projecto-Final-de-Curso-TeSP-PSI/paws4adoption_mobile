@@ -20,16 +20,16 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="75dp" />
+        android:layout_height="50dp" />
 
     <EditText
         android:id="@+id/etUsername"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:ems="10"
         android:hint="@string/insertUsername"
         android:inputType="textPersonName"
-        android:layout_gravity="center"
         android:textAlignment="center" />
     <Space
         android:layout_width="match_parent"
@@ -37,12 +37,12 @@
 
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:ems="10"
         android:hint="@string/insertPassword"
         android:inputType="textPassword"
-        android:layout_gravity="center"
         android:textAlignment="center" />
 
     <Space
@@ -51,36 +51,31 @@
 
     <Button
         android:id="@+id/btnLogin"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/login"
-        android:onClick="onClickLogin"/>
+        android:onClick="onClickLogin"
+        android:text="@string/login" />
 
 
-
-    <LinearLayout
+    <Space
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:orientation="vertical"
-        android:layout_marginTop="50dp">
+        android:layout_height="25dp" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Não é membro? Resgiste-se!"
-            android:layout_marginTop="25dp"/>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="25dp"
+        android:text="Não é membro? Resgiste-se!" />
 
-        <Button
-            android:id="@+id/btnSignup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-
-            android:text="Resgiste-se" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/btnSignup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="onClickSignup"
+        android:text="Resgiste-se" />
 
 </LinearLayout>
