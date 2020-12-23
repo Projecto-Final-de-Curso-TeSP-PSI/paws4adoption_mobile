@@ -1,5 +1,7 @@
 package amsi.dei.estg.ipleiria.paws4adoption.models;
 
+import java.util.HashMap;
+
 public class Attribute {
 
     private Integer id;
@@ -26,4 +28,7 @@ public class Attribute {
         this.name = name;
     }
 
+    public String toString() {
+        return name;
+    }
 }

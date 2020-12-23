@@ -1,5 +1,8 @@
 package amsi.dei.estg.ipleiria.paws4adoption.utils;
 
+import android.graphics.Bitmap;
+import android.util.Base64;
+
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.api.Api;
 

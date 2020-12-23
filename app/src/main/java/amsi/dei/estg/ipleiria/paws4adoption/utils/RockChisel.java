@@ -35,13 +35,15 @@ public class RockChisel {
     //Attributes related constants
 
     //API Service
-    public static final String ATTR_NATURE = "nature";
-    public static final String ATTR_FUR_COLOR = "fur-color";
-    public static final String ATTR_FUR_LENGTH = "fur-length";
-    public static final String ATTR_SIZE = "size";
+    public static final String ATTR_SPECIE = "nature/species";
+    public static final String ATTR_SUBSPECIE = "nature/sub-species";
+    public static final String ATTR_FUR_COLOR = "fur-colors";
+    public static final String ATTR_FUR_LENGTH = "fur-lengths";
+    public static final String ATTR_SIZE = "sizes";
 
     //API SymLink
-    public static final String ATTR_NATURE_SYMLINK = "name";
+    public static final String ATTR_SPECIE_SYMLINK = "name";
+    public static final String ATTR_SUBSPECIE_SYMLINK = "name";
     public static final String ATTR_FUR_COLOR_SYMLINK = "fur_color";
     public static final String ATTR_FUR_LENGTH_SYMLINK = "fur_length";
     public static final String ATTR_SIZE_SYMLINK = "size";

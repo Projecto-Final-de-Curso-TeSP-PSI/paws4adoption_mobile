@@ -190,7 +190,6 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     }
 
 
-
     //############################################# DB ACCESS METHODS ##################################################
 
     //################ ORGANIZATIONS ################
@@ -586,9 +585,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * Get's all attributes from the API
      * @param context
      */
-    public void getAttributes(final Context context, final String attributeType, final String attSymLink){
-
-
+    public void getAttributesAPI(final Context context, final String attributeType, final String attSymLink){
 
         if(!FortuneTeller.isThereInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();

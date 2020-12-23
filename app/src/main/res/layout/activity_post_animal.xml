@@ -69,40 +69,40 @@ android:orientation="vertical">
             android:padding="20dp" />
 
         <Spinner
-            android:id="@+id/spinnerNature"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"/>
+            android:id="@+id/spNature"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinnerBreed"/>
+            android:id="@+id/spBreed"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinnerFurLenght"/>
+            android:id="@+id/spFurLenght"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinnerFurColor"/>
+            android:id="@+id/spFurColor"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinnerSize"/>
+            android:id="@+id/spSize"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/spinnerSex"/>
+            android:id="@+id/spSex"/>
 
 
         <ImageView

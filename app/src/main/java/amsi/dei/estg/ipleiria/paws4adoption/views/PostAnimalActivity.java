@@ -23,29 +23,48 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import org.w3c.dom.Attr;
+
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
+import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
+import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.services.FetchAddressIntentService;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 
-public class PostAnimalActivity extends AppCompatActivity {
+public class PostAnimalActivity extends AppCompatActivity implements AttributeListener {
 
     private static final int GALLERY_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
@@ -54,6 +73,26 @@ public class PostAnimalActivity extends AppCompatActivity {
     private ImageView ivPhoto;
     private Button btnUploadPhoto;
     private Button btnLocation;
+
+
+    ArrayAdapter<Attribute> dataAdapterNature;
+    private Spinner spNature;
+
+    ArrayAdapter<Attribute> dataAdapterBreed;
+    private Spinner spBreed;
+
+    ArrayAdapter<Attribute> dataAdapterFurLength;
+    private Spinner spFurLength;
+
+    ArrayAdapter<Attribute> dataAdapterFurColor;
+    private Spinner spFurColor;
+
+    ArrayAdapter<Attribute> dataAdapterSize;
+    private Spinner spSize;
+
+    ArrayAdapter<Attribute> dataAdapterSex;
+    private Spinner spSex;
+
 
     private EditText etNome;
     private EditText etIdChip;
@@ -76,6 +115,24 @@ public class PostAnimalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_post_animal);
 
         ivPhoto = findViewById(R.id.ivPhoto);
+
+        spNature = findViewById(R.id.spNature);
+        spBreed = findViewById(R.id.spBreed);
+        spFurLength = findViewById(R.id.spFurLenght);
+        spFurColor = findViewById(R.id.spFurColor);
+        spSize = findViewById(R.id.spSize);
+
+        spSex = findViewById(R.id.spSex);
+
+        tvLat = findViewById(R.id.tvLat);
+        tvLong = findViewById(R.id.tvLong);
+        tvAddress = findViewById(R.id.tvAddress);
+
+        SingletonPawsManager.getInstance(getApplicationContext()).setAttributeListener(this);
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK);
+        //SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_BREED, RockChisel.ATTR_BREED_SYMLINK);
+
+
 
         btnUploadPhoto = findViewById(R.id.btnUpload);
         btnUploadPhoto.setOnClickListener(new View.OnClickListener() {
@@ -156,9 +213,7 @@ public class PostAnimalActivity extends AppCompatActivity {
         });
 
 
-        tvLat = findViewById(R.id.tvLat);
-        tvLong = findViewById(R.id.tvLong);
-        tvAddress = findViewById(R.id.tvAddress);
+
 
         resultReceiver = new AddressResultReceiver(new Handler());
     }
@@ -316,6 +371,62 @@ public class PostAnimalActivity extends AppCompatActivity {
                 break;
             case LOCATION_REQUEST:
                 //getLocation();
+                break;
+        }
+    }
+
+    @Override
+    public void onReceivedAttributes(ArrayList<Attribute> attributes, String attributeType) {
+        Attribute promt = null;
+
+        switch(attributeType){
+            case RockChisel.ATTR_SPECIE:
+
+                dataAdapterNature = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, attributes);
+                promt = new Attribute(0, "Selecione a espécie");
+                dataAdapterNature.add(promt);
+                dataAdapterNature.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spNature.setAdapter(dataAdapterNature);
+                spNature.setSelection(dataAdapterNature.getPosition(promt));
+                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_LENGTH, RockChisel.ATTR_FUR_LENGTH_SYMLINK);
+                break;
+
+            case RockChisel.ATTR_SUBSPECIE:
+                dataAdapterBreed = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, attributes);
+                promt = new Attribute(0, "Selecione a sub espécie");
+                dataAdapterBreed.add(promt);
+                dataAdapterBreed.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spBreed.setAdapter(dataAdapterBreed);
+                spBreed.setSelection(dataAdapterBreed.getPosition(promt));
+                break;
+
+            case RockChisel.ATTR_FUR_LENGTH:
+                dataAdapterFurLength = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, attributes);
+                promt = new Attribute(0, "Selecione o tipo de pelagem");
+                dataAdapterFurLength.add(promt);
+                dataAdapterFurLength.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spFurLength.setAdapter(dataAdapterFurLength);
+                spFurLength.setSelection(dataAdapterFurLength.getPosition(promt));
+                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_COLOR, RockChisel.ATTR_FUR_COLOR_SYMLINK);
+                break;
+
+            case RockChisel.ATTR_FUR_COLOR:
+                dataAdapterFurColor = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, attributes);
+                promt = new Attribute(0, "Selecione a cor da pelagem");
+                dataAdapterFurColor.add(promt);
+                dataAdapterFurColor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spFurColor.setAdapter(dataAdapterFurColor);
+                spFurColor.setSelection(dataAdapterFurColor.getPosition(promt));
+                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SIZE, RockChisel.ATTR_SIZE_SYMLINK);
+                break;
+
+            case RockChisel.ATTR_SIZE:
+                dataAdapterSize = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, attributes);
+                promt = new Attribute(0, "Selecione o porte");
+                dataAdapterSize.add(promt);
+                dataAdapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spSize.setAdapter(dataAdapterSize);
+                spSize.setSelection(dataAdapterSize.getPosition(promt));
                 break;
         }
     }
