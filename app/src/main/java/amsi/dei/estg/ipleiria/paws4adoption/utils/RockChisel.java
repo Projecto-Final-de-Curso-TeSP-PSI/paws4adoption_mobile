@@ -6,7 +6,6 @@ package amsi.dei.estg.ipleiria.paws4adoption.utils;
  */
 public class RockChisel {
 
-
     //Package related constants
     private static final String PACKAGE_NAME = "amsi.dei.estg.ipleiria.paws4adoption";
 
@@ -32,4 +31,18 @@ public class RockChisel {
     public static final int INSERT_DB = 1;
     public static final int UPDATE_DB = 2;
     public static final int DELETE_BD = 3;
+
+    //Attributes related constants
+
+    //API Service
+    public static final String ATTR_NATURE = "nature";
+    public static final String ATTR_FUR_COLOR = "fur-color";
+    public static final String ATTR_FUR_LENGTH = "fur-length";
+    public static final String ATTR_SIZE = "size";
+
+    //API SymLink
+    public static final String ATTR_NATURE_SYMLINK = "name";
+    public static final String ATTR_FUR_COLOR_SYMLINK = "fur_color";
+    public static final String ATTR_FUR_LENGTH_SYMLINK = "fur_length";
+    public static final String ATTR_SIZE_SYMLINK = "size";
 }

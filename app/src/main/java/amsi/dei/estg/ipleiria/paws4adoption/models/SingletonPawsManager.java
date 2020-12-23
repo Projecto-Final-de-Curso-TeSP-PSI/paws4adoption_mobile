@@ -1,14 +1,11 @@
 package amsi.dei.estg.ipleiria.paws4adoption.models;
 
-import android.content.ContentValues;
 import android.content.Context;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 //import java.util.Base64;
 import android.util.Base64;
 
-import android.media.MediaSync;
 import android.os.Build;
 import android.widget.Toast;
 
@@ -25,10 +22,12 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.OrganizationsListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
@@ -52,6 +51,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     //DB list's declaration
     ArrayList<Organization> organizations;
     ArrayList<Animal> animals;
+    ArrayList<Attribute> attributes;
 
     //Volley static queue
     private static RequestQueue volleyQueue = null;
@@ -61,6 +61,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     UserProfileListener userProfileListener;
     OrganizationsListener organizationsListener;
     AnimalListener animalListener;
+    AttributeListener attributeListener;
 
     //BD Helper's declaration
     OrganizationsDBHelper organizationsDBHelper = null;
@@ -96,7 +97,6 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     }
 
 
-
     //############################################# LISTENERS IMPLEMENTATION ##################################################
 
     /**
@@ -115,7 +115,6 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     public void setUserProfileListener(UserProfileListener userProfileListener){
         this.userProfileListener = userProfileListener;
     }
-
 
     //################ ORGANIZATIONS ################
 
@@ -147,7 +146,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 break;
         }
     }
+
     //################ ANIMAL ################
+
     /**
      * Method for register the animal listener
      *
@@ -176,6 +177,18 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 break;
         }
     }
+
+    //################ ATTRIBUTES ################
+
+    /**
+     * Method for register the attribute listener
+     * @param attributeListener
+     */
+    public void setAttributeListener(AttributeListener attributeListener){
+        this.attributeListener = attributeListener;
+    }
+
+
 
     //############################################# DB ACCESS METHODS ##################################################
 
@@ -410,9 +423,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Erro na resposta", Toast.LENGTH_SHORT).show();
 
-                    System.out.println("--> Organizations: " + error.getStackTrace());
+                    System.out.println("--> Organizations: " + Arrays.toString(error.getStackTrace()));
                 }
             });
             volleyQueue.add(request);
@@ -566,6 +579,44 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
         }
     }
 
+    //################ ANIMAL ################
+
+    /**
+     * Get's all attributes from the API
+     * @param context
+     */
+    public void getAttributes(final Context context, final String attributeType, final String attSymLink){
+
+
+
+        if(!FortuneTeller.isThereInternetConnection(context)){
+            Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
+
+            //TODO: a implementar o que fazer se não houver net
+
+        } else{
+            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, API_LOCAL_URL + attributeType, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    attributes = JsonParser.toAttributes(response, attSymLink);
+
+                    if (attributeListener != null) {
+                        attributeListener.onReceivedAttributes(attributes, attributeType);
+                    }
+
+                    System.out.println("--> Attributes: " + response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    System.out.println("--> Attributes: " + error.getStackTrace());
+                }
+            });
+            volleyQueue.add(request);
+        }
+    }
 
     //################ LOGIN ################
 
