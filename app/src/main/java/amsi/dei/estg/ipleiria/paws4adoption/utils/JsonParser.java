@@ -515,19 +515,18 @@ public class JsonParser {
     /**
      * Get's a Json response with all attributes and parses to an attributes object's list
      * @param response received from json
-     * @param attId id of the attribute
-     * @param attName name of the attribute
+     * @param attSymLink name of the attribute over the json response
      * @return attributes list
      */
-    public static ArrayList<Attribute> toAttributes(JSONArray response, String attId, String attName){
+    public static ArrayList<Attribute> toAttributes(JSONArray response, String attSymLink){
         ArrayList<Attribute> attributesList= new ArrayList<>();
 
         try{
             for(int i = 0; i < response.length(); i++){
 
                 JSONObject attributes = (JSONObject) response.get(i);
-                Integer id =  Wrench.purifyInteger(attributes.getString(attId));
-                String name =  Wrench.purifyString(attributes.getString(attName));
+                Integer id =  Wrench.purifyInteger(attributes.getString("id"));
+                String name =  Wrench.purifyString(attributes.getString(attSymLink));
 
                 Attribute auxAttribute = new Attribute(id, name);
 
