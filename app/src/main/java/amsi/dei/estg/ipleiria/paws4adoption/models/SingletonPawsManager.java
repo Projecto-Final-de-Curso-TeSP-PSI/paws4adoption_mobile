@@ -9,6 +9,7 @@ import android.util.Base64;
 import android.os.Build;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.volley.AuthFailureError;
@@ -585,7 +586,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * Get's all attributes from the API
      * @param context
      */
-    public void getAttributesAPI(final Context context, final String attributeType, final String attSymLink){
+    public void getAttributesAPI(final Context context, final String attributeType, final String attSymLink, final @Nullable Integer id){
 
         if(!FortuneTeller.isThereInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
@@ -593,7 +594,8 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             //TODO: a implementar o que fazer se não houver net
 
         } else{
-            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, API_LOCAL_URL + attributeType, null, new Response.Listener<JSONArray>() {
+            String jsonRequest = API_LOCAL_URL + attributeType + (id == null ? "" : "/" + id);
+            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, jsonRequest, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
                     attributes = JsonParser.toAttributes(response, attSymLink);

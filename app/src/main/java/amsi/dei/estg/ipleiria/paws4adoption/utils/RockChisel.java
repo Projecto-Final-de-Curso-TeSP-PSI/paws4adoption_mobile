@@ -26,7 +26,7 @@ public class RockChisel {
     public static final String TOKEN = "token";
 
     //Database related constants
-    public static final int DB_VERSION =1;
+    public static final int DB_VERSION = 1;
     public static final String DB_NAME = "paws4adoptionDB";
     public static final int INSERT_DB = 1;
     public static final int UPDATE_DB = 2;
@@ -35,8 +35,8 @@ public class RockChisel {
     //Attributes related constants
 
     //API Service
-    public static final String ATTR_SPECIE = "nature/species";
-    public static final String ATTR_SUBSPECIE = "nature/sub-species";
+    public static final String ATTR_SPECIE = "natures/species";
+    public static final String ATTR_SUBSPECIE = "natures/sub-species";
     public static final String ATTR_FUR_COLOR = "fur-colors";
     public static final String ATTR_FUR_LENGTH = "fur-lengths";
     public static final String ATTR_SIZE = "sizes";
@@ -47,4 +47,11 @@ public class RockChisel {
     public static final String ATTR_FUR_COLOR_SYMLINK = "fur_color";
     public static final String ATTR_FUR_LENGTH_SYMLINK = "fur_length";
     public static final String ATTR_SIZE_SYMLINK = "size";
+
+    //Scenarios
+    public static final String SCENARIO_MISSING_ANIMAL = "missingAnimal";
+    public static final String SCENARIO_FOUND_ANIMAL = "foundAnimal";
+
+
+
 }

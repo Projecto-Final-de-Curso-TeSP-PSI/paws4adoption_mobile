@@ -103,8 +103,11 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 break;
             case R.id.navPostWanderingAnimal:
                 intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_FOUND_ANIMAL);
                 break;
             case R.id.navPostLostAnimal:
+                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MISSING_ANIMAL);
                 break;
             case R.id.navLogin:
                 if(FortuneTeller.isThereLoggedUser(getApplicationContext())){
