@@ -66,7 +66,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     AttributeListener attributeListener;
 
     //BD Helper's declaration
-    OrganizationsDBHelper organizationsDBHelper = null;
+    OrganizationsDBHelper organizationsDBHelper;
 
     //Endpoints for requests
     private static final String mUrlAPILogin = API_LOCAL_URL + "users/token";
@@ -578,7 +578,206 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             });
             volleyQueue.add(request);
         }
+
     }
+
+    /**
+     * Send's a request to the API to insert an animal
+     * @param animal to inserted on the API
+     * @param apiService specific animal service on the API
+     * @param context
+     */
+    public void insertAnimalAPI(final Animal animal, final String apiService, final Context context){
+
+        StringRequest request = new StringRequest(Request.Method.POST, mUrlAPIAnimals + "/" + apiService,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Animal auxAnimal = null;
+
+                        switch (apiService){
+                            case RockChisel.MISSING_ANIMALS_API_SERVICE:
+                                auxAnimal = JsonParser.missingAnimalToAnimal(response);
+                                break;
+                            case RockChisel.FOUND_ANIMALS_API_SERVICE:
+                                auxAnimal = JsonParser.missingAnimalToAnimal(response);
+                                break;
+                        }
+
+                        onUpdateAnimalsList(auxAnimal, RockChisel.INSERT_DB);
+
+                        //TODO: send to my list animals
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", "" + animal.getId());
+                params.put("nature_id", "" + animal.getNature_id());
+                params.put("nature_parent_id", "" + animal.getNature_parent_id());
+                params.put("fur_length_id", "" + animal.getFur_length_id());
+                params.put("fur_color_id", "" + animal.getFur_color_id());
+                params.put("size_id", "" + animal.getSize_id());
+                params.put("photo", "" + animal.getPhoto());
+                params.put("publisher_id", "" + animal.getPublisher_id());
+                params.put("organization_id", "" + animal.getOrganization_id());
+                params.put("organization_nif", "" + animal.getOrganization_nif());
+                params.put("organization_district_id", "" + animal.getOrganization_district_id());
+                params.put("organization_address_id", "" + animal.getOrganization_address_id());
+                params.put("organization_postal_code", "" + animal.getOrganization_postal_code());
+                params.put("organization_street_code", "" + animal.getOrganization_street_code());
+                params.put("foundAnimal_location_id", "" + animal.getFoundAnimal_location_id());
+                params.put("foundAnimal_district_id", "" + animal.getFoundAnimal_district_id());
+                params.put("is_fat;", "" + animal.getIs_fat());
+
+                params.put("chipId", "" + animal.getChipId());
+                params.put("description", "" + animal.getDescription());
+                params.put("nature_name", "" + animal.getNature_name());
+                params.put("nature_parent_name", "" + animal.getNature_parent_name());
+                params.put("fur_length", "" + animal.getFur_length());
+                params.put("fur_color", "" + animal.getFur_color());
+                params.put("size", "" + animal.getSize());
+                params.put("sex", "" + animal.getSex());
+                params.put("name", "" + animal.getName());
+                params.put("type", "" + animal.getType());
+                params.put("createAt", "" + animal.getCreateAt());
+                params.put("publisher_name", "" + animal.getPublisher_name());
+                params.put("missingFound_date", "" + animal.getMissingFound_date());
+                params.put("organization_name", "" + animal.getOrganization_name());
+                params.put("organization_email", "" + animal.getOrganization_email());
+                params.put("organization_street", "" + animal.getOrganization_street());
+                params.put("organization_city", "" + animal.getOrganization_city());
+                params.put("organization_district_name", "" + animal.getOrganization_district_name());
+                params.put("foundAnimal_street", "" + animal.getFoundAnimal_street());
+                params.put("foundAnimal_city", "" + animal.getFoundAnimal_city());
+                params.put("foundAnimal_district_name", "" + animal.getFoundAnimal_district_name());
+                params.put("organization_door_number", "" + animal.getOrganization_door_number());
+                params.put("organization_floor;", "" + animal.getOrganization_floor());
+
+                return params;
+            }
+        };
+        volleyQueue.add(request);
+    }
+
+    /**
+     * Send's a request to the API to insert an animal
+     * @param animal to inserted on the API
+     * @param apiService specific animal service on the API
+     * @param context
+     */
+    public void updateAnimalAPI(final Animal animal, final String apiService, final Context context){
+
+        StringRequest request = new StringRequest(Request.Method.PUT, mUrlAPIAnimals + "/" + apiService + "/" + animal.getId(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Animal auxAnimal = null;
+
+                        switch (apiService){
+                            case RockChisel.MISSING_ANIMALS_API_SERVICE:
+                                auxAnimal = JsonParser.missingAnimalToAnimal(response);
+                                break;
+                            case RockChisel.FOUND_ANIMALS_API_SERVICE:
+                                auxAnimal = JsonParser.missingAnimalToAnimal(response);
+                                break;
+
+                        }
+                        onUpdateAnimalsList(auxAnimal, RockChisel.UPDATE_DB);
+
+                        //TODO: update my animals list
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", "" + animal.getId());
+                params.put("nature_id", "" + animal.getNature_id());
+                params.put("nature_parent_id", "" + animal.getNature_parent_id());
+                params.put("fur_length_id", "" + animal.getFur_length_id());
+                params.put("fur_color_id", "" + animal.getFur_color_id());
+                params.put("size_id", "" + animal.getSize_id());
+                params.put("photo", "" + animal.getPhoto());
+                params.put("publisher_id", "" + animal.getPublisher_id());
+                params.put("organization_id", "" + animal.getOrganization_id());
+                params.put("organization_nif", "" + animal.getOrganization_nif());
+                params.put("organization_district_id", "" + animal.getOrganization_district_id());
+                params.put("organization_address_id", "" + animal.getOrganization_address_id());
+                params.put("organization_postal_code", "" + animal.getOrganization_postal_code());
+                params.put("organization_street_code", "" + animal.getOrganization_street_code());
+                params.put("foundAnimal_location_id", "" + animal.getFoundAnimal_location_id());
+                params.put("foundAnimal_district_id", "" + animal.getFoundAnimal_district_id());
+                params.put("is_fat;", "" + animal.getIs_fat());
+
+                params.put("chipId", "" + animal.getChipId());
+                params.put("description", "" + animal.getDescription());
+                params.put("nature_name", "" + animal.getNature_name());
+                params.put("nature_parent_name", "" + animal.getNature_parent_name());
+                params.put("fur_length", "" + animal.getFur_length());
+                params.put("fur_color", "" + animal.getFur_color());
+                params.put("size", "" + animal.getSize());
+                params.put("sex", "" + animal.getSex());
+                params.put("name", "" + animal.getName());
+                params.put("type", "" + animal.getType());
+                params.put("createAt", "" + animal.getCreateAt());
+                params.put("publisher_name", "" + animal.getPublisher_name());
+                params.put("missingFound_date", "" + animal.getMissingFound_date());
+                params.put("organization_name", "" + animal.getOrganization_name());
+                params.put("organization_email", "" + animal.getOrganization_email());
+                params.put("organization_street", "" + animal.getOrganization_street());
+                params.put("organization_city", "" + animal.getOrganization_city());
+                params.put("organization_district_name", "" + animal.getOrganization_district_name());
+                params.put("foundAnimal_street", "" + animal.getFoundAnimal_street());
+                params.put("foundAnimal_city", "" + animal.getFoundAnimal_city());
+                params.put("foundAnimal_district_name", "" + animal.getFoundAnimal_district_name());
+                params.put("organization_door_number", "" + animal.getOrganization_door_number());
+                params.put("organization_floor;", "" + animal.getOrganization_floor());
+
+                return params;
+            }
+        };
+        volleyQueue.add(request);
+    }
+
+    /**
+     * Send a request to the API to delete an animal
+     * @param animal
+     * @param apiService
+     * @param context
+     */
+    public void deleteOrganizationAPI(final Animal animal, final String apiService, final Context context){
+        StringRequest request = new StringRequest(Request.Method.DELETE, mUrlAPIAnimals + "/" + apiService + "/" + animal.getId(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        onUpdateAnimalsList(animal, RockChisel.DELETE_BD);
+
+                        //TODO: update my list animals
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        volleyQueue.add(request);
+    }
+
 
     //################ ANIMAL ################
 

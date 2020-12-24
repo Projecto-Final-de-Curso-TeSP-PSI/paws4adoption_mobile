@@ -34,12 +34,15 @@ public class RockChisel {
 
     //Attributes related constants
 
-    //API Service
+    //API Services
     public static final String ATTR_SPECIE = "natures/species";
     public static final String ATTR_SUBSPECIE = "natures/sub-species";
     public static final String ATTR_FUR_COLOR = "fur-colors";
     public static final String ATTR_FUR_LENGTH = "fur-lengths";
     public static final String ATTR_SIZE = "sizes";
+
+    public static final String MISSING_ANIMALS_API_SERVICE = "missing-animals";
+    public static final String FOUND_ANIMALS_API_SERVICE = "found-animals";
 
     //API SymLink
     public static final String ATTR_SPECIE_SYMLINK = "name";
@@ -49,9 +52,13 @@ public class RockChisel {
     public static final String ATTR_SIZE_SYMLINK = "size";
 
     //Scenarios
+    public static final String SCENARIO_ADOPTION_ANIMAL = "adoptionAnimal";
     public static final String SCENARIO_MISSING_ANIMAL = "missingAnimal";
     public static final String SCENARIO_FOUND_ANIMAL = "foundAnimal";
 
-
+    //Animal types
+    public static final String ADOPTION_ANIMAL = "adoptionAnimal";
+    public static final String MISSING_ANIMAL = "missingAnimal";
+    public static final String FOUNDANIMAL = "foundAnimal";
 
 }

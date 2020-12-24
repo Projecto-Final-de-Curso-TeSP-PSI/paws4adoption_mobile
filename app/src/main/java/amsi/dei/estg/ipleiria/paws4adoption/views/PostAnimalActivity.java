@@ -40,6 +40,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.w3c.dom.Attr;
 
@@ -59,6 +60,7 @@ import java.util.Map;
 import java.util.Set;
 
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
+import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
@@ -76,7 +78,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     private ImageView ivPhoto;
     private Button btnUploadPhoto;
     private Button btnLocation;
-
+    private FloatingActionButton fab;
 
     ArrayAdapter<Attribute> dataAdapterNature;
     private Spinner spNature;
@@ -210,6 +212,39 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
+            }
+        });
+
+        fab = findViewById(R.id.fabSubmit);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animal animal = new Animal();
+
+                animal.setName(etNome.getText());
+                animal.setChipId();
+                animal.setDescription();
+                animal.setNature_id();
+                animal.setFur_length_id();
+                animal.setFur_color_id();
+                animal.setSize_id();
+                animal.setSex();
+                animal.setPhoto();
+
+                switch(getIntent().getStringExtra(SCENARIO)){
+                    case RockChisel.SCENARIO_MISSING_ANIMAL:
+                        animal.setMissingFound_date();
+
+                        break;
+                    case RockChisel.SCENARIO_FOUND_ANIMAL:
+                        animal.setFoundAnimal_street();
+                        animal.setFoundAnimal_city();
+                        animal.setFoundAnimal_district_id();
+
+                        break;
+                }
+
+                SingletonPawsManager.getInstance(getApplicationContext()).insertAnimalAPI(animal, RockChisel.MISSING_ANIMALS_API_SERVICE, getApplicationContext());
             }
         });
 
