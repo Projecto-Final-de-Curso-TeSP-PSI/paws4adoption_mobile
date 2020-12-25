@@ -71,38 +71,44 @@ android:orientation="vertical">
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spNature"/>
+            android:layout_height="20dp"
+            android:id="@+id/spNature"
+            android:prompt="Selecione a espécie"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spBreed"/>
+            android:layout_height="20dp"
+            android:id="@+id/spBreed"
+            android:prompt="Selecione a sub-espécie"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spFurLenght"/>
+            android:layout_height="20dp"
+            android:id="@+id/spFurLenght"
+            android:prompt="Selecione o tipo de pêlo"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spFurColor"/>
+            android:layout_height="20dp"
+            android:id="@+id/spFurColor"
+            android:prompt="Selecione a côr do pêlo"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spSize"/>
+            android:layout_height="20dp"
+            android:id="@+id/spSize"
+            android:prompt="Selecione o porte"/>
 
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spSex"/>
+            android:layout_height="20dp"
+            android:id="@+id/spSex"
+            android:prompt="Selecione o sexo"/>
 
 
         <ImageView
@@ -140,21 +146,57 @@ android:orientation="vertical">
                 android:id="@+id/tvLong"/>
 
         </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:layout_marginTop="10dp"
-            android:id="@+id/tvAddress"/>
 
-        <EditText
+        <LinearLayout
+            android:id="@+id/llMissingAnimal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="datetime"
-            android:padding="20dp"
-            android:layout_marginTop="10dp"
-            android:hint="@string/date"
-            android:id="@+id/etDate"/>
+            android:orientation="vertical">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="datetime"
+                android:padding="20dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/date"
+                android:id="@+id/etDate"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llFoundAnimal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:padding="20dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/insert_name"
+                android:id="@+id/etName"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:padding="20dp"
+                android:layout_marginTop="10dp"
+                android:hint="@string/id_chip"
+                android:id="@+id/etChipId"/>
+
+            <Spinner
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:id="@+id/spDistrict"
+                android:prompt="Selecione o distrito"/>
+
+
+        </LinearLayout>
 
     </LinearLayout>
 

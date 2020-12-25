@@ -99,8 +99,8 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     private Spinner spSex;
 
 
-    private EditText etNome;
-    private EditText etIdChip;
+    private EditText etName;
+    private EditText etChipId;
     private EditText etDescription;
 
     private TextView tvLat;
@@ -122,6 +122,10 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         loadPageBits(getIntent().getStringExtra(SCENARIO));
 
         ivPhoto = findViewById(R.id.ivPhoto);
+
+        etName = findViewById(R.id.etName);
+        etChipId = findViewById(R.id.etChipId);
+        etDescription = findViewById(R.id.etDescription);
 
         spNature = findViewById(R.id.spNature);
         spNature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -148,7 +152,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         spFurLength = findViewById(R.id.spFurLenght);
         spFurColor = findViewById(R.id.spFurColor);
         spSize = findViewById(R.id.spSize);
-
         spSex = findViewById(R.id.spSex);
 
         tvLat = findViewById(R.id.tvLat);
@@ -219,30 +222,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Animal animal = new Animal();
 
-                animal.setName(etNome.getText());
-                animal.setChipId();
-                animal.setDescription();
-                animal.setNature_id();
-                animal.setFur_length_id();
-                animal.setFur_color_id();
-                animal.setSize_id();
-                animal.setSex();
-                animal.setPhoto();
-
-                switch(getIntent().getStringExtra(SCENARIO)){
-                    case RockChisel.SCENARIO_MISSING_ANIMAL:
-                        animal.setMissingFound_date();
-
-                        break;
-                    case RockChisel.SCENARIO_FOUND_ANIMAL:
-                        animal.setFoundAnimal_street();
-                        animal.setFoundAnimal_city();
-                        animal.setFoundAnimal_district_id();
-
-                        break;
-                }
 
                 SingletonPawsManager.getInstance(getApplicationContext()).insertAnimalAPI(animal, RockChisel.MISSING_ANIMALS_API_SERVICE, getApplicationContext());
             }
@@ -510,19 +490,101 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         Attribute promptObject = new Attribute(-1, promptMessage);
         if(listAttributes == null){
             ArrayList<Attribute> auxListAttributes= new ArrayList<>();
-            auxListAttributes.add(promptObject);
+            //auxListAttributes.add(promptObject);
             spinnerArrayAdapter = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, auxListAttributes);
         }
         else{
             spinnerArrayAdapter = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, listAttributes);
-            listAttributes.add(promptObject);
+            //listAttributes.add(promptObject);
             spinnerArrayAdapter.add(promptObject);
         }
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerArrayAdapter);
         spinner.setSelection(spinnerArrayAdapter.getPosition(promptObject));
+
+
+        spinner.setPromptId(-1);
+        spinner.setPrompt(promptMessage);
     }
 
+    public Attribute getAttribute(String atributeType){
+        Animal animal = new Animal();
+
+        String name = etName.getText().toString();
+        if(name.length() < 5){
+            etName.setError("Introduza um nome válido (mínimo 2 letras)");
+            return null;
+        }
+
+        String chipId = etChipId.getText().toString();
+        if(chipId.length() != 15){
+            etChipId.setError("Introduza um chip id válido (15 dígitos))");
+            return null;
+        }
+
+        String description = etChipId.getText().toString();
+        if(description.length() < 10){
+            etChipId.setError("Introduza uma descrição válida (min. 10 caracteres))");
+            return null;
+        }
+
+        Attribute specie = (Attribute)spNature.getSelectedItem();
+        if(specie.getId() == -1){
+            Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        Attribute subSpecie = (Attribute)spBreed.getSelectedItem();
+        if(subSpecie.getId() == -1){
+            Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        Attribute furColor = (Attribute)spFurColor.getSelectedItem();
+        if(furColor.getId() == -1){
+            return null;
+        }
+
+        Attribute furLength = (Attribute)spFurLength.getSelectedItem();
+        if(furLength.getId() == -1){
+            return null;
+        }
+
+        Attribute size = (Attribute)spSize.getSelectedItem();
+        if(size.getId() == -1){
+            return null;
+        }
+
+        Attribute sex = (Attribute)spSex.getSelectedItem();
+        if(sex.getId() == -1){
+            return null;
+        }
+
+        animal.setName(name);
+        animal.setChipId(chipId);
+        animal.setDescription(description);
+        animal.setNature_id(specie.getId());
+        animal.setFur_length_id(subSpecie.getId());
+        animal.setFur_color_id(furColor.getId());
+        animal.setSize_id(size.getId());
+        animal.setSex(sex.getName());
+        //animal.setPhoto();
+
+        switch(getIntent().getStringExtra(SCENARIO)){
+            case RockChisel.SCENARIO_MISSING_ANIMAL:
+
+                animal.setMissingFound_date();
+
+                break;
+            case RockChisel.SCENARIO_FOUND_ANIMAL:
+                animal.setFoundAnimal_street();
+                animal.setFoundAnimal_city();
+                animal.setFoundAnimal_district_id();
+
+                break;
+        }
+
+    }
 
 }
 
