@@ -2,10 +2,12 @@ package amsi.dei.estg.ipleiria.paws4adoption.utils;
 
 import android.graphics.Bitmap;
 import android.util.Base64;
+import android.widget.DatePicker;
 
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.api.Api;
 
+import java.util.Calendar;
 import java.util.Optional;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -66,6 +68,19 @@ public class Wrench {
      */
     public static String encode(String before, String str, String after) {
             return (before == null ? "" : before) + (str == null ? "" : str)  + (after == null ? "" : after);
+    }
+
+
+
+    public static Date getDateFromDatePicker(DatePicker datePicker){
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year =  datePicker.getYear();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+
+        return calendar.getTime();
     }
 
 }

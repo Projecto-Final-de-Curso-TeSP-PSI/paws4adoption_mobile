@@ -40,6 +40,8 @@ public class RockChisel {
     public static final String ATTR_FUR_COLOR = "fur-colors";
     public static final String ATTR_FUR_LENGTH = "fur-lengths";
     public static final String ATTR_SIZE = "sizes";
+    public static final String ATTR_DISTRICT = "districts";
+
 
     public static final String MISSING_ANIMALS_API_SERVICE = "missing-animals";
     public static final String FOUND_ANIMALS_API_SERVICE = "found-animals";
@@ -50,11 +52,16 @@ public class RockChisel {
     public static final String ATTR_FUR_COLOR_SYMLINK = "fur_color";
     public static final String ATTR_FUR_LENGTH_SYMLINK = "fur_length";
     public static final String ATTR_SIZE_SYMLINK = "size";
+    public static final String ATTR_DISTRICT_SYMLINK = "name";
 
     //Scenarios
     public static final String SCENARIO_ADOPTION_ANIMAL = "adoptionAnimal";
     public static final String SCENARIO_MISSING_ANIMAL = "missingAnimal";
     public static final String SCENARIO_FOUND_ANIMAL = "foundAnimal";
+
+    //Actions
+    public static final String ACTION_CREATE = "create";
+    public static final String ACTION_UPDATE = "update";
 
     //Animal types
     public static final String ADOPTION_ANIMAL = "adoptionAnimal";

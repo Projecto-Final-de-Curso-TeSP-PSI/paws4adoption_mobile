@@ -23,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -426,7 +427,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 public void onErrorResponse(VolleyError error) {
                     Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
 
-                    System.out.println("--> Organizations: " + error.getStackTrace());
+                    System.out.println("--> Organizations: " + Arrays.toString(error.getStackTrace()));
                 }
             });
             volleyQueue.add(request);

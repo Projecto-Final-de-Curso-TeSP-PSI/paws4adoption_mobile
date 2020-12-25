@@ -91,24 +91,32 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         switch (menuItem .getItemId()) {
             case R.id.navHome:
                 break;
+
             case R.id.navSearchAnimals:
                 fragment = new ListAdoptionAnimalsFragment();
                 setTitle(menuItem.getTitle());
                 break;
+
             case R.id.navSearchAssociations:
                 fragment = new ListOrganizationsFragment();
                 setTitle(menuItem.getTitle());
                 break;
+
             case R.id.navMyAnimals:
                 break;
+
             case R.id.navPostWanderingAnimal:
                 intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
                 intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_FOUND_ANIMAL);
+                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
                 break;
+
             case R.id.navPostLostAnimal:
                 intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
                 intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MISSING_ANIMAL);
+                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
                 break;
+
             case R.id.navLogin:
                 if(FortuneTeller.isThereLoggedUser(getApplicationContext())){
                     Vault.clearPreferences(getApplicationContext(), RockChisel.USER_PREFERENCES);
