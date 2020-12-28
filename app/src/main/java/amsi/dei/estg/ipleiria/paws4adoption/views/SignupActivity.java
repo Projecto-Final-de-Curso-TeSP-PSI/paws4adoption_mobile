@@ -17,7 +17,6 @@ public class SignupActivity extends AppCompatActivity {
 
     private ImageView iv;
     private EditText usernameTxt, emailTxt, passwordTxt;
-    private Button btnContinuar;
 
 
     @Override
@@ -34,7 +33,6 @@ public class SignupActivity extends AppCompatActivity {
         usernameTxt = findViewById(R.id.etUsername);
         emailTxt = findViewById(R.id.etEmail);
         passwordTxt = findViewById(R.id.etPassword);
-        btnContinuar = findViewById(R.id.btnContinuar);
     }
 
     private boolean isEmailValido(String email) {
