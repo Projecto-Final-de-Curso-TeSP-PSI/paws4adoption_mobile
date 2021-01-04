@@ -36,6 +36,8 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.UploadPhotoListener;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.JsonParser;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
+import amsi.dei.estg.ipleiria.paws4adoption.views.MenuMainActivity;
 
 public class SingletonPawsManager implements OrganizationsListener, AnimalListener{
 
@@ -74,6 +76,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     private static final String mUrlAPIUserProfile = API_LOCAL_URL + "users";
     private static final String mUrlAPIOrganizations = API_LOCAL_URL + "organizations";
     private static final String mUrlAPIAnimals = API_LOCAL_URL + "animals";
+    private static final String mUrlAPIMissingAnimals = API_LOCAL_URL + "missing-animals";
+    private static final String mUrlAPIFoundAnimal = API_LOCAL_URL + "found-animals";
+
 
     /**
      * Gets the one and only instance of the singleton
@@ -588,9 +593,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param apiService specific animal service on the API
      * @param context
      */
-    public void insertAnimalAPI(final Animal animal, final String apiService, final Context context){
+    public void insertAnimalAPI(final Animal animal, final String apiService, final String token, final Context context){
 
-        StringRequest request = new StringRequest(Request.Method.POST, mUrlAPIAnimals + "/" + apiService,
+        StringRequest request = new StringRequest(Request.Method.POST, API_LOCAL_URL + apiService,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -613,54 +618,46 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        String errormessage = error.getMessage();
                         Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 })
         {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Bearer "+ token);
+                return headers;
+            }
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("id", "" + animal.getId());
+
+                params.put("name", "" + animal.getName());
+                params.put("chipId", "" + animal.getChipId());
+                params.put("description", "" + animal.getDescription());
                 params.put("nature_id", "" + animal.getNature_id());
-                params.put("nature_parent_id", "" + animal.getNature_parent_id());
                 params.put("fur_length_id", "" + animal.getFur_length_id());
                 params.put("fur_color_id", "" + animal.getFur_color_id());
                 params.put("size_id", "" + animal.getSize_id());
-                params.put("photo", "" + animal.getPhoto());
-                params.put("publisher_id", "" + animal.getPublisher_id());
-                params.put("organization_id", "" + animal.getOrganization_id());
-                params.put("organization_nif", "" + animal.getOrganization_nif());
-                params.put("organization_district_id", "" + animal.getOrganization_district_id());
-                params.put("organization_address_id", "" + animal.getOrganization_address_id());
-                params.put("organization_postal_code", "" + animal.getOrganization_postal_code());
-                params.put("organization_street_code", "" + animal.getOrganization_street_code());
-                params.put("foundAnimal_location_id", "" + animal.getFoundAnimal_location_id());
-                params.put("foundAnimal_district_id", "" + animal.getFoundAnimal_district_id());
-                params.put("is_fat;", "" + animal.getIs_fat());
-
-                params.put("chipId", "" + animal.getChipId());
-                params.put("description", "" + animal.getDescription());
-                params.put("nature_name", "" + animal.getNature_name());
-                params.put("nature_parent_name", "" + animal.getNature_parent_name());
-                params.put("fur_length", "" + animal.getFur_length());
-                params.put("fur_color", "" + animal.getFur_color());
-                params.put("size", "" + animal.getSize());
                 params.put("sex", "" + animal.getSex());
-                params.put("name", "" + animal.getName());
-                params.put("type", "" + animal.getType());
-                params.put("createAt", "" + animal.getCreateAt());
-                params.put("publisher_name", "" + animal.getPublisher_name());
-                params.put("missingFound_date", "" + animal.getMissingFound_date());
-                params.put("organization_name", "" + animal.getOrganization_name());
-                params.put("organization_email", "" + animal.getOrganization_email());
-                params.put("organization_street", "" + animal.getOrganization_street());
-                params.put("organization_city", "" + animal.getOrganization_city());
-                params.put("organization_district_name", "" + animal.getOrganization_district_name());
-                params.put("foundAnimal_street", "" + animal.getFoundAnimal_street());
-                params.put("foundAnimal_city", "" + animal.getFoundAnimal_city());
-                params.put("foundAnimal_district_name", "" + animal.getFoundAnimal_district_name());
-                params.put("organization_door_number", "" + animal.getOrganization_door_number());
-                params.put("organization_floor;", "" + animal.getOrganization_floor());
+                //params.put("photo", "" + animal.getPhoto());
+
+
+                switch(apiService){
+                    case RockChisel.MISSING_ANIMALS_API_SERVICE:
+                        params.put("missing_date", "" + animal.getMissingFound_date());
+                        break;
+                    case RockChisel.FOUND_ANIMALS_API_SERVICE:
+                        params.put("found_date", "" + animal.getMissingFound_date());
+                        params.put("street", "" + animal.getFoundAnimal_street());
+                        params.put("city", "" + animal.getFoundAnimal_city());
+                        params.put("district_id", "" + animal.getFoundAnimal_district_id());
+                        break;
+                }
 
                 return params;
             }
@@ -676,7 +673,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      */
     public void updateAnimalAPI(final Animal animal, final String apiService, final Context context){
 
-        StringRequest request = new StringRequest(Request.Method.PUT, mUrlAPIAnimals + "/" + apiService + "/" + animal.getId(),
+        StringRequest request = new StringRequest(Request.Method.PUT, API_LOCAL_URL + "/" + apiService + "/" + animal.getId(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -761,7 +758,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param context
      */
     public void deleteOrganizationAPI(final Animal animal, final String apiService, final Context context){
-        StringRequest request = new StringRequest(Request.Method.DELETE, mUrlAPIAnimals + "/" + apiService + "/" + animal.getId(),
+        StringRequest request = new StringRequest(Request.Method.DELETE, API_LOCAL_URL + "/" + apiService + "/" + animal.getId(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -794,7 +791,14 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             //TODO: a implementar o que fazer se não houver net
 
         } else{
-            String jsonRequest = API_LOCAL_URL + attributeType + (id == null ? "" : "/" + id);
+
+            String jsonRequest = null;
+            if(attributeType.equals(RockChisel.ATTR_SUBSPECIE)){
+                jsonRequest = API_LOCAL_URL + RockChisel.ATTR_SPECIE + "/" + id + "/" + RockChisel.ATTR_SUBSPECIE;
+            } else{
+                jsonRequest = API_LOCAL_URL + attributeType;
+            }
+
             JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, jsonRequest, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
@@ -839,7 +843,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, "Erro de login", Toast.LENGTH_SHORT).show();
+                        loginListener.onInvalidLogin();
                         error.getStackTrace();
                     }
                 })

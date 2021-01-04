@@ -24,6 +24,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
 public class MenuMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static String token;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private FragmentManager fragmentManager;

@@ -35,8 +35,8 @@ public class RockChisel {
     //Attributes related constants
 
     //API Services
-    public static final String ATTR_SPECIE = "natures/species";
-    public static final String ATTR_SUBSPECIE = "natures/sub-species";
+    public static final String ATTR_SPECIE = "species";
+    public static final String ATTR_SUBSPECIE = "sub-species";
     public static final String ATTR_FUR_COLOR = "fur-colors";
     public static final String ATTR_FUR_LENGTH = "fur-lengths";
     public static final String ATTR_SIZE = "sizes";

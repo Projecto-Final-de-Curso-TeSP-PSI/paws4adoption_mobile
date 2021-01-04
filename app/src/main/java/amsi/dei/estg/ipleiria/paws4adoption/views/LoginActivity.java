@@ -97,6 +97,11 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         }
     }
 
+    @Override
+    public void onInvalidLogin() {
+        etPassword.setError("username ou password inválidos");
+    }
+
     public void onClickSignup(View view) {
         Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
         startActivity(intent);

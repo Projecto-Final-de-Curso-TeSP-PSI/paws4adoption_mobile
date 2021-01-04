@@ -5,4 +5,5 @@ package amsi.dei.estg.ipleiria.paws4adoption.listeners;
  */
 public interface LoginListener {
     void onValidLogin(String token, String username);
+    void onInvalidLogin();
 }

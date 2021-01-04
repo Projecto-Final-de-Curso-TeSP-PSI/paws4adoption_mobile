@@ -176,7 +176,7 @@
                     android:inputType="textPersonName"
                     android:padding="20dp"
                     android:layout_marginTop="10dp"
-                    android:hint="loca"
+                    android:hint="@string/insert_city"
                     android:id="@+id/etLocationCity"
                     android:autofillHints="no" />
 

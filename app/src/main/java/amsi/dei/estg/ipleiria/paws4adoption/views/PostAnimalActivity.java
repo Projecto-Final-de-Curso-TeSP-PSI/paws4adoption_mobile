@@ -50,6 +50,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
@@ -57,8 +58,9 @@ import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.services.FetchAddressIntentService;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
-public class PostAnimalActivity extends AppCompatActivity implements AttributeListener {
+public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, AnimalListener {
 
     private static final int GALLERY_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
@@ -257,16 +259,18 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             @Override
             public void onClick(View view) {
 
-                if(!getValidatedAnimal()){
+                if(!validateAnimal()){
                     return;
                 }
 
                 switch(scenario){
                     case RockChisel.SCENARIO_MISSING_ANIMAL:
-                        SingletonPawsManager.getInstance(getApplicationContext()).insertAnimalAPI(newAnimalPost, RockChisel.MISSING_ANIMALS_API_SERVICE, getApplicationContext());
+                        SingletonPawsManager.getInstance(getApplicationContext())
+                                .insertAnimalAPI(newAnimalPost, RockChisel.MISSING_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()),  getApplicationContext());
                         break;
                     case RockChisel.SCENARIO_FOUND_ANIMAL:
-                        SingletonPawsManager.getInstance(getApplicationContext()).insertAnimalAPI(newAnimalPost, RockChisel.FOUND_ANIMALS_API_SERVICE, getApplicationContext());
+                        SingletonPawsManager.getInstance(getApplicationContext())
+                                .insertAnimalAPI(newAnimalPost, RockChisel.FOUND_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()), getApplicationContext());
                         break;
                 }
             }
@@ -502,6 +506,16 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     }
 
+    @Override
+    public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
+
+    }
+
+    @Override
+    public void onUpdateAnimalsList(Animal animal, int operation) {
+
+    }
+
     private class AddressResultReceiver extends ResultReceiver{
 
         public AddressResultReceiver(Handler handler){
@@ -554,24 +568,31 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         spinner.setSelection(spinnerArrayAdapter.getPosition(promptObject));
     }
 
-    public boolean getValidatedAnimal() {
+    public boolean validateAnimal() {
 
         try{
-            String name = etName.getText().toString();
-            if(name.length() < 5){
-                etName.setError("Introduza um nome válido (mínimo 2 letras)");
-                return false;
-            }
 
-            String chipId = etChipId.getText().toString();
-            if(chipId.length() != 15){
-                etChipId.setError("Introduza um chip id válido (15 dígitos))");
-                return false;
+            String name = null;
+            String chipId = null;
+
+            if(scenario.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
+
+                name = etName.getText().toString();
+                if (name.length() < 5) {
+                    etName.setError("Introduza um nome válido (mínimo 2 letras)");
+                    return false;
+                }
+
+                chipId = etChipId.getText().toString();
+                if (chipId.length() != 15) {
+                    etChipId.setError("Introduza um chip id válido (15 dígitos))");
+                    return false;
+                }
             }
 
             String description = etDescription.getText().toString();
             if(description.length() < 10){
-                etChipId.setError("Introduza uma descrição válida (min. 10 caracteres))");
+                etDescription.setError("Introduza uma descrição válida (min. 10 caracteres))");
                 return false;
             }
 
@@ -637,7 +658,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             //animal.setPhoto();
 
             if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
-
                 String locationStreet = etLocationStreet.getText().toString();
                 if(name.length() < 5){
                     etName.setError("Introduza uma rua válida (mínimo 2 letras)");
@@ -659,6 +679,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 newAnimalPost.setFoundAnimal_city(location_city);
                 newAnimalPost.setFoundAnimal_district_id(location_district.getId());
             }
+
         } catch(Exception e){
             return false;
         }
