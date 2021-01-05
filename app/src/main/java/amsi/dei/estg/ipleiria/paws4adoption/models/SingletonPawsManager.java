@@ -51,7 +51,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     //private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
     //private static final String COMPUTER_LOCAL_IP = "192.168.1.65";
 //    private static final String COMPUTER_LOCAL_IP = "192.168.42.129";
-    private static final String COMPUTER_LOCAL_IP = "10.0.211.189";
+    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
 
 
     //private static final String COMPUTER_LOCAL_IP = "localhost";
@@ -615,18 +615,18 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
         JSONObject params = new JSONObject();
 
         try{
-            if(Wrench.isNotNull(animal.getName()))
-                params.put("name", "" + Wrench.purifyString(animal.getName()));
 
-            if(Wrench.isNotNull(animal.getChipId()))
-                params.put("chipId", "" + Wrench.purifyInteger(animal.getChipId()));
+                params.put("name", animal.getName());
 
-            params.put("description", "" + animal.getDescription());
-            params.put("nature_id", "" + animal.getNature_id());
-            params.put("fur_length_id", "" + animal.getFur_length_id());
-            params.put("fur_color_id", "" + animal.getFur_color_id());
-            params.put("size_id", "" + animal.getSize_id());
-            params.put("sex", "" + animal.getSex());
+
+                params.put("chipId", animal.getChipId());
+
+            params.put("description", animal.getDescription());
+            params.put("nature_id", animal.getNature_id());
+            params.put("fur_length_id", animal.getFur_length_id());
+            params.put("fur_color_id", animal.getFur_color_id());
+            params.put("size_id", animal.getSize_id());
+            params.put("sex", animal.getSex());
             //params.put("photo", "" + animal.getPhoto());
 
             switch(apiService){
@@ -635,9 +635,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     break;
                 case RockChisel.FOUND_ANIMALS_API_SERVICE:
                     params.put("found_date", "20201220");
-                    params.put("street", "" + animal.getFoundAnimal_street());
-                    params.put("city", "" + animal.getFoundAnimal_city());
-                    params.put("district_id", "" + animal.getFoundAnimal_district_id());
+                    params.put("street", animal.getFoundAnimal_street());
+                    params.put("city", animal.getFoundAnimal_city());
+                    params.put("district_id", animal.getFoundAnimal_district_id());
                     break;
             }
         } catch (JSONException e) {
@@ -657,7 +657,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                                 auxAnimal[0] = JsonParser.missingAnimalToAnimal(response);
                                 break;
                             case RockChisel.FOUND_ANIMALS_API_SERVICE:
-                                auxAnimal[0] = JsonParser.missingAnimalToAnimal(response);
+                                auxAnimal[0] = JsonParser.foundAnimalToAnimal(response);
                                 break;
                         }
 

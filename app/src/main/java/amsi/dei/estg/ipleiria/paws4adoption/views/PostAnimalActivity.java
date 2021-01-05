@@ -386,7 +386,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             newAnimalPost.setChipId(chipId);
             newAnimalPost.setDescription(description);
             newAnimalPost.setNature_id(subSpecie.getId());
-            newAnimalPost.setFur_length_id(subSpecie.getId());
+            newAnimalPost.setFur_length_id(furLength.getId());
             newAnimalPost.setFur_color_id(furColor.getId());
             newAnimalPost.setSize_id(size.getId());
             newAnimalPost.setSex(sex.getName());

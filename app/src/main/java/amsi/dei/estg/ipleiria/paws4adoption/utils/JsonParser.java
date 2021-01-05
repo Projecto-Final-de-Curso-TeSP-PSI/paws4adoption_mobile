@@ -34,24 +34,24 @@ public class JsonParser {
             for(int i = 0; i < response.length(); i++){
 
                 JSONObject organization = (JSONObject) response.get(i);
-                Integer id =  Wrench.purifyInteger(organization.getString("id"));
-                String name =  Wrench.purifyString(organization.getString("name"));
-                String nif =  Wrench.purifyString(organization.getString("nif"));
-                String email =  Wrench.purifyString(organization.getString("email"));
-                String phone =  Wrench.purifyString(organization.getString("phone"));
+                Integer id =  organization.getInt("id");
+                String name =  organization.getString("name");
+                String nif =  organization.getString("nif");
+                String email =  organization.getString("email");
+                String phone =  organization.getString("phone");
 
                 JSONObject address = organization.getJSONObject("address");
-                Integer address_id =  Wrench.purifyInteger(address.getString("id"));
-                String street =  Wrench.purifyString(address.getString("street"));
-                String door_number =  Wrench.purifyString(address.getString("door_number"));
-                String floor = Wrench.purifyString(address.getString("floor"));
-                Integer postal_code =  Wrench.purifyInteger(address.getString("postal_code"));
-                Integer street_code =  Wrench.purifyInteger(address.getString("street_code"));
-                String city =  Wrench.purifyString(address.getString("city"));
+                Integer address_id =  address.getInt("id");
+                String street =  address.getString("street");
+                String door_number =  address.getString("door_number");
+                String floor = address.getString("floor");
+                Integer postal_code =  address.getInt("postal_code");
+                Integer street_code =  address.getInt("street_code");
+                String city =  address.getString("city");
 
                 JSONObject district = address.getJSONObject("district");
-                Integer district_id =  Wrench.purifyInteger(district.getString("id"));
-                String district_name =  Wrench.purifyString(district.getString("name"));
+                Integer district_id =  district.getInt("id");
+                String district_name =  district.getString("name");
 
                 Organization auxOrg = new Organization(id, name, nif, email, phone, address_id, street, door_number, floor, postal_code, street_code, city, district_id, district_name);
 
@@ -77,23 +77,23 @@ public class JsonParser {
 
             JSONObject organization = new JSONObject(response);
             int id =  organization.getInt("id");
-            String name =  Wrench.purifyString(organization.getString("name"));
-            String nif =  Wrench.purifyString(organization.getString("nif"));
-            String email =  Wrench.purifyString(organization.getString("email"));
-            String phone =  Wrench.purifyString(organization.getString("phone"));
+            String name =  organization.getString("name");
+            String nif =  organization.getString("nif");
+            String email =  organization.getString("email");
+            String phone =  organization.getString("phone");
 
             JSONObject address = organization.getJSONObject("address");
             Integer address_id =  address.getInt("id");
-            String street =  Wrench.purifyString(address.getString("street"));
-            String door_number =  Wrench.purifyString(address.getString("door_number"));
-            String floor = Wrench.purifyString(address.getString("floor"));
+            String street =  address.getString("street");
+            String door_number =  address.getString("door_number");
+            String floor = address.getString("floor");
             Integer postal_code =  address.getInt("postal_code");
             Integer street_code =  address.getInt("street_code");
-            String city =  Wrench.purifyString(address.getString("city"));
+            String city =  address.getString("city");
 
             JSONObject district = address.getJSONObject("district");
             Integer district_id =  district.getInt("id");
-            String district_name =  Wrench.purifyString(district.getString("name"));
+            String district_name =  district.getString("name");
 
             auxOrg = new Organization(id, name, nif, email, phone, address_id, street, door_number, floor, postal_code, street_code, city, district_id, district_name);
 
@@ -116,34 +116,34 @@ public class JsonParser {
             for(int i = 0; i < response.length(); i++){
                 JSONObject animal = (JSONObject) response.get(i);
 
-                Integer id = Wrench.purifyInteger(animal.getString("id"));
-                String name = Wrench.purifyString(animal.getString("name"));
-                String chipId = Wrench.purifyString(animal.getString("chipId"));
+                Integer id = animal.getInt("id");
+                String name = animal.getString("name");
+                String chipId = animal.getString("chipId");
 
                 JSONObject nature = animal.getJSONObject("nature");
-                Integer nature_id = Wrench.purifyInteger(nature.getString("id"));
-                String nature_name = Wrench.purifyString(nature.getString("name"));
-                Integer nature_parent_id = Wrench.purifyInteger(nature.getString("parent_nature_id"));
-                String nature_parent_name = Wrench.purifyString(nature.getString("nameByParentId"));
+                Integer nature_id = nature.getInt("id");
+                String nature_name = nature.getString("name");
+                Integer nature_parent_id = nature.getInt("parent_nature_id");
+                String nature_parent_name = nature.getString("nameByParentId");
 
                 JSONObject fur_length = animal.getJSONObject("furLength");
-                Integer fur_length_id = Wrench.purifyInteger(fur_length.getString("id"));
-                String fur_length_name = Wrench.purifyString(fur_length.getString("fur_length"));
+                Integer fur_length_id = fur_length.getInt("id");
+                String fur_length_name = fur_length.getString("fur_length");
 
                 JSONObject fur_color = animal.getJSONObject("furColor");
-                Integer fur_color_id = Wrench.purifyInteger(fur_color.getString("id"));
-                String fur_color_name = Wrench.purifyString(fur_color.getString("fur_color"));
+                Integer fur_color_id = fur_color.getInt("id");
+                String fur_color_name = fur_color.getString("fur_color");
 
                 JSONObject size = animal.getJSONObject("size");
-                Integer size_id = Wrench.purifyInteger(size.getString("id"));
-                String size_name = Wrench.purifyString(size.getString("size"));
+                Integer size_id = size.getInt("id");
+                String size_name = size.getString("size");
 
-                String sex = Wrench.purifyString(animal.getString("sex"));
-                String description = Wrench.purifyString(animal.getString("description"));
-                String createAt = Wrench.purifyString(animal.getString("createdAt"));
+                String sex = animal.getString("sex");
+                String description = animal.getString("description");
+                String createAt = animal.getString("createdAt");
                 Integer photo = null;
 
-                String type = Wrench.purifyString(animal.getString("type"));
+                String type = animal.getString("type");
 
                 Integer is_fat = null;
                 String missingFound_date = null;
@@ -171,58 +171,58 @@ public class JsonParser {
                 switch(Objects.requireNonNull(type)){
                     case "adoptionAnimal":
                         JSONObject adoptionAnimal = animal.getJSONObject("adoptionAnimal");
-                        is_fat = Wrench.purifyInteger(adoptionAnimal.getString("is_on_fat"));
+                        is_fat = adoptionAnimal.getInt("is_on_fat");
 
 
                         JSONObject associatedUser = adoptionAnimal.getJSONObject("associatedUser");
-                        publisher_id = Wrench.purifyInteger(associatedUser.getString("id"));
-                        publisher_name = Wrench.purifyString(associatedUser.getString("fullName"));
+                        publisher_id = associatedUser.getInt("id");
+                        publisher_name = associatedUser.getString("fullName");
 
                         JSONObject organization = adoptionAnimal.getJSONObject("organization");
-                        organization_name = Wrench.purifyString(organization.getString("name"));
-                        organization_id = Wrench.purifyInteger(organization.getString("id"));
-                        organization_nif = Wrench.purifyInteger(organization.getString("nif"));
-                        organization_email = Wrench.purifyString(organization.getString("email"));
+                        organization_name = organization.getString("name");
+                        organization_id = organization.getInt("id");
+                        organization_nif = organization.getInt("nif");
+                        organization_email = organization.getString("email");
 
                         JSONObject address = organization.getJSONObject("address");
-                        organization_address_id = Wrench.purifyInteger(address.getString("id"));
-                        organization_street = Wrench.purifyString(address.getString("street"));
-                        organization_door_number = Wrench.purifyString(address.getString("door_number"));
-                        organization_floor = Wrench.purifyString(address.getString("floor"));
-                        organization_city = Wrench.purifyString(address.getString("city"));
-                        organization_postal_code = Wrench.purifyInteger(address.getString("postal_code"));
-                        organization_street_code = Wrench.purifyInteger(address.getString("street_code"));
+                        organization_address_id = address.getInt("id");
+                        organization_street = address.getString("street");
+                        organization_door_number = address.getString("door_number");
+                        organization_floor = address.getString("floor");
+                        organization_city = address.getString("city");
+                        organization_postal_code = address.getInt("postal_code");
+                        organization_street_code = address.getInt("street_code");
 
                         JSONObject district = address.getJSONObject("district");
-                        organization_district_id = Wrench.purifyInteger(district.getString("id"));
-                        organization_district_name = Wrench.purifyString(district.getString("name"));
+                        organization_district_id = district.getInt("id");
+                        organization_district_name = district.getString("name");
 
                         break;
                     case "missingAnimal":
                         JSONObject missingAnimal = animal.getJSONObject("missingAnimal");
-                        missingFound_date = Wrench.purifyString(missingAnimal.getString("missing_date"));
+                        missingFound_date = missingAnimal.getString("missing_date");
 
                         JSONObject owner = missingAnimal.getJSONObject("owner");
-                        publisher_id = Wrench.purifyInteger(owner.getString("id"));
-                        publisher_name = Wrench.purifyString(owner.getString("fullName"));
+                        publisher_id = owner.getInt("id");
+                        publisher_name = owner.getString("fullName");
                         break;
 
                     case "foundAnimal":
                         JSONObject foundAnimal = animal.getJSONObject("foundAnimal");
-                        missingFound_date = Wrench.purifyString(foundAnimal.getString("found_date"));
+                        missingFound_date = foundAnimal.getString("found_date");
 
                         JSONObject location = foundAnimal.getJSONObject("location");
-                        foundAnimal_location_id = Wrench.purifyInteger(location.getString("id"));
-                        foundAnimal_street = Wrench.purifyString(location.getString("street"));
-                        foundAnimal_city = Wrench.purifyString(location.getString("city"));
+                        foundAnimal_location_id = location.getInt("id");
+                        foundAnimal_street = location.getString("street");
+                        foundAnimal_city = location.getString("city");
 
                         JSONObject districtFound = location.getJSONObject("district");
-                        foundAnimal_district_id = Wrench.purifyInteger(districtFound.getString("id"));
-                        foundAnimal_district_name = Wrench.purifyString(districtFound.getString("name"));
+                        foundAnimal_district_id = districtFound.getInt("id");
+                        foundAnimal_district_name = districtFound.getString("name");
 
                         JSONObject user = foundAnimal.getJSONObject("user");
-                        publisher_id = Wrench.purifyInteger(user.getString("id"));
-                        publisher_name = Wrench.purifyString(user.getString("fullName"));
+                        publisher_id = user.getInt("id");
+                        publisher_name = user.getString("fullName");
                         break;
                 }
 
@@ -242,34 +242,34 @@ public class JsonParser {
         try{
                 JSONObject animal = new JSONObject(response);
 
-                Integer id = Wrench.purifyInteger(animal.getString("id"));
-                String name = Wrench.purifyString(animal.getString("name"));
-                String chipId = Wrench.purifyString(animal.getString("chipId"));
+                Integer id = animal.getInt("id");
+                String name = animal.getString("name");
+                String chipId = animal.getString("chipId");
 
                 JSONObject nature = animal.getJSONObject("nature");
-                Integer nature_id = Wrench.purifyInteger(nature.getString("id"));
-                String nature_name = Wrench.purifyString(nature.getString("name"));
-                Integer nature_parent_id = Wrench.purifyInteger(nature.getString("parent_nature_id"));
-                String nature_parent_name = Wrench.purifyString(nature.getString("nameByParentId"));
+                Integer nature_id = nature.getInt("id");
+                String nature_name = nature.getString("name");
+                Integer nature_parent_id = nature.getInt("parent_nature_id");
+                String nature_parent_name = nature.getString("nameByParentId");
 
                 JSONObject fur_length = animal.getJSONObject("furLength");
-                Integer fur_length_id = Wrench.purifyInteger(fur_length.getString("id"));
-                String fur_length_name = Wrench.purifyString(fur_length.getString("fur_length"));
+                Integer fur_length_id = fur_length.getInt("id");
+                String fur_length_name = fur_length.getString("fur_length");
 
                 JSONObject fur_color = animal.getJSONObject("furColor");
-                Integer fur_color_id = Wrench.purifyInteger(fur_color.getString("id"));
-                String fur_color_name = Wrench.purifyString(fur_color.getString("fur_color"));
+                Integer fur_color_id = fur_color.getInt("id");
+                String fur_color_name = fur_color.getString("fur_color");
 
                 JSONObject size = animal.getJSONObject("size");
-                Integer size_id = Wrench.purifyInteger(size.getString("id"));
-                String size_name = Wrench.purifyString(size.getString("size"));
+                Integer size_id = size.getInt("id");
+                String size_name = size.getString("size");
 
-                String sex = Wrench.purifyString(animal.getString("sex"));
-                String description = Wrench.purifyString(animal.getString("description"));
-                String createAt = Wrench.purifyString(animal.getString("createdAt"));
+                String sex = animal.getString("sex");
+                String description = animal.getString("description");
+                String createAt = animal.getString("createdAt");
                 Integer photo = null;
 
-                String type = Wrench.purifyString(animal.getString("type"));
+                String type = animal.getString("type");
 
                 Integer is_fat = null;
                 String missingFound_date = null;
@@ -297,58 +297,58 @@ public class JsonParser {
                 switch(Objects.requireNonNull(type)){
                     case "adoptionAnimal":
                         JSONObject adoptionAnimal = animal.getJSONObject("adoptionAnimal");
-                        is_fat = Wrench.purifyInteger(adoptionAnimal.getString("is_on_fat"));
+                        is_fat = adoptionAnimal.getInt("is_on_fat");
 
 
                         JSONObject associatedUser = adoptionAnimal.getJSONObject("associatedUser");
-                        publisher_id = Wrench.purifyInteger(associatedUser.getString("id"));
-                        publisher_name = Wrench.purifyString(associatedUser.getString("fullName"));
+                        publisher_id = associatedUser.getInt("id");
+                        publisher_name = associatedUser.getString("fullName");
 
                         JSONObject organization = adoptionAnimal.getJSONObject("organization");
-                        organization_name = Wrench.purifyString(organization.getString("name"));
-                        organization_id = Wrench.purifyInteger(organization.getString("id"));
-                        organization_nif = Wrench.purifyInteger(organization.getString("nif"));
-                        organization_email = Wrench.purifyString(organization.getString("email"));
+                        organization_name = organization.getString("name");
+                        organization_id = organization.getInt("id");
+                        organization_nif = organization.getInt("nif");
+                        organization_email = organization.getString("email");
 
                         JSONObject address = organization.getJSONObject("address");
-                        organization_address_id = Wrench.purifyInteger(address.getString("id"));
-                        organization_street = Wrench.purifyString(address.getString("street"));
-                        organization_door_number = Wrench.purifyString(address.getString("door_number"));
-                        organization_floor = Wrench.purifyString(address.getString("floor"));
-                        organization_city = Wrench.purifyString(address.getString("city"));
-                        organization_postal_code = Wrench.purifyInteger(address.getString("postal_code"));
-                        organization_street_code = Wrench.purifyInteger(address.getString("street_code"));
+                        organization_address_id = address.getInt("id");
+                        organization_street = address.getString("street");
+                        organization_door_number = address.getString("door_number");
+                        organization_floor = address.getString("floor");
+                        organization_city = address.getString("city");
+                        organization_postal_code = address.getInt("postal_code");
+                        organization_street_code = address.getInt("street_code");
 
                         JSONObject district = address.getJSONObject("district");
-                        organization_district_id = Wrench.purifyInteger(district.getString("id"));
-                        organization_district_name = Wrench.purifyString(district.getString("name"));
+                        organization_district_id = district.getInt("id");
+                        organization_district_name = district.getString("name");
 
                         break;
                     case "missingAnimal":
                         JSONObject missingAnimal = animal.getJSONObject("missingAnimal");
-                        missingFound_date = Wrench.purifyString(missingAnimal.getString("missing_date"));
+                        missingFound_date = missingAnimal.getString("missing_date");
 
                         JSONObject owner = missingAnimal.getJSONObject("owner");
-                        publisher_id = Wrench.purifyInteger(owner.getString("id"));
-                        publisher_name = Wrench.purifyString(owner.getString("fullName"));
+                        publisher_id = owner.getInt("id");
+                        publisher_name = owner.getString("fullName");
                         break;
 
                     case "foundAnimal":
                         JSONObject foundAnimal = animal.getJSONObject("foundAnimal");
-                        missingFound_date = Wrench.purifyString(foundAnimal.getString("found_date"));
+                        missingFound_date = foundAnimal.getString("found_date");
 
                         JSONObject location = foundAnimal.getJSONObject("location");
-                        foundAnimal_location_id = Wrench.purifyInteger(location.getString("id"));
-                        foundAnimal_street = Wrench.purifyString(location.getString("street"));
-                        foundAnimal_city = Wrench.purifyString(location.getString("city"));
+                        foundAnimal_location_id = location.getInt("id");
+                        foundAnimal_street = location.getString("street");
+                        foundAnimal_city = location.getString("city");
 
                         JSONObject districtFound = location.getJSONObject("district");
-                        foundAnimal_district_id = Wrench.purifyInteger(districtFound.getString("id"));
-                        foundAnimal_district_name = Wrench.purifyString(districtFound.getString("name"));
+                        foundAnimal_district_id = districtFound.getInt("id");
+                        foundAnimal_district_name = districtFound.getString("name");
 
                         JSONObject user = foundAnimal.getJSONObject("user");
-                        publisher_id = Wrench.purifyInteger(user.getString("id"));
-                        publisher_name = Wrench.purifyString(user.getString("fullName"));
+                        publisher_id = user.getInt("id");
+                        publisher_name = user.getString("fullName");
                         break;
                 }
 
@@ -399,38 +399,38 @@ public class JsonParser {
             String organization_district_name = null;
 
             //JSONObject missingAnimal = new JSONObject(response);
-            missingFound_date = Wrench.purifyString(missingAnimal.getString("missing_date"));
+            missingFound_date = missingAnimal.getString("missing_date");
 
             JSONObject owner = missingAnimal.getJSONObject("owner");
-            publisher_id = Wrench.purifyInteger(owner.getString("id"));
-            publisher_name = Wrench.purifyString(owner.getString("fullName"));
+            publisher_id = owner.getInt("id");
+            publisher_name = owner.getString("fullName");
 
             JSONObject animal = missingAnimal.getJSONObject("animal");
-            Integer id = Wrench.purifyInteger(animal.getString("id"));
-            String name = Wrench.purifyString(animal.getString("name"));
-            String chipId = Wrench.purifyString(animal.getString("chipId"));
+            Integer id = animal.getInt("id");
+            String name = animal.getString("name");
+            String chipId = animal.getString("chipId");
 
             JSONObject nature = animal.getJSONObject("nature");
-            Integer nature_id = Wrench.purifyInteger(nature.getString("id"));
-            String nature_name = Wrench.purifyString(nature.getString("name"));
-            Integer nature_parent_id = Wrench.purifyInteger(nature.getString("parent_nature_id"));
-            String nature_parent_name = Wrench.purifyString(nature.getString("nameByParentId"));
+            Integer nature_id = nature.getInt("id");
+            String nature_name = nature.getString("name");
+            Integer nature_parent_id = nature.getInt("parent_nature_id");
+            String nature_parent_name = nature.getString("nameByParentId");
 
             JSONObject fur_length = animal.getJSONObject("furLength");
-            Integer fur_length_id = Wrench.purifyInteger(fur_length.getString("id"));
-            String fur_length_name = Wrench.purifyString(fur_length.getString("fur_length"));
+            Integer fur_length_id = fur_length.getInt("id");
+            String fur_length_name = fur_length.getString("fur_length");
 
             JSONObject fur_color = animal.getJSONObject("furColor");
-            Integer fur_color_id = Wrench.purifyInteger(fur_color.getString("id"));
-            String fur_color_name = Wrench.purifyString(fur_color.getString("fur_color"));
+            Integer fur_color_id = fur_color.getInt("id");
+            String fur_color_name = fur_color.getString("fur_color");
 
             JSONObject size = animal.getJSONObject("size");
-            Integer size_id = Wrench.purifyInteger(size.getString("id"));
-            String size_name = Wrench.purifyString(size.getString("size"));
+            Integer size_id = size.getInt("id");
+            String size_name = size.getString("size");
 
-            String sex = Wrench.purifyString(animal.getString("sex"));
-            String description = Wrench.purifyString(animal.getString("description"));
-            String createAt = Wrench.purifyString(animal.getString("createdAt"));
+            String sex = animal.getString("sex");
+            String description = animal.getString("description");
+            String createAt = animal.getString("createdAt");
             Integer photo = null;
 
             auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, is_fat, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
@@ -444,10 +444,10 @@ public class JsonParser {
 
     /**
      * Get a Json response and parses to an animal object
-     * @param response
+     * @param foundAnimal
      * @return
      */
-    public static Animal foundAnimalToAnimal(String response){
+    public static Animal foundAnimalToAnimal(JSONObject foundAnimal){
         Animal auxAnimal = null;
 
         try{
@@ -479,48 +479,47 @@ public class JsonParser {
             Integer organization_district_id = null;
             String organization_district_name = null;
 
-            JSONObject foundAnimal = new JSONObject(response);
-            missingFound_date = Wrench.purifyString(foundAnimal.getString("found_date"));
+            missingFound_date = foundAnimal.getString("found_date");
 
             JSONObject location = foundAnimal.getJSONObject("location");
-            foundAnimal_location_id = Wrench.purifyInteger(location.getString("id"));
-            foundAnimal_street = Wrench.purifyString(location.getString("street"));
-            foundAnimal_city = Wrench.purifyString(location.getString("city"));
+            foundAnimal_location_id = location.getInt("id");
+            foundAnimal_street = location.getString("street");
+            foundAnimal_city = location.getString("city");
 
             JSONObject districtFound = location.getJSONObject("district");
-            foundAnimal_district_id = Wrench.purifyInteger(districtFound.getString("id"));
-            foundAnimal_district_name = Wrench.purifyString(districtFound.getString("name"));
+            foundAnimal_district_id = districtFound.getInt("id");
+            foundAnimal_district_name = districtFound.getString("name");
 
             JSONObject user = foundAnimal.getJSONObject("user");
-            publisher_id = Wrench.purifyInteger(user.getString("id"));
-            publisher_name = Wrench.purifyString(user.getString("fullName"));
+            publisher_id = user.getInt("id");
+            publisher_name = user.getString("fullName");
 
             JSONObject animal = foundAnimal.getJSONObject(type);
-            Integer id = Wrench.purifyInteger(animal.getString("id"));
-            String name = Wrench.purifyString(animal.getString("name"));
-            String chipId = Wrench.purifyString(animal.getString("chipId"));
+            Integer id = animal.getInt("id");
+            String name = animal.getString("name");
+            String chipId = animal.getString("chipId");
 
             JSONObject nature = animal.getJSONObject("nature");
-            Integer nature_id = Wrench.purifyInteger(nature.getString("id"));
-            String nature_name = Wrench.purifyString(nature.getString("name"));
-            Integer nature_parent_id = Wrench.purifyInteger(nature.getString("parent_nature_id"));
-            String nature_parent_name = Wrench.purifyString(nature.getString("nameByParentId"));
+            Integer nature_id = nature.getInt("id");
+            String nature_name = nature.getString("name");
+            Integer nature_parent_id = nature.getInt("parent_nature_id");
+            String nature_parent_name = nature.getString("nameByParentId");
 
             JSONObject fur_length = animal.getJSONObject("furLength");
-            Integer fur_length_id = Wrench.purifyInteger(fur_length.getString("id"));
-            String fur_length_name = Wrench.purifyString(fur_length.getString("fur_length"));
+            Integer fur_length_id = fur_length.getInt("id");
+            String fur_length_name = fur_length.getString("fur_length");
 
             JSONObject fur_color = animal.getJSONObject("furColor");
-            Integer fur_color_id = Wrench.purifyInteger(fur_color.getString("id"));
-            String fur_color_name = Wrench.purifyString(fur_color.getString("fur_color"));
+            Integer fur_color_id = fur_color.getInt("id");
+            String fur_color_name = fur_color.getString("fur_color");
 
             JSONObject size = animal.getJSONObject("size");
-            Integer size_id = Wrench.purifyInteger(size.getString("id"));
-            String size_name = Wrench.purifyString(size.getString("size"));
+            Integer size_id = size.getInt("id");
+            String size_name = size.getString("size");
 
-            String sex = Wrench.purifyString(animal.getString("sex"));
-            String description = Wrench.purifyString(animal.getString("description"));
-            String createAt = Wrench.purifyString(animal.getString("createdAt"));
+            String sex = animal.getString("sex");
+            String description = animal.getString("description");
+            String createAt = animal.getString("createdAt");
             Integer photo = null;
 
         auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, is_fat, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
@@ -545,8 +544,8 @@ public class JsonParser {
             for(int i = 0; i < response.length(); i++){
 
                 JSONObject attributes = (JSONObject) response.get(i);
-                Integer id =  Wrench.purifyInteger(attributes.getString("id"));
-                String name =  Wrench.purifyString(attributes.getString(attSymLink));
+                Integer id =  attributes.getInt("id");
+                String name =  attributes.getString(attSymLink);
 
                 Attribute auxAttribute = new Attribute(id, name);
 
