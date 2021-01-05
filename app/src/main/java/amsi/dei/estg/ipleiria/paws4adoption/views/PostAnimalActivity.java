@@ -35,6 +35,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.Request;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -54,6 +55,7 @@ import java.util.List;
 
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.RequestListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
@@ -62,7 +64,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.services.FetchAddressIntentService;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
-public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, AnimalListener {
+public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, RequestListener {
 
     private static final int GALLERY_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
@@ -73,8 +75,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     public static final String ACTION = "action";
     private String action = "";
-
-    private Animal newAnimalPost;
 
     private LinearLayout llMissingAnimal;
     private LinearLayout llFoundAnimal;
@@ -134,9 +134,13 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         setScenario();
 
         SingletonPawsManager.getInstance(getApplicationContext()).setAttributeListener(this);
+        SingletonPawsManager.getInstance(getApplicationContext()).setRequestListener(this);
+
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
 
         resultReceiver = new AddressResultReceiver(new Handler());
+
+
     }
 
     private void importGraphicalElements() {
@@ -261,7 +265,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             @Override
             public void onClick(View view) {
 
-                if(!validateAnimal()){
+                Animal newAnimalPost = validateAnimal();
+                if( newAnimalPost == null){
+                    Toast.makeText(PostAnimalActivity.this, "Erro ao validar o animal", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -298,6 +304,125 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         });
     }
 
+    public Animal validateAnimal() {
+
+        Animal newAnimalPost = new Animal();
+        try{
+
+            String name = null;
+            String chipId = null;
+
+            if(scenario.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
+
+                name = etName.getText().toString();
+                if (name.length() < 5) {
+                    etName.setError("Introduza um nome válido (mínimo 2 letras)");
+                    return null;
+                }
+
+                chipId = etChipId.getText().toString();
+                if (chipId.length() != 15) {
+                    etChipId.setError("Introduza um chip id válido (15 dígitos))");
+                    return null;
+                }
+            }
+
+            String description = etDescription.getText().toString();
+            if(description.length() < 10){
+                etDescription.setError("Introduza uma descrição válida (min. 10 caracteres))");
+                return null;
+            }
+
+            Attribute specie = (Attribute)spNature.getSelectedItem();
+            if(specie.getId() == -1){
+                Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+
+            Attribute subSpecie = (Attribute)spBreed.getSelectedItem();
+            if(subSpecie.getId() == -1){
+                Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+
+            Attribute furColor = (Attribute)spFurColor.getSelectedItem();
+            if(furColor.getId() == -1){
+                return null;
+            }
+
+            Attribute furLength = (Attribute)spFurLength.getSelectedItem();
+            if(furLength.getId() == -1){
+                return null;
+            }
+
+            Attribute size = (Attribute)spSize.getSelectedItem();
+            if(size.getId() == -1){
+                return null;
+            }
+
+            Attribute sex = (Attribute)spSex.getSelectedItem();
+            if(sex.getId() == -1){
+                return null;
+            }
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date missingFoundDate;
+            String missingFoundDateStr = etMissingFoundDate.getText().toString();
+            try {
+                missingFoundDate = simpleDateFormat.parse(missingFoundDateStr);
+                System.out.println(missingFoundDate);
+            } catch (ParseException e) {
+                etMissingFoundDate.setError("Data inválida");
+                e.printStackTrace();
+                return null;
+            }
+
+            if(missingFoundDate.after(Calendar.getInstance().getTime())){
+                Toast.makeText(this, "A data não pode ser superior à atual", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+
+            newAnimalPost.setName(name);
+            newAnimalPost.setChipId(chipId);
+            newAnimalPost.setDescription(description);
+            newAnimalPost.setNature_id(subSpecie.getId());
+            newAnimalPost.setFur_length_id(subSpecie.getId());
+            newAnimalPost.setFur_color_id(furColor.getId());
+            newAnimalPost.setSize_id(size.getId());
+            newAnimalPost.setSex(sex.getName());
+            newAnimalPost.setMissingFound_date(missingFoundDate.toString());
+            //animal.setPhoto();
+
+            if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
+                String locationStreet = etLocationStreet.getText().toString();
+                if(locationStreet.length() < 5){
+                    etName.setError("Introduza uma rua válida (mínimo 2 letras)");
+                    return null;
+                }
+
+                String location_city = etLocationCity.getText().toString();
+                if(location_city.length() < 5){
+                    etName.setError("Introduza uma rua válida (mínimo 2 letras)");
+                    return null;
+                }
+
+                Attribute location_district = (Attribute)spLocationDistrict.getSelectedItem();
+                if(location_district.getId() == -1){
+                    return null;
+                }
+
+                newAnimalPost.setFoundAnimal_street(locationStreet);
+                newAnimalPost.setFoundAnimal_city(location_city);
+                newAnimalPost.setFoundAnimal_district_id(location_district.getId());
+            }
+
+        } catch(Exception e){
+            return null;
+        }
+
+        return newAnimalPost;
+    }
+
     /**
      * Method that implements changes to the current activity according the Scenario an Action intended
      */
@@ -312,6 +437,36 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 etMissingFoundDate.setHint("Data do avistamento");
                 llFoundAnimal.setVisibility(View.VISIBLE);
                 break;
+        }
+    }
+
+
+    //################ PHOTO ################
+
+    /**
+     * Launches the activity for the gallery pick
+     */
+    private void uploadPhotoGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(intent, GALLERY_REQUEST);
+    }
+
+    /**
+     * Lauches the activity for the camera photo shoot
+     */
+    private void takePhotoCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        if (photoFile != null) {
+            Uri photoURI = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(intent, CAMERA_REQUEST);
         }
     }
 
@@ -349,34 +504,27 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     }
 
     /**
-     * Launches teh activity for the gallery pick
+     * Creates one new temporary photo
+     * @return
+     * @throws IOException
      */
-    private void uploadPhotoGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-        startActivityForResult(intent, GALLERY_REQUEST);
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imgNomeFich = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                .getParentFile(),"Animals");
+        storageDir.mkdirs();
+        File image = File.createTempFile(imgNomeFich, ".jpg", storageDir);
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
-    /**
-     * Lauches the activity for the camera photo shoot
-     */
-    private void takePhotoCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File photoFile = null;
-        try {
-            photoFile = createImageFile();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        if (photoFile != null) {
-            Uri photoURI = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(intent, CAMERA_REQUEST);
-        }
-    }
+
+    //################ LOCATION ################
 
     /**
-     *
+     * Launches the location service, gets the coordinates and fecths for the address
      */
     private void getLocation() {
         LocationRequest locationRequest = new LocationRequest();
@@ -424,6 +572,23 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 }, Looper.getMainLooper());
     }
 
+    /**
+     * Get's teh addres from the coordinates given
+     * @param location The location coordinates
+     */
+    public void fetchAddressFromLatLong(Location location){
+        Intent intent = new Intent(this, FetchAddressIntentService.class);
+        intent.putExtra(RockChisel.RECEIVER, resultReceiver);
+        intent.putExtra(RockChisel.LOCATION_DATA_EXTRA, location);
+        startService(intent);
+    }
+
+    /**
+     * On the result of the activity, get's the photos colected
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -432,7 +597,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             case GALLERY_REQUEST:
                 if (resultCode == RESULT_OK) {
                     InputStream imageStream = null;
-
                     try {
                         final Uri imageUri = data.getData();
                         imageStream = getContentResolver().openInputStream(imageUri);
@@ -443,25 +607,10 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                         Toast.makeText(this, "Erro ao importar a foto da galeria", Toast.LENGTH_SHORT).show();
                         //TODO: lançar erro
                     }
-
-
-//                    MediaScannerConnection.scanFile(this, paths, null,
-//                        new MediaScannerConnection.MediaScannerConnectionClient() {
-//                            @Override
-//                            public void onMediaScannerConnected() {
-//                                Log.d("Detalhes", "onScanCompleted");
-//                            }
-//
-//                            @Override
-//                            public void onScanCompleted(String path, Uri uri) {
-//                                Log.d("Detalhes", "onScanCompleted");
-//                            }
-//                        });
                 }
                 break;
 
             case CAMERA_REQUEST:
-
                 if (resultCode == RESULT_OK) {
                     String[] paths = new String[]{currentPhotoPath};
                     Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
@@ -482,12 +631,38 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
                 }
                 break;
-            case LOCATION_REQUEST:
-                //getLocation();
-                break;
         }
     }
 
+
+    /**
+     * On receiving the result of the address, set's the
+     */
+    private class AddressResultReceiver extends ResultReceiver{
+
+        public AddressResultReceiver(Handler handler){
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+            if(resultCode == RockChisel.SUCCESS_RESULT){
+                tvAddress.setText(resultData.getString(RockChisel.RESULT_DATAKEY));
+            } else{
+                Toast.makeText(PostAnimalActivity.this, resultData.getString(RockChisel.RESULT_DATAKEY), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    //################ ATTRIBUTES REQUEST FOR THE COMBOBOX's ################
+
+    /**
+     * When getting an attribute type, asks fro teh next one, until filling all the combobox
+     * @param attributes The attributes array
+     * @param attributeType The type of attribute
+     */
     @Override
     public void onReceivedAttributes(ArrayList<Attribute> attributes, String attributeType) {
 
@@ -524,52 +699,13 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     }
 
-    @Override
-    public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
-
-    }
-
-    @Override
-    public void onUpdateAnimalsList(Animal animal, int operation) {
-
-    }
-
-    private class AddressResultReceiver extends ResultReceiver{
-
-        public AddressResultReceiver(Handler handler){
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            super.onReceiveResult(resultCode, resultData);
-            if(resultCode == RockChisel.SUCCESS_RESULT){
-                tvAddress.setText(resultData.getString(RockChisel.RESULT_DATAKEY));
-            } else{
-                Toast.makeText(PostAnimalActivity.this, resultData.getString(RockChisel.RESULT_DATAKEY), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    public void fetchAddressFromLatLong(Location location){
-        Intent intent = new Intent(this, FetchAddressIntentService.class);
-        intent.putExtra(RockChisel.RECEIVER, resultReceiver);
-        intent.putExtra(RockChisel.LOCATION_DATA_EXTRA, location);
-        startService(intent);
-    }
-
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imgNomeFich = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                .getParentFile(),"Animals");
-        storageDir.mkdirs();
-        File image = File.createTempFile(imgNomeFich, ".jpg", storageDir);
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
+    /**
+     * Initializaes all the spinners for the attributes
+     * @param spinnerArrayAdapter
+     * @param spinner
+     * @param promptMessage
+     * @param listAttributes
+     */
     private void initSpinner(ArrayAdapter<Attribute> spinnerArrayAdapter, Spinner spinner, String promptMessage, @Nullable List<Attribute> listAttributes){
         Attribute promptObject = new Attribute(-1, promptMessage);
         if(listAttributes == null){
@@ -586,124 +722,18 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         spinner.setSelection(spinnerArrayAdapter.getPosition(promptObject));
     }
 
-    public boolean validateAnimal() {
 
-        try{
+    //################ Request Listener ################
 
-            String name = null;
-            String chipId = null;
-
-            if(scenario.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
-
-                name = etName.getText().toString();
-                if (name.length() < 5) {
-                    etName.setError("Introduza um nome válido (mínimo 2 letras)");
-                    return false;
-                }
-
-                chipId = etChipId.getText().toString();
-                if (chipId.length() != 15) {
-                    etChipId.setError("Introduza um chip id válido (15 dígitos))");
-                    return false;
-                }
-            }
-
-            String description = etDescription.getText().toString();
-            if(description.length() < 10){
-                etDescription.setError("Introduza uma descrição válida (min. 10 caracteres))");
-                return false;
-            }
-
-            Attribute specie = (Attribute)spNature.getSelectedItem();
-            if(specie.getId() == -1){
-                Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            Attribute subSpecie = (Attribute)spBreed.getSelectedItem();
-            if(subSpecie.getId() == -1){
-                Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            Attribute furColor = (Attribute)spFurColor.getSelectedItem();
-            if(furColor.getId() == -1){
-                return false;
-            }
-
-            Attribute furLength = (Attribute)spFurLength.getSelectedItem();
-            if(furLength.getId() == -1){
-                return false;
-            }
-
-            Attribute size = (Attribute)spSize.getSelectedItem();
-            if(size.getId() == -1){
-                return false;
-            }
-
-            Attribute sex = (Attribute)spSex.getSelectedItem();
-            if(sex.getId() == -1){
-                return false;
-            }
-
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date missingFoundDate;
-            String missingFoundDateStr = etMissingFoundDate.getText().toString();
-            try {
-                missingFoundDate = simpleDateFormat.parse(missingFoundDateStr);
-                System.out.println(missingFoundDate);
-            } catch (ParseException e) {
-                etMissingFoundDate.setError("Data inválida");
-                e.printStackTrace();
-                return false;
-            }
-
-            if(missingFoundDate.after(Calendar.getInstance().getTime())){
-                Toast.makeText(this, "A data não pode ser superior à atual", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            newAnimalPost = new Animal();
-            newAnimalPost.setName(name);
-            newAnimalPost.setChipId(chipId);
-            newAnimalPost.setDescription(description);
-            newAnimalPost.setNature_id(specie.getId());
-            newAnimalPost.setFur_length_id(subSpecie.getId());
-            newAnimalPost.setFur_color_id(furColor.getId());
-            newAnimalPost.setSize_id(size.getId());
-            newAnimalPost.setSex(sex.getName());
-            newAnimalPost.setMissingFound_date(missingFoundDate.toString());
-            //animal.setPhoto();
-
-            if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
-                String locationStreet = etLocationStreet.getText().toString();
-                if(name.length() < 5){
-                    etName.setError("Introduza uma rua válida (mínimo 2 letras)");
-                    return false;
-                }
-
-                String location_city = etLocationCity.getText().toString();
-                if(name.length() < 5){
-                    etName.setError("Introduza uma rua válida (mínimo 2 letras)");
-                    return false;
-                }
-
-                Attribute location_district = (Attribute)spLocationDistrict.getSelectedItem();
-                if(location_district.getId() == -1){
-                    return false;
-                }
-
-                newAnimalPost.setFoundAnimal_street(locationStreet);
-                newAnimalPost.setFoundAnimal_city(location_city);
-                newAnimalPost.setFoundAnimal_district_id(location_district.getId());
-            }
-
-        } catch(Exception e){
-            return false;
-        }
-
-        return true;
+    @Override
+    public void onRequestSuccess() {
+        Toast.makeText(this, "Registo inseriro com sucesso", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
+    @Override
+    public void onRequestError(String error) {
+        Toast.makeText(this, "Erro ao enviar novo registo para a API: " + error, Toast.LENGTH_SHORT).show();
+    }
 }
 

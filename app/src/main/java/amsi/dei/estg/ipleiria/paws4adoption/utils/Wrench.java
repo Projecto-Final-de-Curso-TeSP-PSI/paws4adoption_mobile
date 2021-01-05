@@ -70,8 +70,11 @@ public class Wrench {
             return (before == null ? "" : before) + (str == null ? "" : str)  + (after == null ? "" : after);
     }
 
-
-
+    /**
+     * Get a date from date picker
+     * @param datePicker
+     * @return
+     */
     public static Date getDateFromDatePicker(DatePicker datePicker){
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth();
@@ -82,6 +85,22 @@ public class Wrench {
 
         return calendar.getTime();
     }
+
+    public static boolean isNull(String str) {
+        if (str == null || str.length() == 0 || str.equals("null"))
+            return true;
+
+        return false;
+    }
+
+    public static boolean isNotNull(String str) {
+        if (str == null || str.length() == 0 || str.equals("null"))
+            return false;
+
+        return true;
+    }
+
+
 
 }
 
