@@ -42,7 +42,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -313,6 +315,12 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         }
     }
 
+    /**
+     * After teh request of then permissions, if granted, redirects to the action
+     * @param requestCode The code of the request type
+     * @param permissions The permissions
+     * @param grantResults The granted results or the permissions requests
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -340,21 +348,18 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         }
     }
 
+    /**
+     * Launches teh activity for the gallery pick
+     */
     private void uploadPhotoGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
-        File photoFile = null;
-        try {
-            photoFile = createImageFile();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        if (photoFile != null) {
-            Uri photoURI = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(intent, GALLERY_REQUEST);
-        }
+        intent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(intent, GALLERY_REQUEST);
     }
 
+    /**
+     * Lauches the activity for the camera photo shoot
+     */
     private void takePhotoCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File photoFile = null;
@@ -370,6 +375,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         }
     }
 
+    /**
+     *
+     */
     private void getLocation() {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
@@ -423,22 +431,32 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         switch(requestCode){
             case GALLERY_REQUEST:
                 if (resultCode == RESULT_OK) {
-                    String[] paths = new String[]{currentPhotoPath};
-                    Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
-                    ivPhoto.setImageBitmap(bitmap);
+                    InputStream imageStream = null;
 
-                    MediaScannerConnection.scanFile(this, paths, null,
-                        new MediaScannerConnection.MediaScannerConnectionClient() {
-                            @Override
-                            public void onMediaScannerConnected() {
-                                Log.d("Detalhes", "onScanCompleted");
-                            }
+                    try {
+                        final Uri imageUri = data.getData();
+                        imageStream = getContentResolver().openInputStream(imageUri);
+                        final Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                        ivPhoto.setImageBitmap(bitmap);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Erro ao importar a foto da galeria", Toast.LENGTH_SHORT).show();
+                        //TODO: lançar erro
+                    }
 
-                            @Override
-                            public void onScanCompleted(String path, Uri uri) {
-                                Log.d("Detalhes", "onScanCompleted");
-                            }
-                        });
+
+//                    MediaScannerConnection.scanFile(this, paths, null,
+//                        new MediaScannerConnection.MediaScannerConnectionClient() {
+//                            @Override
+//                            public void onMediaScannerConnected() {
+//                                Log.d("Detalhes", "onScanCompleted");
+//                            }
+//
+//                            @Override
+//                            public void onScanCompleted(String path, Uri uri) {
+//                                Log.d("Detalhes", "onScanCompleted");
+//                            }
+//                        });
                 }
                 break;
 
