@@ -43,9 +43,9 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 public class SingletonPawsManager implements OrganizationsListener, AnimalListener{
 
     //API local address (may change each time you start your machine)
-    //private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
+    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
     //private static final String COMPUTER_LOCAL_IP = "192.168.1.65";
-    private static final String COMPUTER_LOCAL_IP = "192.168.1.70";
+    //private static final String COMPUTER_LOCAL_IP = "192.168.1.70";
 //    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
 
 
@@ -181,7 +181,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
 
     @Override
     public void onRefreshAnimalsList(ArrayList<Animal> animalsList){
-        //TODO:
+
     }
 
     @Override
@@ -197,6 +197,11 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 deleteAnimalDB(animal.getId());
                 break;
         }
+    }
+
+    @Override
+    public void onGetAnimalAPI(Animal animal) {
+
     }
 
     //################ ATTRIBUTES ################
@@ -454,14 +459,16 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                         }
                         System.out.println("--> Organizations: " + response);
                     } else {
-                        requestListener.onRequestError("Erro ao fazer o parse das organizações");
+                        //requestListener.onRequestError("Erro ao fazer o parse das organizações");
+                        Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     System.out.println("--> Organizations: " + Arrays.toString(error.getStackTrace()));
-                    requestListener.onRequestError("Erro na obtenção das organizações: " + error.getMessage());
+                    //requestListener.onRequestError("Erro na obtenção das organizações: " + error.getMessage());
+                    Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                 }
             });
             volleyQueue.add(request);
@@ -634,13 +641,15 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                         }
                         System.out.println("--> Animals: " + response);
                     } else {
-                        requestListener.onRequestError("Erro ao obter lista de animais da API");
+                        Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
+                        //requestListener.onRequestError("Erro ao obter lista de animais da API");
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    requestListener.onRequestError("Erro ao obter a lista de animais da API");
+                    //requestListener.onRequestError("Erro ao obter a lista de animais da API");
+                    Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                     System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
                 }
             });
@@ -652,7 +661,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * Get's one animal from teh API
      * @param context
      */
-    public void getAnimalAPI(final Context context){
+    public void getAnimalAPI(final Context context, final int animal_id){
 
         if(!FortuneTeller.isThereInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
@@ -660,29 +669,31 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             if(animalListener != null){
                 animalListener.onRefreshAnimalsList(organizationsDBHelper.getAllAnimalsDB());
             }
-        } else{
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, mUrlAPIAnimals, null,
+        }
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, mUrlAPIAnimals + "/" + animal_id, null,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             Animal animal = JsonParser.toAnimal(response);
                             if (animal != null) {
-                                //TODO:  fazer algo com o objeto
-
+                                if(animalListener != null){
+                                    animalListener.onGetAnimalAPI(animal);
+                                }
                                 System.out.println("--> Animals: " + response);
                             } else {
-                                requestListener.onRequestError("Erro ao obter lista de animais da API");
+                                //requestListener.onRequestError("Erro ao obter lista de animais da API");
+                                Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    requestListener.onRequestError("Erro ao obter a lista de animais da API");
+                    //requestListener.onRequestError("Erro ao obter a lista de animais da API");
+                    Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                     System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
                 }
             });
             volleyQueue.add(request);
-        }
     }
 
     /**
@@ -701,9 +712,14 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     Animal auxAnimal = JsonParser.toAnimal(response);
                     if(auxAnimal != null) {
                         onUpdateAnimalsList(auxAnimal, RockChisel.INSERT_DB);
-                        requestListener.onRequestSuccess("Animal inserido com sucesso");
+
+                        if (animalListener != null) {
+                            animalListener.onRefreshAnimalsList(animals);
+                        }
+                        //requestListener.onRequestSuccess("Animal inserido com sucesso");
                     } else{
-                        requestListener.onRequestError("Erro ao inserir animal na API");
+                        //requestListener.onRequestError("Erro ao inserir animal na API");
+                        Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                     }
                 }
             },
@@ -744,9 +760,14 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     Animal auxAnimal = JsonParser.toAnimal(response);
                     if(auxAnimal != null){
                         onUpdateAnimalsList(auxAnimal, RockChisel.UPDATE_DB);
-                        requestListener.onRequestSuccess("Animal atualizado com sucesso");
+
+                        if (animalListener != null) {
+                            animalListener.onRefreshAnimalsList(animals);
+                        }
+                        //requestListener.onRequestSuccess("Animal atualizado com sucesso");
                     } else {
-                        requestListener.onRequestError("Erro ao atualizar o animal");
+                        //requestListener.onRequestError("Erro ao atualizar o animal");
+                        Toast.makeText(context, "Error on comunicating with the API", Toast.LENGTH_SHORT).show();
                     }
                 }
             },
@@ -782,6 +803,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     public void onResponse(String response) {
                         onUpdateAnimalsList(animal, RockChisel.DELETE_BD);
 
+                        if (animalListener != null) {
+                            animalListener.onRefreshAnimalsList(animals);
+                        }
                         //TODO: update my list animals
                     }
                 },

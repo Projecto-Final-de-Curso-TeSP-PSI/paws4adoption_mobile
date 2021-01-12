@@ -58,17 +58,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.RequestListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.services.FetchAddressIntentService;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
-public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, RequestListener {
+public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, AnimalListener {
 
     //################ PERMISSIONS REQUEST TYPES ################
     private static final int GALLERY_REQUEST = 1;
@@ -140,16 +142,16 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         action = getIntent().getStringExtra(ACTION);
         animal_id = getIntent().getIntExtra(ANIMAL_ID, 0);
 
-        if(action.equals(RockChisel.ACTION_UPDATE)){
-            editAnimal = SingletonPawsManager.getInstance(getApplicationContext()).getAnimalBD(animal_id);
-        }
-
         importGraphicalElements();
 
         implementListeners();
 
+        initAttributesSpinners();
+
         SingletonPawsManager.getInstance(getApplicationContext()).setAttributeListener(this);
-        SingletonPawsManager.getInstance(getApplicationContext()).setRequestListener(this);
+        SingletonPawsManager.getInstance(getApplicationContext()).setAnimalListener(this);
+
+        //SingletonPawsManager.getInstance(getApplicationContext()).setRequestListener(this);
 
         setScenario();
 
@@ -450,6 +452,15 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
      * @return the animal object
      */
 
+    public void initAttributesSpinners(){
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_LENGTH, RockChisel.ATTR_FUR_LENGTH_SYMLINK, null);
+
+        //SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, null);
+
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_COLOR, RockChisel.ATTR_FUR_COLOR_SYMLINK, null);
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_COLOR, RockChisel.ATTR_FUR_COLOR_SYMLINK, null);
+    }
 
     public void fillAnimal(Animal animal) {
 
@@ -748,51 +759,45 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         switch(attributeType){
             case RockChisel.ATTR_SPECIE:
                 initSpinner(dataAdapterNature, spNature, "Selecione a espécie", attributes);
-                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_LENGTH, RockChisel.ATTR_FUR_LENGTH_SYMLINK, null);
+//                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_LENGTH, RockChisel.ATTR_FUR_LENGTH_SYMLINK, null);
                 break;
 
             case RockChisel.ATTR_SUBSPECIE:
                 initSpinner(dataAdapterBreed, spBreed, "Selecione a sub espécie", attributes);
 
-                if(action.equals(RockChisel.ACTION_UPDATE )){
-                    if(editAnimal != null)
-                        fillAnimal(editAnimal);
-                    else
-                        Toast.makeText(this, "Erro ao carregar animal", Toast.LENGTH_SHORT).show();
-                }
-
+//                if(action.equals(RockChisel.ACTION_UPDATE)){
+//                    SingletonPawsManager.getInstance(getApplicationContext()).getAnimalAPI(getApplicationContext(), animal_id);
+//                }
                 break;
 
             case RockChisel.ATTR_FUR_LENGTH:
                 initSpinner(dataAdapterFurLength, spFurLength, "Selecione o tipo de pelagem", attributes);
-                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_COLOR, RockChisel.ATTR_FUR_COLOR_SYMLINK, null);
+//                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_COLOR, RockChisel.ATTR_FUR_COLOR_SYMLINK, null);
                 break;
 
             case RockChisel.ATTR_FUR_COLOR:
                 initSpinner(dataAdapterFurColor, spFurColor, "Selecione a cor da pelagem", attributes);
-                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SIZE, RockChisel.ATTR_SIZE_SYMLINK, null);
+//                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SIZE, RockChisel.ATTR_SIZE_SYMLINK, null);
                 break;
 
             case RockChisel.ATTR_SIZE:
                 initSpinner(dataAdapterSize, spSize, "Selecione o porte", attributes);
 
-                if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
-                    SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
-                } else{
-                    if(action.equals(RockChisel.ACTION_UPDATE))
-
-                        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, editAnimal.getNature_parent_id());
-                }
+//                if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
+//                    SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
+//                } else{
+//                    if(action.equals(RockChisel.ACTION_UPDATE))
+//                        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, editAnimal.getNature_parent_id());
+//                }
 
                 break;
 
             case RockChisel.ATTR_DISTRICT:
                 initSpinner(dataAdapterLocationDistrict, spLocationDistrict, "Selecione o distrito", attributes);
 
-                if(action.equals(RockChisel.ACTION_UPDATE)){
-
-                    SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, editAnimal.getNature_parent_id());
-                }
+//                if(action.equals(RockChisel.ACTION_UPDATE)){
+//                    SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, editAnimal.getNature_parent_id());
+//                }
                 break;
         }
 
@@ -822,17 +827,21 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     }
 
 
-    //################ Request Listener ################
 
     @Override
-    public void onRequestSuccess(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        finish();
+    public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
+
     }
 
     @Override
-    public void onRequestError(String errorMessage) {
-        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+    public void onUpdateAnimalsList(Animal animal, int operation) {
+
+    }
+
+    @Override
+    public void onGetAnimalAPI(Animal animal) {
+        this.editAnimal = animal;
+        fillAnimal(editAnimal);
     }
 }
 

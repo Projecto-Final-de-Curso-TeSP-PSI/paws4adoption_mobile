@@ -238,7 +238,7 @@ public class JsonParser {
     }
 
     /**
-     * Get a Json response and parses to an animal object
+     *
      * @param animal
      * @return
      */
