@@ -26,6 +26,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -212,13 +213,22 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
      */
     private void implementListeners(){
 
+
         spNature.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 onTouch = true;
-                return true;
+                v.performClick();
+                return false;
             }
         });
+/*
+        spNature.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        }); */
 
         spNature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -873,7 +883,12 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         boolean sizeCount = spSize.getCount() > 0;
         boolean locationDistrictCount = spLocationDistrict.getCount() > 0;
 
-        if(natureCount && furcolorCount && furlengthCount && sizeCount && locationDistrictCount)
+        if(action.equals(RockChisel.ACTION_UPDATE) &&
+            natureCount &&
+            furcolorCount &&
+            furlengthCount &&
+            sizeCount &&
+            locationDistrictCount)
         {
             SingletonPawsManager.getInstance(getApplicationContext()).getAnimalAPI(getApplicationContext(), animal_id);
         }

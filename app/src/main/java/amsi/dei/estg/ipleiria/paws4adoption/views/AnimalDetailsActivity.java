@@ -29,7 +29,7 @@ public class AnimalDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_animal_details);
 
         id_animal = getIntent().getIntExtra(ANIMAL_DETAILS, 0);
-        animal = SingletonPawsManager.getInstance(getApplicationContext()).getAnimal(id_animal);
+        //animal = SingletonPawsManager.getInstance(getApplicationContext()).getAnimal(id_animal);
 
         textView_name = findViewById(R.id.textView_detailsName);
         textView_chipId = findViewById(R.id.textView_detailsChipId);
