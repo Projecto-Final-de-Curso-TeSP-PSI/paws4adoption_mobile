@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 
+import amsi.dei.estg.ipleiria.paws4adoption.MainFragment;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
@@ -35,6 +36,8 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Fragment fragment = null;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_main);
 
@@ -65,8 +68,12 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         navigationView.setNavigationItemSelectedListener(this);
 
         fragmentManager = getSupportFragmentManager();
+        fragment = new MainFragment();
+        setTitle("Home");
 
         navigationView.setCheckedItem(R.id.navHome);
+
+            fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
 
         //setScenario();
     }
@@ -91,6 +98,8 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
         switch (menuItem .getItemId()) {
             case R.id.navHome:
+                fragment = new MainFragment();
+                setTitle("Home");
                 break;
 
             case R.id.navSearchAnimals:

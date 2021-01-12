@@ -922,7 +922,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param password
      * @param context
      */
-    public void loginRequest(final String username, final String password, final Context context) {
+    public void tokenRequest(final String username, final String password, final Context context) {
         StringRequest request = new StringRequest(Request.Method.POST, mUrlAPILogin,
                 new Response.Listener<String>() {
                     @Override
@@ -988,23 +988,16 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, "Erro na resposta.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Erro ao criar novo utilizador.", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }
                 })
                 {
-//                    @RequiresApi(api = Build.VERSION_CODES.O)
-//                    @Override
-//                    public Map<String, String> getHeaders() throws AuthFailureError {
-//                        Map<String, String> headers = new HashMap<>();
-//                        headers.putIfAbsent("authorization", createBasicAuth(userProfile.getUsername(),
-//                                                                             userProfile.getPassword()));
-//                        return headers;
-//                    }
-
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> params = new HashMap<>();
+                        params.put("username", userProfile.getUsername());
+                        params.put("password", userProfile.getPassword());
                         params.put("email", userProfile.getEmail());
                         params.put("firstName", userProfile.getFirstName());
                         params.put("lastName", userProfile.getLastName());
@@ -1023,5 +1016,14 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 };
         volleyQueue.add(request);
     }
+
+    // Converter para base64 username e password
+    /*
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String createBasicAuth(final String username, final String password) {
+        final String pair = username + ":" + password;
+
+        return "Basic " + Base64.encodeToString(pair.getBytes(), Base64.DEFAULT);
+    }*/
 
 }

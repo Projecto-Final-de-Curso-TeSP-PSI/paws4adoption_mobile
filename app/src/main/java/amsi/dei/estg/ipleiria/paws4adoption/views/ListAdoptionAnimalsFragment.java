@@ -1,5 +1,6 @@
 package amsi.dei.estg.ipleiria.paws4adoption.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,10 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
             public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
                 Animal hasAnimal = (Animal) parent.getItemAtPosition(i);
                 System.out.println("--> " + hasAnimal.getName());
+
+                Intent intent = new Intent(getContext(), AnimalDetailsActivity.class);
+                intent.putExtra(AnimalDetailsActivity.ANIMAL_DETAILS, hasAnimal.getId());
+                startActivity(intent);
             }
         });
 
