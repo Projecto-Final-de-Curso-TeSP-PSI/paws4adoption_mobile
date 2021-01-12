@@ -24,16 +24,16 @@ public class JsonParser {
 
     /**
      * Get's a Json response wih all organizations and parses to an organization object's list
-     * @param response
+     * @param organizations
      * @return all organizations array list
      */
-    public static ArrayList<Organization> toOrganizations(JSONArray response){
+    public static ArrayList<Organization> toOrganizations(JSONArray organizations){
         ArrayList<Organization> organizationsList= new ArrayList<>();
 
         try{
-            for(int i = 0; i < response.length(); i++){
+            for(int i = 0; i < organizations.length(); i++){
 
-                JSONObject organization = (JSONObject) response.get(i);
+                JSONObject organization = (JSONObject) organizations.get(i);
                 Integer id =  organization.getInt("id");
                 String name =  organization.getString("name");
                 String nif =  organization.getString("nif");
@@ -67,15 +67,13 @@ public class JsonParser {
 
     /**
      * Get a Json response and parses to an organization object
-     * @param response
+     * @param organization
      * @return an organization object
      */
-    public static Organization toOrganization(String response){
+    public static Organization toOrganization(JSONObject organization){
         Organization auxOrg = null;
 
         try{
-
-            JSONObject organization = new JSONObject(response);
             int id =  organization.getInt("id");
             String name =  organization.getString("name");
             String nif =  organization.getString("nif");
@@ -99,6 +97,7 @@ public class JsonParser {
 
         } catch(JSONException e){
             e.printStackTrace();
+            return null;
         }
 
         return auxOrg;
@@ -106,15 +105,15 @@ public class JsonParser {
 
     /**
      * Get's a Json response wih all animals and parses to an animal's object's list
-     * @param response
+     * @param animals
      * @return
      */
-    public static ArrayList<Animal> toAnimals(JSONArray response){
-        ArrayList<Animal> animalsList= new ArrayList<>();
-
+    public static ArrayList<Animal> toAnimals(JSONArray animals){
+        ArrayList<Animal> animalsList = new ArrayList<>();
         try{
-            for(int i = 0; i < response.length(); i++){
-                JSONObject animal = (JSONObject) response.get(i);
+            for(int i = 0; i < animals.length(); i++){
+
+                JSONObject animal = (JSONObject) animals.get(i);
 
                 Integer id = animal.getInt("id");
                 String name = animal.getString("name");
@@ -231,17 +230,21 @@ public class JsonParser {
             }
         } catch(JSONException e){
             e.printStackTrace();
+            return null;
         }
 
         return animalsList;
+
     }
 
-
-    public static Animal toAnimal(String response){
+    /**
+     * Get a Json response and parses to an animal object
+     * @param animal
+     * @return
+     */
+    public static Animal toAnimal(JSONObject animal){
         Animal auxAnimal = null;
         try{
-                JSONObject animal = new JSONObject(response);
-
                 Integer id = animal.getInt("id");
                 String name = animal.getString("name");
                 String chipId = animal.getString("chipId");
@@ -252,11 +255,11 @@ public class JsonParser {
                 Integer nature_parent_id = nature.getInt("parent_nature_id");
                 String nature_parent_name = nature.getString("nameByParentId");
 
-                JSONObject fur_length = animal.getJSONObject("furLength");
+                JSONObject fur_length = animal.getJSONObject("fur_length");
                 Integer fur_length_id = fur_length.getInt("id");
                 String fur_length_name = fur_length.getString("fur_length");
 
-                JSONObject fur_color = animal.getJSONObject("furColor");
+                JSONObject fur_color = animal.getJSONObject("fur_color");
                 Integer fur_color_id = fur_color.getInt("id");
                 String fur_color_name = fur_color.getString("fur_color");
 
@@ -361,175 +364,6 @@ public class JsonParser {
 
         return auxAnimal;
     }
-    /**
-     * Get a Json response and parses to an animal object
-     * @param
-     * @return
-     */
-    public static Animal missingAnimalToAnimal(JSONObject missingAnimal){
-        Animal auxAnimal = null;
-
-        try{
-            String type = RockChisel.MISSING_ANIMAL;
-
-            Integer is_fat = null;
-            String missingFound_date = null;
-
-            Integer foundAnimal_location_id = null;
-            String foundAnimal_street = null;
-            String foundAnimal_city = null;
-            Integer foundAnimal_district_id = null;
-            String foundAnimal_district_name = null;
-
-            Integer publisher_id = null;
-            String publisher_name = null;
-
-            String organization_name = null;
-            Integer organization_id = null;
-            Integer organization_nif = null;
-            String organization_email = null;
-            Integer organization_address_id = null;
-            String organization_street = null;
-            String organization_door_number = null;
-            String organization_floor = null;
-            String organization_city = null;
-            Integer organization_postal_code = null;
-            Integer organization_street_code = null;
-            Integer organization_district_id = null;
-            String organization_district_name = null;
-
-            //JSONObject missingAnimal = new JSONObject(response);
-            missingFound_date = missingAnimal.getString("missing_date");
-
-            JSONObject owner = missingAnimal.getJSONObject("owner");
-            publisher_id = owner.getInt("id");
-            publisher_name = owner.getString("fullName");
-
-            JSONObject animal = missingAnimal.getJSONObject("animal");
-            Integer id = animal.getInt("id");
-            String name = animal.getString("name");
-            String chipId = animal.getString("chipId");
-
-            JSONObject nature = animal.getJSONObject("nature");
-            Integer nature_id = nature.getInt("id");
-            String nature_name = nature.getString("name");
-            Integer nature_parent_id = nature.getInt("parent_nature_id");
-            String nature_parent_name = nature.getString("nameByParentId");
-
-            JSONObject fur_length = animal.getJSONObject("furLength");
-            Integer fur_length_id = fur_length.getInt("id");
-            String fur_length_name = fur_length.getString("fur_length");
-
-            JSONObject fur_color = animal.getJSONObject("furColor");
-            Integer fur_color_id = fur_color.getInt("id");
-            String fur_color_name = fur_color.getString("fur_color");
-
-            JSONObject size = animal.getJSONObject("size");
-            Integer size_id = size.getInt("id");
-            String size_name = size.getString("size");
-
-            String sex = animal.getString("sex");
-            String description = animal.getString("description");
-            String createAt = animal.getString("createdAt");
-            Integer photo = null;
-
-            auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, is_fat, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
-
-        } catch(JSONException e){
-            e.printStackTrace();
-        }
-
-        return auxAnimal;
-    }
-
-    /**
-     * Get a Json response and parses to an animal object
-     * @param foundAnimal
-     * @return
-     */
-    public static Animal foundAnimalToAnimal(JSONObject foundAnimal){
-        Animal auxAnimal = null;
-
-        try{
-            String type = RockChisel.FOUNDANIMAL;
-
-            Integer is_fat = null;
-            String missingFound_date = null;
-
-            Integer foundAnimal_location_id = null;
-            String foundAnimal_street = null;
-            String foundAnimal_city = null;
-            Integer foundAnimal_district_id = null;
-            String foundAnimal_district_name = null;
-
-            Integer publisher_id = null;
-            String publisher_name = null;
-
-            String organization_name = null;
-            Integer organization_id = null;
-            Integer organization_nif = null;
-            String organization_email = null;
-            Integer organization_address_id = null;
-            String organization_street = null;
-            String organization_door_number = null;
-            String organization_floor = null;
-            String organization_city = null;
-            Integer organization_postal_code = null;
-            Integer organization_street_code = null;
-            Integer organization_district_id = null;
-            String organization_district_name = null;
-
-            missingFound_date = foundAnimal.getString("found_date");
-
-            JSONObject location = foundAnimal.getJSONObject("location");
-            foundAnimal_location_id = location.getInt("id");
-            foundAnimal_street = location.getString("street");
-            foundAnimal_city = location.getString("city");
-
-            JSONObject districtFound = location.getJSONObject("district");
-            foundAnimal_district_id = districtFound.getInt("id");
-            foundAnimal_district_name = districtFound.getString("name");
-
-            JSONObject user = foundAnimal.getJSONObject("user");
-            publisher_id = user.getInt("id");
-            publisher_name = user.getString("fullName");
-
-            JSONObject animal = foundAnimal.getJSONObject(type);
-            Integer id = animal.getInt("id");
-            String name = animal.getString("name");
-            String chipId = animal.getString("chipId");
-
-            JSONObject nature = animal.getJSONObject("nature");
-            Integer nature_id = nature.getInt("id");
-            String nature_name = nature.getString("name");
-            Integer nature_parent_id = nature.getInt("parent_nature_id");
-            String nature_parent_name = nature.getString("nameByParentId");
-
-            JSONObject fur_length = animal.getJSONObject("furLength");
-            Integer fur_length_id = fur_length.getInt("id");
-            String fur_length_name = fur_length.getString("fur_length");
-
-            JSONObject fur_color = animal.getJSONObject("furColor");
-            Integer fur_color_id = fur_color.getInt("id");
-            String fur_color_name = fur_color.getString("fur_color");
-
-            JSONObject size = animal.getJSONObject("size");
-            Integer size_id = size.getInt("id");
-            String size_name = size.getString("size");
-
-            String sex = animal.getString("sex");
-            String description = animal.getString("description");
-            String createAt = animal.getString("createdAt");
-            Integer photo = null;
-
-        auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, is_fat, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
-
-        } catch(JSONException e){
-            e.printStackTrace();
-        }
-
-        return auxAnimal;
-    }
 
     /**
      * Get's a Json response with all attributes and parses to an attributes object's list
@@ -539,22 +373,17 @@ public class JsonParser {
      */
     public static ArrayList<Attribute> toAttributes(JSONArray response, String attSymLink){
         ArrayList<Attribute> attributesList= new ArrayList<>();
-
         try{
             for(int i = 0; i < response.length(); i++){
-
                 JSONObject attributes = (JSONObject) response.get(i);
                 Integer id =  attributes.getInt("id");
                 String name =  attributes.getString(attSymLink);
-
                 Attribute auxAttribute = new Attribute(id, name);
-
                 attributesList.add(auxAttribute);
             }
         } catch(JSONException e){
             e.printStackTrace();
         }
-
         return attributesList;
     }
 
@@ -614,18 +443,6 @@ public class JsonParser {
             e.printStackTrace();
         }
         return userProfile;
-    }
-
-    /**
-     * Method that checks if the mobile equipments has internet connection
-     * @param context
-     * @return Bool
-     */
-    public static boolean isConnectionInternet(Context context){
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
     }
 
 }

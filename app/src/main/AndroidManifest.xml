@@ -54,7 +54,6 @@
 
         <activity android:name=".views.SubmRequestActivity" />
         <activity android:name=".views.AnimalDetailsActivity" />
-        <activity android:name=".OrgDetailActivity" />
 
         <activity android:name=".views.OrganizationDetailsActivity"
             android:parentActivityName=".views.MenuMainActivity"/>

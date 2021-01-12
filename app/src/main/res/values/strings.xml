@@ -85,5 +85,7 @@
     <string name="insert_date">Introduza a data</string>
     <string name="insert_street">Introduza a rua</string>
     <string name="insert_city">Introduza a cidade</string>
+    <string name="update_missing_animal">Editar Animal Perdido</string>
+    <string name="update_found_animal">Editar Animal Perdido</string>
 
 </resources>

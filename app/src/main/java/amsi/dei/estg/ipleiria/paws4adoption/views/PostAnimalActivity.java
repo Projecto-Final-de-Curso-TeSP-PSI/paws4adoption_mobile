@@ -13,7 +13,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.number.NumberRangeFormatter;
 import android.location.Location;
+import android.media.MediaRouter2;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -31,16 +33,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.request.Request;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.xml.sax.helpers.AttributesImpl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,11 +53,11 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.RequestListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
@@ -66,17 +70,21 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
 public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, RequestListener {
 
+    //################ PERMISSIONS REQUEST TYPES ################
     private static final int GALLERY_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
     private static final int LOCATION_REQUEST = 3;
 
+    //################ EXTRA ################
     public static final String SCENARIO = "scenario";
-    private String scenario = "";
-
+    private String scenario = null;
     public static final String ACTION = "action";
-    private String action = "";
+    private String action = null;
+    public static final String ANIMAL_ID = "animal";
+    private int animal_id = -1;
+    private Animal editAnimal;
 
-    private LinearLayout llMissingAnimal;
+    //################ GRAPHICAL ELEMENTS ################
     private LinearLayout llFoundAnimal;
 
     private ImageView ivPhoto;
@@ -119,6 +127,10 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     private String currentPhotoPath;
 
+    /**
+     * On Create method of the Activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,23 +138,29 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
         scenario = getIntent().getStringExtra(SCENARIO);
         action = getIntent().getStringExtra(ACTION);
+        animal_id = getIntent().getIntExtra(ANIMAL_ID, 0);
+
+        if(action.equals(RockChisel.ACTION_UPDATE)){
+            editAnimal = SingletonPawsManager.getInstance(getApplicationContext()).getAnimalBD(animal_id);
+        }
 
         importGraphicalElements();
 
         implementListeners();
 
-        setScenario();
-
         SingletonPawsManager.getInstance(getApplicationContext()).setAttributeListener(this);
         SingletonPawsManager.getInstance(getApplicationContext()).setRequestListener(this);
 
-        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
+        setScenario();
 
         resultReceiver = new AddressResultReceiver(new Handler());
 
 
     }
 
+    /**
+     * Method where we set all the graphical components variables
+     */
     private void importGraphicalElements() {
 
 
@@ -184,6 +202,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     }
 
+    /**
+     * Method where we implement all the buttons listeners
+     */
     private void implementListeners(){
 
         spNature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -304,24 +325,27 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         });
     }
 
+    /**
+     * Method that validades the animal input fields
+     * @return the animal object
+     */
     public Animal validateAnimal() {
 
         Animal newAnimalPost = new Animal();
         try{
 
-            String name = null;
-            String chipId = null;
+            String name = etName.getText().toString();
+            String chipId = etChipId.getText().toString();
 
             if(scenario.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
 
-                name = etName.getText().toString();
                 if (name.length() < 5) {
                     etName.setError("Introduza um nome válido (mínimo 2 letras)");
                     return null;
                 }
 
                 chipId = etChipId.getText().toString();
-                if (chipId.length() != 15) {
+                if (chipId.length() > 15) {
                     etChipId.setError("Introduza um chip id válido (15 dígitos))");
                     return null;
                 }
@@ -421,25 +445,81 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         }
 
         return newAnimalPost;
+    }    /**
+     * Method that validades the animal input fields
+     * @return the animal object
+     */
+
+
+    public void fillAnimal(Animal animal) {
+
+        try{
+            etName.setText(animal.getName());
+            etChipId.setText(String.format("%s", animal.getChipId()));
+            etDescription.setText(animal.getDescription());
+            spNature.setSelection(getSpinnerPosition(animal.getNature_parent_id(), spNature));
+            spBreed.setSelection(getSpinnerPosition(animal.getNature_id(), spBreed));
+            spFurColor.setSelection(getSpinnerPosition(animal.getFur_color_id(), spFurColor));
+            spFurLength.setSelection(getSpinnerPosition(animal.getFur_length_id(), spFurLength));
+            spSize.setSelection(getSpinnerPosition(animal.getSize_id(), spSize));
+            spSex.setSelection(getSpinnerPosition(animal.getSex().equals("M") ? 0 : 1, spSex));
+            //animal.setPhoto();
+
+            etMissingFoundDate.setText(animal.getMissingFound_date());
+
+            if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
+                etLocationStreet.setText(animal.getFoundAnimal_street());
+                etLocationCity.setText(animal.getFoundAnimal_city());
+                spLocationDistrict.setSelection(getSpinnerPosition(animal.getNature_id(), spLocationDistrict));
+            }
+
+        } catch(Exception e){
+            System.out.println(Arrays.toString(e.getStackTrace()));
+            Toast.makeText(this, "Erro ao preencher animal", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+    }
+
+    /**
+     * Get's teh position of one Attribute on the spinner
+     * @param item_id the item id to search for
+     * @param spinner the spinner where to search
+     * @return teh i
+     */
+    public static int getSpinnerPosition(int item_id, Spinner spinner) {
+        SimpleCursorAdapter adapter = (SimpleCursorAdapter) spinner.getAdapter();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            Attribute auxAttribute = (Attribute)adapter.getItem(i);
+            if(auxAttribute.getId() == item_id) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
      * Method that implements changes to the current activity according the Scenario an Action intended
      */
     private void setScenario() {
-        switch(scenario){
-            case RockChisel.SCENARIO_MISSING_ANIMAL:
-                setTitle("Publicar animal desaparecido");
-                etMissingFoundDate.setHint("Data do desaparecimento");
-                break;
-            case RockChisel.SCENARIO_FOUND_ANIMAL:
-                setTitle("Publicar animal abandonado");
-                etMissingFoundDate.setHint("Data do avistamento");
-                llFoundAnimal.setVisibility(View.VISIBLE);
-                break;
-        }
-    }
 
+        if(action.equals(RockChisel.ACTION_CREATE)){
+            switch(scenario){
+                case RockChisel.SCENARIO_MISSING_ANIMAL:
+                    setTitle("Publicar animal desaparecido");
+                    etMissingFoundDate.setHint("Data do desaparecimento");
+                    break;
+                case RockChisel.SCENARIO_FOUND_ANIMAL:
+                    setTitle("Publicar animal abandonado");
+                    etMissingFoundDate.setHint("Data do avistamento");
+                    llFoundAnimal.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
+
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
+
+    }
 
     //################ PHOTO ################
 
@@ -471,7 +551,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     }
 
     /**
-     * After teh request of then permissions, if granted, redirects to the action
+     * After the request of the permissions, if granted, redirects to the action
      * @param requestCode The code of the request type
      * @param permissions The permissions
      * @param grantResults The granted results or the permissions requests
@@ -634,7 +714,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         }
     }
 
-
     /**
      * On receiving the result of the address, set's the
      */
@@ -674,6 +753,14 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
             case RockChisel.ATTR_SUBSPECIE:
                 initSpinner(dataAdapterBreed, spBreed, "Selecione a sub espécie", attributes);
+
+                if(action.equals(RockChisel.ACTION_UPDATE )){
+                    if(editAnimal != null)
+                        fillAnimal(editAnimal);
+                    else
+                        Toast.makeText(this, "Erro ao carregar animal", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
 
             case RockChisel.ATTR_FUR_LENGTH:
@@ -688,12 +775,24 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
             case RockChisel.ATTR_SIZE:
                 initSpinner(dataAdapterSize, spSize, "Selecione o porte", attributes);
-                if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL))
+
+                if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
                     SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
+                } else{
+                    if(action.equals(RockChisel.ACTION_UPDATE))
+
+                        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, editAnimal.getNature_parent_id());
+                }
+
                 break;
 
             case RockChisel.ATTR_DISTRICT:
                 initSpinner(dataAdapterLocationDistrict, spLocationDistrict, "Selecione o distrito", attributes);
+
+                if(action.equals(RockChisel.ACTION_UPDATE)){
+
+                    SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, editAnimal.getNature_parent_id());
+                }
                 break;
         }
 
@@ -726,14 +825,14 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     //################ Request Listener ################
 
     @Override
-    public void onRequestSuccess() {
-        Toast.makeText(this, "Registo inseriro com sucesso", Toast.LENGTH_SHORT).show();
+    public void onRequestSuccess(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         finish();
     }
 
     @Override
-    public void onRequestError(String error) {
-        Toast.makeText(this, "Erro ao enviar novo registo para a API: " + error, Toast.LENGTH_SHORT).show();
+    public void onRequestError(String errorMessage) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
     }
 }
 

@@ -117,25 +117,26 @@
                 android:layout_marginTop="10dp"
                 android:importantForAutofill="no" />
 
-            <ImageView
-                android:id="@+id/ivLocation"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_marginTop="10dp"
-                app:srcCompat="@drawable/ic_get_location_foreground"
-                android:contentDescription="@string/location_simbol_image" />
-
-            <Button
-                android:id="@+id/btnLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/set_location" />
-
             <LinearLayout
+                android:id="@+id/llFoundAnimal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/ivLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="10dp"
+                    app:srcCompat="@drawable/ic_get_location_foreground"
+                    android:contentDescription="@string/location_simbol_image" />
+
+                <Button
+                    android:id="@+id/btnLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_location" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -158,14 +159,6 @@
                     android:padding="20dp"
                     android:hint="@string/dash"
                     android:id="@+id/tvAddress"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llFoundAnimal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
 
                 <EditText
                     android:layout_width="match_parent"
@@ -192,7 +185,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:id="@+id/spLocationDistrict" />
-
 
             </LinearLayout>
 

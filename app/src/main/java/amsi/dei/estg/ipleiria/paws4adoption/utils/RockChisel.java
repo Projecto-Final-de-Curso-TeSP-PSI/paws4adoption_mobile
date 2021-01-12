@@ -42,7 +42,6 @@ public class RockChisel {
     public static final String ATTR_SIZE = "sizes";
     public static final String ATTR_DISTRICT = "districts";
 
-
     public static final String MISSING_ANIMALS_API_SERVICE = "missing-animals";
     public static final String FOUND_ANIMALS_API_SERVICE = "found-animals";
 
@@ -67,5 +66,9 @@ public class RockChisel {
     public static final String ADOPTION_ANIMAL = "adoptionAnimal";
     public static final String MISSING_ANIMAL = "missingAnimal";
     public static final String FOUNDANIMAL = "foundAnimal";
+
+    //Request types
+    public static final String ANIMAL_REQUEST = "animal_request";
+    public static final String ORGANIZATION_REQUEST = "organization_request";
 
 }

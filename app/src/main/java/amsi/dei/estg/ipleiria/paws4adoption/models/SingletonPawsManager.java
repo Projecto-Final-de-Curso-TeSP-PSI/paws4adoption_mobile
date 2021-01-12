@@ -4,7 +4,6 @@ import android.content.Context;
 
 import java.util.ArrayList;
 //import java.util.Base64;
-import android.util.Base64;
 
 import android.os.Build;
 import android.widget.Toast;
@@ -40,18 +39,14 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.UploadPhotoListener;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.JsonParser;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
-import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
-import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
-import amsi.dei.estg.ipleiria.paws4adoption.views.MenuMainActivity;
-import amsi.dei.estg.ipleiria.paws4adoption.views.PostAnimalActivity;
 
 public class SingletonPawsManager implements OrganizationsListener, AnimalListener{
 
     //API local address (may change each time you start your machine)
     //private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
     //private static final String COMPUTER_LOCAL_IP = "192.168.1.65";
-//    private static final String COMPUTER_LOCAL_IP = "192.168.42.129";
-    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
+    private static final String COMPUTER_LOCAL_IP = "192.168.1.70";
+//    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
 
 
     //private static final String COMPUTER_LOCAL_IP = "localhost";
@@ -140,6 +135,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     public void setRequestListener(RequestListener requestListener){
         this.requestListener = requestListener;
     }
+
 
     //################ ORGANIZATIONS ################
 
@@ -314,35 +310,44 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
 
     //################ ANIMAL ################
 
-    //Vai buscar todos os animais a BD
+    /**
+     * Get's all animals from the SQLiteDatabase
+     * @return
+     */
     public ArrayList<Animal> getAllAnimalsDB(){
         animals = organizationsDBHelper.getAllAnimalsDB();
         return animals;
     }
 
-    //Vai buscar um animal a BD
-    public Animal getAnimal(int id){
-        for (Animal animal : animals) {
-            if(animal.getId()== id){
-                return animal;
-            }
-        }
-        return null;
+    /**
+     * Get the animal with the id passed by parameter
+     * @param id
+     * @return
+     */
+    public Animal getAnimalBD(int id){
+        return organizationsDBHelper.getAnimalDB(id);
     }
 
-    //Insere um animal na BD
+    /**
+     * Insert's an animal into the SQLiteDatabase
+     * @param animal the animal to be inserted
+     */
     public void insertAnimalDB(Animal animal){
         organizationsDBHelper.insertAnimalDB(animal);
         System.out.println("--> Animal inserted successfully on the DB");
     }
 
+    /**
+     * Update's an aniamls on the SQLiteDatabase
+     * @param animal
+     */
     public void updateAnimalDB(Animal animal){
 
         if(!animals.contains(animal)){
             return;
         }
 
-        Animal auxAnimal =  getAnimal(animal.getId());
+        Animal auxAnimal =  getAnimalBD(animal.getId());
 
         auxAnimal.setId(animal.getId());
         auxAnimal.setName(animal.getName());
@@ -393,9 +398,12 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
 
     }
 
-    //Deleta um animal da BD
+    /**
+     * Delete's an animal from the SQLite Database
+     * @param id
+     */
     public void deleteAnimalDB(int id){
-        Animal animal = getAnimal(id);
+        Animal animal = getAnimalBD(id);
 
         if(animal != null){
             if(organizationsDBHelper.deleteAnimalDB(animal.getId())){
@@ -405,7 +413,10 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
         }
     }
 
-    //Insere todos os animais na tabela Animais
+    /**
+     * Inserts all animals into the SQLite Database
+     * @param animalsList
+     */
     public void insertAllAnimalsDB(ArrayList<Animal> animalsList){
         organizationsDBHelper.deleteAllAnimalsDB();
 
@@ -436,20 +447,21 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 @Override
                 public void onResponse(JSONArray response) {
                     organizations = JsonParser.toOrganizations(response);
-                    insertAllOrganizationsDB(organizations);
-
-                    if (organizationsListener != null) {
-                        organizationsListener.onRefreshOrganizationsList(organizations);
+                    if(organizations != null){
+                        insertAllOrganizationsDB(organizations);
+                        if (organizationsListener != null) {
+                            organizationsListener.onRefreshOrganizationsList(organizations);
+                        }
+                        System.out.println("--> Organizations: " + response);
+                    } else {
+                        requestListener.onRequestError("Erro ao fazer o parse das organizações");
                     }
-
-                    System.out.println("--> Organizations: " + response);
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-
                     System.out.println("--> Organizations: " + Arrays.toString(error.getStackTrace()));
+                    requestListener.onRequestError("Erro na obtenção das organizações: " + error.getMessage());
                 }
             });
             volleyQueue.add(request);
@@ -461,13 +473,20 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param organization
      * @param context
      */
-    public void insertOrganizationAPI(final Organization organization, final Context context){
-        StringRequest request = new StringRequest(Request.Method.POST, mUrlAPIOrganizations,
-            new Response.Listener<String>() {
+    public void insertOrganizationAPI(final Organization organization, final String token, final Context context){
+
+        JSONObject bodyParameters = this.getOrganizationParameters(organization);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, mUrlAPIOrganizations, bodyParameters,
+            new Response.Listener<JSONObject>() {
                 @Override
-                public void onResponse(String response) {
+                public void onResponse(JSONObject response) {
                     Organization auxOrg = JsonParser.toOrganization(response);
-                    onUpdateOrganizationsList(auxOrg, RockChisel.INSERT_DB);
+                    if(auxOrg != null){
+                        onUpdateOrganizationsList(auxOrg, RockChisel.INSERT_DB);
+                    } else{
+                        //TODO: do something
+                    }
                 }
             },
             new Response.ErrorListener() {
@@ -476,25 +495,14 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             })
-        {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("name", organization.getName());
-                params.put("nif", organization.getNif());
-                params.put("email", organization.getEmail());
-                params.put("phone", organization.getPhone());
-                params.put("address_id", "" + organization.getAddress_id());
-                params.put("street", organization.getStreet());
-                params.put("door_number", organization.getDoor_number());
-                params.put("floor", organization.getFloor());
-                params.put("postal_code", "" + organization.getPostal_code());
-                params.put("street_code", "" + organization.getStreet_code());
-                params.put("city", organization.getCity());
-                params.put("district_id", "" + organization.getDistrict_id());
-                params.put("district_name", organization.getDistrict_name());
-
-                return params;
+            {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Content-Type", "application/json");
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
             }
         };
         volleyQueue.add(request);
@@ -505,42 +513,38 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param organization
      * @param context
      */
-    public void updateOrganizationAPI(final Organization organization, final Context context){
-        StringRequest request = new StringRequest(Request.Method.PUT, mUrlAPIOrganizations + "/" + organization.getId(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Organization auxOrg = JsonParser.toOrganization(response);
-                        onUpdateOrganizationsList(auxOrg, RockChisel.UPDATE_DB);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-        {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("name", organization.getName());
-                params.put("nif", organization.getNif());
-                params.put("email", organization.getEmail());
-                params.put("phone", organization.getPhone());
-                params.put("address_id", "" + organization.getAddress_id());
-                params.put("street", organization.getStreet());
-                params.put("door_number", organization.getDoor_number());
-                params.put("floor", organization.getFloor());
-                params.put("postal_code", "" + organization.getPostal_code());
-                params.put("street_code", "" + organization.getStreet_code());
-                params.put("city", organization.getCity());
-                params.put("district_id", "" + organization.getDistrict_id());
-                params.put("district_name", organization.getDistrict_name());
+    public void updateOrganizationAPI(final Organization organization, final String token, final Context context) {
 
-                return params;
-            }
-        };
+        JSONObject bodyParameters = this.getOrganizationParameters(organization);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, mUrlAPIOrganizations + "/" + organization.getId(), bodyParameters,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Organization auxOrg = JsonParser.toOrganization(response);
+                    if(auxOrg != null){
+                        onUpdateOrganizationsList(auxOrg, RockChisel.UPDATE_DB);
+                    } else{
+                         //TODO: do something
+                     }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            })
+            {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Content-Type", "application/json");
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
         volleyQueue.add(request);
     }
 
@@ -549,7 +553,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param organization
      * @param context
      */
-    public void deleteOrganizationAPI(final Organization organization, final Context context){
+    public void deleteOrganizationAPI(final Organization organization, final String token, final Context context){
         StringRequest request = new StringRequest(Request.Method.DELETE, mUrlAPIOrganizations + "/" + organization.getId(),
                 new Response.Listener<String>() {
                     @Override
@@ -562,18 +566,58 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                });
+                })
+                {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        headers.put("Content-Type", "application/json");
+                        headers.put("Authorization", "Bearer " + token);
+                        return headers;
+                }
+        };
         volleyQueue.add(request);
+    }
+
+    /**
+     * Get's a JSON Object of the organization parameters
+     * @param organization the organizations paramenters to include
+     * @returns the organization parameters
+     */
+    public JSONObject getOrganizationParameters(Organization organization){
+        JSONObject params = new JSONObject();
+        try {
+            params.put("name", organization.getName());
+            params.put("nif", organization.getNif());
+            params.put("email", organization.getEmail());
+            params.put("phone", organization.getPhone());
+            params.put("address_id", "" + organization.getAddress_id());
+            params.put("street", organization.getStreet());
+            params.put("door_number", organization.getDoor_number());
+            params.put("floor", organization.getFloor());
+            params.put("postal_code", "" + organization.getPostal_code());
+            params.put("street_code", "" + organization.getStreet_code());
+            params.put("city", organization.getCity());
+            params.put("district_id", "" + organization.getDistrict_id());
+            params.put("district_name", organization.getDistrict_name());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return params;
     }
 
     //################ ANIMAL ################
 
-    //Vai buscar todos os animais há api
+    /**
+     * Get's all animals from the API
+     * @param context
+     */
     public void getAllAnimalsAPI(final Context context){
 
         if(!FortuneTeller.isThereInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
-
             //Carregar dados da base de dados
             if(animalListener != null){
                 animalListener.onRefreshAnimalsList(organizationsDBHelper.getAllAnimalsDB());
@@ -583,25 +627,62 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 @Override
                 public void onResponse(JSONArray response) {
                     animals = JsonParser.toAnimals(response);
-                    insertAllAnimalsDB(animals);
-
-                    if (animalListener != null) {
-                        animalListener.onRefreshAnimalsList(animals);
+                    if(animals != null){
+                        insertAllAnimalsDB(animals);
+                        if (animalListener != null) {
+                            animalListener.onRefreshAnimalsList(animals);
+                        }
+                        System.out.println("--> Animals: " + response);
+                    } else {
+                        requestListener.onRequestError("Erro ao obter lista de animais da API");
                     }
-
-                    System.out.println("--> Animals: " + response);
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-
-                    System.out.println("--> Animals: " + error.getStackTrace());
+                    requestListener.onRequestError("Erro ao obter a lista de animais da API");
+                    System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
                 }
             });
             volleyQueue.add(request);
         }
+    }
 
+    /**
+     * Get's one animal from teh API
+     * @param context
+     */
+    public void getAnimalAPI(final Context context){
+
+        if(!FortuneTeller.isThereInternetConnection(context)){
+            Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
+            //Carregar dados da base de dados
+            if(animalListener != null){
+                animalListener.onRefreshAnimalsList(organizationsDBHelper.getAllAnimalsDB());
+            }
+        } else{
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, mUrlAPIAnimals, null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Animal animal = JsonParser.toAnimal(response);
+                            if (animal != null) {
+                                //TODO:  fazer algo com o objeto
+
+                                System.out.println("--> Animals: " + response);
+                            } else {
+                                requestListener.onRequestError("Erro ao obter lista de animais da API");
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    requestListener.onRequestError("Erro ao obter a lista de animais da API");
+                    System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
+                }
+            });
+            volleyQueue.add(request);
+        }
     }
 
     /**
@@ -611,82 +692,39 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param context
      */
     public void insertAnimalAPI(final Animal animal, final String apiService, final String token, final Context context){
+        JSONObject bodyParameters = this.getAnimalParameters(animal, apiService);
 
-        JSONObject params = new JSONObject();
-
-        try{
-
-                params.put("name", animal.getName());
-
-
-                params.put("chipId", animal.getChipId());
-
-            params.put("description", animal.getDescription());
-            params.put("nature_id", animal.getNature_id());
-            params.put("fur_length_id", animal.getFur_length_id());
-            params.put("fur_color_id", animal.getFur_color_id());
-            params.put("size_id", animal.getSize_id());
-            params.put("sex", animal.getSex());
-            //params.put("photo", "" + animal.getPhoto());
-
-            switch(apiService){
-                case RockChisel.MISSING_ANIMALS_API_SERVICE:
-                    params.put("missing_date", "20201220");
-                    break;
-                case RockChisel.FOUND_ANIMALS_API_SERVICE:
-                    params.put("found_date", "20201220");
-                    params.put("street", animal.getFoundAnimal_street());
-                    params.put("city", animal.getFoundAnimal_city());
-                    params.put("district_id", animal.getFoundAnimal_district_id());
-                    break;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        final Animal[] auxAnimal = {null};
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_LOCAL_URL + apiService, params,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-
-                        switch (apiService){
-                            case RockChisel.MISSING_ANIMALS_API_SERVICE:
-                                auxAnimal[0] = JsonParser.missingAnimalToAnimal(response);
-                                break;
-                            case RockChisel.FOUND_ANIMALS_API_SERVICE:
-                                auxAnimal[0] = JsonParser.foundAnimalToAnimal(response);
-                                break;
-                        }
-
-                        if(auxAnimal[0] == null) {
-                            requestListener.onRequestError("Erro ao fazer parse da resposta");
-                        } else{
-                            onUpdateAnimalsList(auxAnimal[0], RockChisel.INSERT_DB);
-                            requestListener.onRequestSuccess();
-                        }
-
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_LOCAL_URL + apiService, bodyParameters,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Animal auxAnimal = JsonParser.toAnimal(response);
+                    if(auxAnimal != null) {
+                        onUpdateAnimalsList(auxAnimal, RockChisel.INSERT_DB);
+                        requestListener.onRequestSuccess("Animal inserido com sucesso");
+                    } else{
+                        requestListener.onRequestError("Erro ao inserir animal na API");
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String errormessage = error.getMessage();
-                        requestListener.onRequestError(errormessage);
-                    }
-                })
-                {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        HashMap<String, String> headers = new HashMap<String, String>();
-                        //headers.put("Content-Type", "application/json");
-                        headers.put("Authorization", "Bearer "+ token);
-                        return headers;
-                    }
-                };
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    String errormessage = error.getMessage();
+                    requestListener.onRequestError(errormessage);
+                    System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
+                }
+            })
+            {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Content-Type", "application/json");
+                    headers.put("Authorization", "Bearer "+ token);
+                    return headers;
+                }
+            };
         volleyQueue.add(request);
     }
 
@@ -696,85 +734,40 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param apiService specific animal service on the API
      * @param context
      */
-//    public void updateAnimalAPI(final Animal animal, final String apiService, final Context context){
-//
-//        StringRequest request = new StringRequest(Request.Method.PUT, API_LOCAL_URL + "/" + apiService + "/" + animal.getId(),
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Animal auxAnimal = null;
-//
-//                        switch (apiService){
-//                            case RockChisel.MISSING_ANIMALS_API_SERVICE:
-//                                auxAnimal = JsonParser.missingAnimalToAnimal(response);
-//                                break;
-//                            case RockChisel.FOUND_ANIMALS_API_SERVICE:
-//                                auxAnimal = JsonParser.missingAnimalToAnimal(response);
-//                                break;
-//
-//                        }
-//                        onUpdateAnimalsList(auxAnimal, RockChisel.UPDATE_DB);
-//
-//                        //TODO: update my animals list
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-//        {
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("id", "" + animal.getId());
-//                params.put("nature_id", "" + animal.getNature_id());
-//                params.put("nature_parent_id", "" + animal.getNature_parent_id());
-//                params.put("fur_length_id", "" + animal.getFur_length_id());
-//                params.put("fur_color_id", "" + animal.getFur_color_id());
-//                params.put("size_id", "" + animal.getSize_id());
-//                params.put("photo", "" + animal.getPhoto());
-//                params.put("publisher_id", "" + animal.getPublisher_id());
-//                params.put("organization_id", "" + animal.getOrganization_id());
-//                params.put("organization_nif", "" + animal.getOrganization_nif());
-//                params.put("organization_district_id", "" + animal.getOrganization_district_id());
-//                params.put("organization_address_id", "" + animal.getOrganization_address_id());
-//                params.put("organization_postal_code", "" + animal.getOrganization_postal_code());
-//                params.put("organization_street_code", "" + animal.getOrganization_street_code());
-//                params.put("foundAnimal_location_id", "" + animal.getFoundAnimal_location_id());
-//                params.put("foundAnimal_district_id", "" + animal.getFoundAnimal_district_id());
-//                params.put("is_fat;", "" + animal.getIs_fat());
-//
-//                params.put("chipId", "" + animal.getChipId());
-//                params.put("description", "" + animal.getDescription());
-//                params.put("nature_name", "" + animal.getNature_name());
-//                params.put("nature_parent_name", "" + animal.getNature_parent_name());
-//                params.put("fur_length", "" + animal.getFur_length());
-//                params.put("fur_color", "" + animal.getFur_color());
-//                params.put("size", "" + animal.getSize());
-//                params.put("sex", "" + animal.getSex());
-//                params.put("name", "" + animal.getName());
-//                params.put("type", "" + animal.getType());
-//                params.put("createAt", "" + animal.getCreateAt());
-//                params.put("publisher_name", "" + animal.getPublisher_name());
-//                params.put("missingFound_date", "" + animal.getMissingFound_date());
-//                params.put("organization_name", "" + animal.getOrganization_name());
-//                params.put("organization_email", "" + animal.getOrganization_email());
-//                params.put("organization_street", "" + animal.getOrganization_street());
-//                params.put("organization_city", "" + animal.getOrganization_city());
-//                params.put("organization_district_name", "" + animal.getOrganization_district_name());
-//                params.put("foundAnimal_street", "" + animal.getFoundAnimal_street());
-//                params.put("foundAnimal_city", "" + animal.getFoundAnimal_city());
-//                params.put("foundAnimal_district_name", "" + animal.getFoundAnimal_district_name());
-//                params.put("organization_door_number", "" + animal.getOrganization_door_number());
-//                params.put("organization_floor;", "" + animal.getOrganization_floor());
-//
-//                return params;
-//            }
-//        };
-//        volleyQueue.add(request);
-//    }
+    public void updateAnimalAPI(final Animal animal, final String apiService, final String token, final Context context){
+        JSONObject bodyParameters = this.getAnimalParameters(animal, apiService);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, API_LOCAL_URL + "/" + apiService + "/" + animal.getId(), bodyParameters,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Animal auxAnimal = JsonParser.toAnimal(response);
+                    if(auxAnimal != null){
+                        onUpdateAnimalsList(auxAnimal, RockChisel.UPDATE_DB);
+                        requestListener.onRequestSuccess("Animal atualizado com sucesso");
+                    } else {
+                        requestListener.onRequestError("Erro ao atualizar o animal");
+                    }
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            })
+            {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Content-Type", "application/json");
+                    headers.put("Authorization", "Bearer "+ token);
+                    return headers;
+            }
+        };
+        volleyQueue.add(request);
+    }
 
     /**
      * Send a request to the API to delete an animal
@@ -782,7 +775,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param apiService
      * @param context
      */
-    public void deleteOrganizationAPI(final Animal animal, final String apiService, final Context context){
+    public void deleteAnimalAPI(final Animal animal, final String apiService, final String token, final Context context){
         StringRequest request = new StringRequest(Request.Method.DELETE, API_LOCAL_URL + "/" + apiService + "/" + animal.getId(),
                 new Response.Listener<String>() {
                     @Override
@@ -799,6 +792,42 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     }
                 });
         volleyQueue.add(request);
+    }
+
+    /**
+     * Get's a JSON Object of the animal parameters
+     * @param animal
+     * @param apiService
+     * @return
+     */
+    public JSONObject getAnimalParameters(Animal animal, String apiService){
+        JSONObject params = new JSONObject();
+        try {
+            params.put("name", animal.getName());
+            params.put("chipId", animal.getChipId());
+            params.put("description", animal.getDescription());
+            params.put("nature_id", animal.getNature_id());
+            params.put("fur_length_id", animal.getFur_length_id());
+            params.put("fur_color_id", animal.getFur_color_id());
+            params.put("size_id", animal.getSize_id());
+            params.put("sex", animal.getSex());
+            //params.put("photo", "" + animal.getPhoto());
+            switch(apiService){
+                case RockChisel.MISSING_ANIMALS_API_SERVICE:
+                    params.put("missing_date", "20201220");
+                    break;
+                case RockChisel.FOUND_ANIMALS_API_SERVICE:
+                    params.put("found_date", "20201220");
+                    params.put("street", animal.getFoundAnimal_street());
+                    params.put("city", animal.getFoundAnimal_city());
+                    params.put("district_id", animal.getFoundAnimal_district_id());
+                    break;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return params;
     }
 
 
@@ -897,7 +926,11 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
         volleyQueue.add(request);
     }
 
-    // Criar novo utilizador na API
+    /**
+     * Method that creates a new user on the API
+     * @param userProfile
+     * @param context
+     */
     public void addUserAPI(final UserProfile userProfile, final Context context) {
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -951,14 +984,6 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     }
                 };
         volleyQueue.add(request);
-    }
-
-    // Converter para base64 username e password
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private String createBasicAuth(final String username, final String password) {
-        final String pair = username + ":" + password;
-
-        return "Basic " + Base64.encodeToString(pair.getBytes(), Base64.DEFAULT);
     }
 
 }

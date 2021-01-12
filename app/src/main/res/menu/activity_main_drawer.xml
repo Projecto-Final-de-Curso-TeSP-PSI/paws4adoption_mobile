@@ -23,6 +23,10 @@
                         android:id="@+id/navPostWanderingAnimal"/>
                     <item android:title="@string/postLostAnimal"
                     android:id="@+id/navPostLostAnimal"/>
+                    <item android:title="@string/update_missing_animal"
+                        android:id="@+id/navUpdateWanderingAnimal"/>
+                    <item android:title="@string/update_found_animal"
+                        android:id="@+id/navUpdateLostAnimal"/>
             </menu>
         </item>
 

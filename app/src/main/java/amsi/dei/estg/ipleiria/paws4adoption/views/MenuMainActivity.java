@@ -118,6 +118,20 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
                 break;
 
+            case R.id.navUpdateWanderingAnimal:
+                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MISSING_ANIMAL);
+                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
+                intent.putExtra(PostAnimalActivity.ANIMAL_ID, 2);
+                break;
+
+            case R.id.navUpdateLostAnimal:
+                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_FOUND_ANIMAL);
+                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
+                intent.putExtra(PostAnimalActivity.ANIMAL_ID, 13);
+                break;
+
             case R.id.navLogin:
                 if(FortuneTeller.isThereLoggedUser(getApplicationContext())){
                     Vault.clearPreferences(getApplicationContext(), RockChisel.USER_PREFERENCES);
