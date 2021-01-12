@@ -62,4 +62,21 @@ public class Vault {
         }
         return username;
     }
+
+    /**
+     * Get's the auth token of the logged user
+     * @param context
+     * @return teh token
+     */
+    public static String getAuthToken(Context context) {
+        String token;
+        try{
+            SharedPreferences sharedPreferences = context.getSharedPreferences(RockChisel.USER_PREFERENCES, Context.MODE_PRIVATE);
+            token = sharedPreferences.getString(RockChisel.TOKEN, null);
+        } catch(Exception e){
+            return null;
+        }
+        return token;
+    }
+
 }

@@ -451,6 +451,64 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Get's one animal fro teh DataBase
+     * @return
+     */
+    public Animal getAnimalDB(int id){
+
+        Animal auxAnimal = new Animal();
+
+        Cursor cursor = this.sqLiteDatabase.query(ANIMAL_TABLE_NAME, new String[]{
+                ID, NAME, CHIP_ID, NATURE_ID, NATURE_NAME, NATURE_PARENT_ID, NATURE_PARENT_NAME, FUR_LENGTH_ID, FUR_LENGTH, FUR_COLOR_ID, FUR_COLOR, SIZE_ID, SIZE, SEX, DESCRIPTION, CREATE_AT, PHOTO, TYPE, PUBLISHER_ID, PUBLISHER_NAME, IS_FAT, MISSING_FOUND_DATE, FOUND_ANIMAL_LOCATION_ID, FOUND_ANIMAL_STREET, FOUND_ANIMAL_CITY, FOUND_ANIMAL_DISTRICT_ID, FOUND_ANIMAL_DESTRICT_NAME, ORGANIZATION_ID, ORGANIZATION_NAME, ORGANIZATION_NIF, ORGANIZATION_EMAIL, ORGANIZATION_ADDRESS_ID, ORGANIZATION_STREET, ORGANIZATION_DOOR_NUMBER, ORGANIZATION_FLOOR, ORGANIZATION_CITY, ORGANIZATION_POSTAL_CODE,ORGANIZATION_STREET_CODE, ORGANIZATION_DISTRICT_ID, ORGANIZATION_DISTRICT_NAME
+        }, ID + "=" + id, null, null, null, null, null);
+
+                auxAnimal = new Animal(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getInt(3),
+                        cursor.getString(4),
+                        cursor.getInt(5),
+                        cursor.getString(6),
+                        cursor.getInt(7),
+                        cursor.getString(8),
+                        cursor.getInt(9),
+                        cursor.getString(10),
+                        cursor.getInt(11),
+                        cursor.getString(12),
+                        cursor.getString(13),
+                        cursor.getString(14),
+                        cursor.getString(15),
+                        cursor.getInt(16),
+                        cursor.getString(17),
+                        cursor.getInt(18),
+                        cursor.getString(19),
+                        cursor.getInt(20),
+                        cursor.getString(21),
+                        cursor.getInt(22),
+                        cursor.getString(23),
+                        cursor.getString(24),
+                        cursor.getInt(25),
+                        cursor.getString(26),
+                        cursor.getInt(27),
+                        cursor.getString(28),
+                        cursor.getInt(29),
+                        cursor.getString(30),
+                        cursor.getInt(31),
+                        cursor.getString(32),
+                        cursor.getString(33),
+                        cursor.getString(34),
+                        cursor.getString(35),
+                        cursor.getInt(36),
+                        cursor.getInt(37),
+                        cursor.getInt(38),
+                        cursor.getString(39)
+                );
+
+        return auxAnimal;
+    }
+
+    /**
      * Deletes all organizations from the organizations table
      *
      */

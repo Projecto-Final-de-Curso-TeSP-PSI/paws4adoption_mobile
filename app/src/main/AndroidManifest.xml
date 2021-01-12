@@ -5,8 +5,17 @@
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" /> <!-- Permissions for camera usage -->
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- Permissions for location usage -->
+        android:required="false" />
+
+    <!--Permissions for read and write external storage-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+    <!--Permissions for camera usage-->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!--Permissions for location usage-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Permissions for internet access -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -19,7 +28,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
+
+        android:requestLegacyExternalStorage="true"
+
+        android:usesCleartextTraffic = "true"
         tools:targetApi="m">
         <activity
             android:name=".views.MenuMainActivity"
@@ -38,17 +50,29 @@
             android:parentActivityName=".views.MenuMainActivity" />
         <activity android:name=".views.SubmRequestActivity" />
         <activity android:name=".views.AnimalDetailsActivity" />
-        <activity android:name=".OrgDetailActivity" />
-        <activity
-            android:name=".views.OrganizationDetailsActivity"
-            android:parentActivityName=".views.MenuMainActivity" />
-        <activity
-            android:name=".views.LoginActivity"
-            android:parentActivityName=".views.MenuMainActivity" />
+
+        <activity android:name=".views.OrganizationDetailsActivity"
+            android:parentActivityName=".views.MenuMainActivity"/>
+
+        <activity android:name=".views.LoginActivity"
+            android:parentActivityName=".views.MenuMainActivity"/>
+
         <activity android:name=".views.UserProfileActivity" />
         <activity android:name=".views.SignupActivity" />
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <service android:name=".services.FetchAddressIntentService" />
     </application>
+
+
 
 </manifest>

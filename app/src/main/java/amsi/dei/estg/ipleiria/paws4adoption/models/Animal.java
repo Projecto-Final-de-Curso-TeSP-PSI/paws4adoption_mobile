@@ -55,6 +55,49 @@ public class Animal {
 
     //############################################# Construtor Animal ##################################################
 
+    /**
+     * Animal constructor
+     * @param id
+     * @param name
+     * @param chipId
+     * @param nature_id
+     * @param nature_name
+     * @param nature_parent_id
+     * @param nature_parent_name
+     * @param fur_length_id
+     * @param fur_length
+     * @param fur_color_id
+     * @param fur_color
+     * @param size_id
+     * @param size
+     * @param sex
+     * @param description
+     * @param createAt
+     * @param photo
+     * @param type
+     * @param publisher_id
+     * @param publisher_name
+     * @param is_fat
+     * @param missingFound_date
+     * @param foundAnimal_location_id
+     * @param foundAnimal_street
+     * @param foundAnimal_city
+     * @param foundAnimal_district_id
+     * @param foundAnimal_district_name
+     * @param organization_id
+     * @param organization_name
+     * @param organization_nif
+     * @param organization_email
+     * @param organization_address_id
+     * @param organization_street
+     * @param organization_door_number
+     * @param organization_floor
+     * @param organization_city
+     * @param organization_postal_code
+     * @param organization_street_code
+     * @param organization_district_id
+     * @param organization_district_name
+     */
     public Animal(Integer id, String name, String chipId, Integer nature_id, String nature_name, Integer nature_parent_id, String nature_parent_name, Integer fur_length_id, String fur_length, Integer fur_color_id, String fur_color, Integer size_id, String size, String sex, String description, String createAt, Integer photo, String type, Integer publisher_id, String publisher_name, Integer is_fat, String missingFound_date, Integer foundAnimal_location_id, String foundAnimal_street, String foundAnimal_city, Integer foundAnimal_district_id, String foundAnimal_district_name, Integer organization_id, String organization_name, Integer organization_nif, String organization_email, Integer organization_address_id, String organization_street, String organization_door_number, String organization_floor, String organization_city, Integer organization_postal_code, Integer organization_street_code, Integer organization_district_id, String organization_district_name
 
     ) {
@@ -98,6 +141,10 @@ public class Animal {
         this.organization_street_code = organization_street_code;
         this.organization_district_id = organization_district_id;
         this.organization_district_name = organization_district_name;
+    }
+
+    public Animal() {
+        //empty constructor
     }
 
     public Integer getId() {

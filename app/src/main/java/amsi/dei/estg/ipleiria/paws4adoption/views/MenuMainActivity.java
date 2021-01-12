@@ -25,6 +25,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
 public class MenuMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static String token;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private FragmentManager fragmentManager;
@@ -100,21 +101,46 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 fragment = new MainFragment();
                 setTitle("Home");
                 break;
+
             case R.id.navSearchAnimals:
                 fragment = new ListAdoptionAnimalsFragment();
                 setTitle(menuItem.getTitle());
                 break;
+
             case R.id.navSearchAssociations:
                 fragment = new ListOrganizationsFragment();
                 setTitle(menuItem.getTitle());
                 break;
+
             case R.id.navMyAnimals:
                 break;
+
             case R.id.navPostWanderingAnimal:
                 intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_FOUND_ANIMAL);
+                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
                 break;
+
             case R.id.navPostLostAnimal:
+                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MISSING_ANIMAL);
+                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
                 break;
+
+            case R.id.navUpdateWanderingAnimal:
+                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MISSING_ANIMAL);
+                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
+                intent.putExtra(PostAnimalActivity.ANIMAL_ID, 2);
+                break;
+
+            case R.id.navUpdateLostAnimal:
+                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_FOUND_ANIMAL);
+                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
+                intent.putExtra(PostAnimalActivity.ANIMAL_ID, 13);
+                break;
+
             case R.id.navLogin:
                 if(FortuneTeller.isThereLoggedUser(getApplicationContext())){
                     Vault.clearPreferences(getApplicationContext(), RockChisel.USER_PREFERENCES);

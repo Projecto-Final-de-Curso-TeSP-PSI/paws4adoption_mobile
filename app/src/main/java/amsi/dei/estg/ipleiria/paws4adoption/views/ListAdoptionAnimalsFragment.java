@@ -81,4 +81,9 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
     public void onUpdateAnimalsList(Animal animal, int operation) {
 
     }
+
+    @Override
+    public void onGetAnimalAPI(Animal animal) {
+
+    }
 }

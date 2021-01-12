@@ -1,14 +1,34 @@
 package amsi.dei.estg.ipleiria.paws4adoption.utils;
 
+import android.graphics.Bitmap;
+import android.util.Base64;
+import android.widget.DatePicker;
+
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.common.api.Api;
 
+import java.util.Calendar;
 import java.util.Optional;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import amsi.dei.estg.ipleiria.paws4adoption.views.LoginActivity;
 
 /**
  * Class tha implements several static method that iun one way or another works as tools
  */
 public class Wrench {
+
+    public static String getStringImage(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
+    }
 
     /**
      * Purifies a given string from null values to an String
@@ -49,6 +69,38 @@ public class Wrench {
     public static String encode(String before, String str, String after) {
             return (before == null ? "" : before) + (str == null ? "" : str)  + (after == null ? "" : after);
     }
+
+    /**
+     * Get a date from date picker
+     * @param datePicker
+     * @return
+     */
+    public static Date getDateFromDatePicker(DatePicker datePicker){
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year =  datePicker.getYear();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+
+        return calendar.getTime();
+    }
+
+    public static boolean isNull(String str) {
+        if (str == null || str.length() == 0 || str.equals("null"))
+            return true;
+
+        return false;
+    }
+
+    public static boolean isNotNull(String str) {
+        if (str == null || str.length() == 0 || str.equals("null"))
+            return false;
+
+        return true;
+    }
+
+
 
 }
 
