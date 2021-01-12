@@ -13,9 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.icu.number.NumberRangeFormatter;
 import android.location.Location;
-import android.media.MediaRouter2;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +24,7 @@ import android.os.Looper;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,7 +32,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SimpleCursorAdapter;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +42,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.xml.sax.helpers.AttributesImpl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,11 +57,9 @@ import java.util.List;
 
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
-import amsi.dei.estg.ipleiria.paws4adoption.listeners.RequestListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
-import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.services.FetchAddressIntentService;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
@@ -76,6 +71,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     private static final int GALLERY_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
     private static final int LOCATION_REQUEST = 3;
+
+    private static final int MALE = 'M';
+    private static final int FEMALE = 'F';
 
     //################ EXTRA ################
     public static final String SCENARIO = "scenario";
@@ -94,21 +92,22 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     private Button btnLocation;
     private FloatingActionButton fab;
 
+    private NumberPicker npId;
     private EditText etName;
     private EditText etChipId;
     private EditText etDescription;
 
-    ArrayAdapter<Attribute> dataAdapterNature;
+    ArrayAdapter<Attribute> dataAdapterNature = null;
     private Spinner spNature;
-    ArrayAdapter<Attribute> dataAdapterBreed;
+    ArrayAdapter<Attribute> dataAdapterBreed = null;
     private Spinner spBreed;
-    ArrayAdapter<Attribute> dataAdapterFurLength;
+    ArrayAdapter<Attribute> dataAdapterFurLength = null;
     private Spinner spFurLength;
-    ArrayAdapter<Attribute> dataAdapterFurColor;
+    ArrayAdapter<Attribute> dataAdapterFurColor = null;
     private Spinner spFurColor;
-    ArrayAdapter<Attribute> dataAdapterSize;
+    ArrayAdapter<Attribute> dataAdapterSize = null;
     private Spinner spSize;
-    ArrayAdapter<Attribute> dataAdapterSex;
+    ArrayAdapter<Attribute> dataAdapterSex = null;
     private Spinner spSex;
 
     private EditText etMissingFoundDate;
@@ -127,6 +126,8 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     double latitude;
     double longitude;
 
+    boolean onTouch = false;
+
     private String currentPhotoPath;
 
     /**
@@ -144,14 +145,14 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
         importGraphicalElements();
 
-        implementListeners();
+        if(action.equals(RockChisel.ACTION_CREATE)){
+            implementListeners();
+        }
 
         initAttributesSpinners();
 
         SingletonPawsManager.getInstance(getApplicationContext()).setAttributeListener(this);
         SingletonPawsManager.getInstance(getApplicationContext()).setAnimalListener(this);
-
-        //SingletonPawsManager.getInstance(getApplicationContext()).setRequestListener(this);
 
         setScenario();
 
@@ -169,6 +170,8 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         llFoundAnimal = findViewById(R.id.llFoundAnimal);
 
         ivPhoto = findViewById(R.id.ivPhoto);
+
+        npId = findViewById(R.id.npId);
 
         etName = findViewById(R.id.etName);
         etChipId = findViewById(R.id.etChipId);
@@ -209,12 +212,26 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
      */
     private void implementListeners(){
 
+        spNature.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                onTouch = true;
+                return true;
+            }
+        });
+
         spNature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
+                if(!onTouch)
+                    return;
+                onTouch = false;
+
                 Attribute att = (Attribute) spNature.getItemAtPosition(i);
                 Integer att_id = att.getId();
+
+
                 if(att_id == -1){
                     return;
                 }
@@ -226,6 +243,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
+
         });
 
         btnUploadPhoto.setOnClickListener(new View.OnClickListener() {
@@ -294,16 +312,30 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                     return;
                 }
 
-                switch(scenario){
-                    case RockChisel.SCENARIO_MISSING_ANIMAL:
-                        SingletonPawsManager.getInstance(getApplicationContext())
-                                .insertAnimalAPI(newAnimalPost, RockChisel.MISSING_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()),  getApplicationContext());
+
+                switch(action){
+                    case RockChisel.ACTION_CREATE:
+                        switch(scenario){
+                            case RockChisel.SCENARIO_MISSING_ANIMAL:
+                                SingletonPawsManager.getInstance(getApplicationContext()).insertAnimalAPI(newAnimalPost, RockChisel.MISSING_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()),  getApplicationContext());
+                                break;
+                            case RockChisel.SCENARIO_FOUND_ANIMAL:
+                                SingletonPawsManager.getInstance(getApplicationContext()).insertAnimalAPI(newAnimalPost, RockChisel.FOUND_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()), getApplicationContext());
+                                break;
+                        }
                         break;
-                    case RockChisel.SCENARIO_FOUND_ANIMAL:
-                        SingletonPawsManager.getInstance(getApplicationContext())
-                                .insertAnimalAPI(newAnimalPost, RockChisel.FOUND_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()), getApplicationContext());
+                    case RockChisel.ACTION_UPDATE:
+                        switch(scenario){
+                            case RockChisel.SCENARIO_MISSING_ANIMAL:
+                                SingletonPawsManager.getInstance(getApplicationContext()).updateAnimalAPI(newAnimalPost, RockChisel.MISSING_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()),  getApplicationContext());
+                                break;
+                            case RockChisel.SCENARIO_FOUND_ANIMAL:
+                                SingletonPawsManager.getInstance(getApplicationContext()).updateAnimalAPI(newAnimalPost, RockChisel.FOUND_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()), getApplicationContext());
+                                break;
+                        }
                         break;
                 }
+
             }
         });
 
@@ -408,6 +440,10 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 return null;
             }
 
+            if(action.equals(RockChisel.ACTION_UPDATE)){
+                newAnimalPost.setId(animal_id);
+            }
+
             newAnimalPost.setName(name);
             newAnimalPost.setChipId(chipId);
             newAnimalPost.setDescription(description);
@@ -453,13 +489,11 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
      */
 
     public void initAttributesSpinners(){
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_LENGTH, RockChisel.ATTR_FUR_LENGTH_SYMLINK, null);
-
-        //SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, null);
-
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_COLOR, RockChisel.ATTR_FUR_COLOR_SYMLINK, null);
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SIZE, RockChisel.ATTR_SIZE_SYMLINK, null);
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
-        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_COLOR, RockChisel.ATTR_FUR_COLOR_SYMLINK, null);
-        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_COLOR, RockChisel.ATTR_FUR_COLOR_SYMLINK, null);
     }
 
     public void fillAnimal(Animal animal) {
@@ -468,12 +502,28 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             etName.setText(animal.getName());
             etChipId.setText(String.format("%s", animal.getChipId()));
             etDescription.setText(animal.getDescription());
-            spNature.setSelection(getSpinnerPosition(animal.getNature_parent_id(), spNature));
-            spBreed.setSelection(getSpinnerPosition(animal.getNature_id(), spBreed));
-            spFurColor.setSelection(getSpinnerPosition(animal.getFur_color_id(), spFurColor));
-            spFurLength.setSelection(getSpinnerPosition(animal.getFur_length_id(), spFurLength));
-            spSize.setSelection(getSpinnerPosition(animal.getSize_id(), spSize));
-            spSex.setSelection(getSpinnerPosition(animal.getSex().equals("M") ? 0 : 1, spSex));
+
+            int natureSelectedItem = getSpinnerAttributteID(spNature, animal.getNature_parent_id());
+            spNature.setSelection(natureSelectedItem);
+
+            int breedSelectedItem = getSpinnerAttributteID(spBreed, animal.getNature_id());
+            spBreed.setSelection(breedSelectedItem);
+
+            int furcolorSelectedItem = getSpinnerAttributteID(spFurColor, animal.getFur_color_id());
+            spFurColor.setSelection(furcolorSelectedItem);
+
+            int furlengthSelectedItem = getSpinnerAttributteID(spFurLength, animal.getFur_length_id());
+            spFurLength.setSelection(furlengthSelectedItem);
+
+            int sizeSelectedItem = getSpinnerAttributteID(spSize, animal.getSize_id());
+            spSize.setSelection(sizeSelectedItem);
+
+            if(animal.getSex().equals(MALE)){
+                spSex.setSelection(0);
+            } else {
+                spSex.setSelection(1);
+            }
+
             //animal.setPhoto();
 
             etMissingFoundDate.setText(animal.getMissingFound_date());
@@ -481,7 +531,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
                 etLocationStreet.setText(animal.getFoundAnimal_street());
                 etLocationCity.setText(animal.getFoundAnimal_city());
-                spLocationDistrict.setSelection(getSpinnerPosition(animal.getNature_id(), spLocationDistrict));
+
+                int locationDistrictSelectedItem = getSpinnerAttributteID(spLocationDistrict, animal.getFoundAnimal_district_id());
+                spLocationDistrict.setSelection(locationDistrictSelectedItem);
             }
 
         } catch(Exception e){
@@ -492,17 +544,11 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     }
 
-    /**
-     * Get's teh position of one Attribute on the spinner
-     * @param item_id the item id to search for
-     * @param spinner the spinner where to search
-     * @return teh i
-     */
-    public static int getSpinnerPosition(int item_id, Spinner spinner) {
-        SimpleCursorAdapter adapter = (SimpleCursorAdapter) spinner.getAdapter();
-        for (int i = 0; i < adapter.getCount(); i++) {
-            Attribute auxAttribute = (Attribute)adapter.getItem(i);
-            if(auxAttribute.getId() == item_id) {
+
+    private int getSpinnerAttributteID(Spinner spNature, int item_id) {
+        for (int i = 0; i < spNature.getCount(); i++) {
+            Attribute auxAttribute = (Attribute)spNature.getItemAtPosition(i);
+            if(auxAttribute.getId().equals(item_id)) {
                 return i;
             }
         }
@@ -759,45 +805,38 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         switch(attributeType){
             case RockChisel.ATTR_SPECIE:
                 initSpinner(dataAdapterNature, spNature, "Selecione a espécie", attributes);
-//                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_LENGTH, RockChisel.ATTR_FUR_LENGTH_SYMLINK, null);
+                afterAttributte();
                 break;
 
             case RockChisel.ATTR_SUBSPECIE:
-                initSpinner(dataAdapterBreed, spBreed, "Selecione a sub espécie", attributes);
 
-//                if(action.equals(RockChisel.ACTION_UPDATE)){
-//                    SingletonPawsManager.getInstance(getApplicationContext()).getAnimalAPI(getApplicationContext(), animal_id);
-//                }
+                boolean initAnimal = spBreed.getCount() == 0 && action.equals(RockChisel.ACTION_UPDATE);
+                initSpinner(dataAdapterBreed, spBreed, "Selecione a sub espécie", attributes);
+                if(initAnimal) {
+                    fillAnimal(editAnimal);
+                    implementListeners();
+                }
+
                 break;
 
             case RockChisel.ATTR_FUR_LENGTH:
-                initSpinner(dataAdapterFurLength, spFurLength, "Selecione o tipo de pelagem", attributes);
-//                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_COLOR, RockChisel.ATTR_FUR_COLOR_SYMLINK, null);
+                initSpinner(dataAdapterFurLength, spFurLength, getString(R.string.select_furlength), attributes);
+                afterAttributte();
                 break;
 
             case RockChisel.ATTR_FUR_COLOR:
                 initSpinner(dataAdapterFurColor, spFurColor, "Selecione a cor da pelagem", attributes);
-//                SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SIZE, RockChisel.ATTR_SIZE_SYMLINK, null);
+                afterAttributte();
                 break;
 
             case RockChisel.ATTR_SIZE:
                 initSpinner(dataAdapterSize, spSize, "Selecione o porte", attributes);
-
-//                if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
-//                    SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
-//                } else{
-//                    if(action.equals(RockChisel.ACTION_UPDATE))
-//                        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, editAnimal.getNature_parent_id());
-//                }
-
+                afterAttributte();
                 break;
 
             case RockChisel.ATTR_DISTRICT:
                 initSpinner(dataAdapterLocationDistrict, spLocationDistrict, "Selecione o distrito", attributes);
-
-//                if(action.equals(RockChisel.ACTION_UPDATE)){
-//                    SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, editAnimal.getNature_parent_id());
-//                }
+                afterAttributte();
                 break;
         }
 
@@ -821,27 +860,40 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             spinnerArrayAdapter = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, listAttributes);
             spinnerArrayAdapter.add(promptObject);
         }
+
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerArrayAdapter);
         spinner.setSelection(spinnerArrayAdapter.getPosition(promptObject));
     }
 
+    private void afterAttributte(){
+        boolean natureCount = spNature.getCount() > 0;
+        boolean furcolorCount = spFurColor.getCount() > 0;
+        boolean furlengthCount = spFurLength.getCount() > 0;
+        boolean sizeCount = spSize.getCount() > 0;
+        boolean locationDistrictCount = spLocationDistrict.getCount() > 0;
 
+        if(natureCount && furcolorCount && furlengthCount && sizeCount && locationDistrictCount)
+        {
+            SingletonPawsManager.getInstance(getApplicationContext()).getAnimalAPI(getApplicationContext(), animal_id);
+        }
+    }
 
     @Override
     public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
-
+        int a = 1;
     }
 
     @Override
     public void onUpdateAnimalsList(Animal animal, int operation) {
-
+        int a = 2;
     }
 
     @Override
     public void onGetAnimalAPI(Animal animal) {
         this.editAnimal = animal;
-        fillAnimal(editAnimal);
+        //fillAnimal(editAnimal);
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, animal.getNature_parent_id());
     }
 }
 

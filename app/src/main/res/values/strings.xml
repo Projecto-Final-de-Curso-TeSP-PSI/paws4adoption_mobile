@@ -87,5 +87,6 @@
     <string name="insert_city">Introduza a cidade</string>
     <string name="update_missing_animal">Editar Animal Perdido</string>
     <string name="update_found_animal">Editar Animal Perdido</string>
+    <string name="select_furlength">Selecione o tipo de pelagem</string>
 
 </resources>

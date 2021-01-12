@@ -37,6 +37,12 @@
                 android:text="@string/upload_picture"
                 android:textColor="@android:color/white" />
 
+            <NumberPicker
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/npId"
+                android:visibility="gone" />
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,7 +62,6 @@
                 android:hint="@string/id_chip"
                 android:id="@+id/etChipId"
                 android:autofillHints="no"/>
-
 
             <EditText
                 android:id="@+id/etDescription"

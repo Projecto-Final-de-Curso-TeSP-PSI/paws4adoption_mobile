@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 //import java.util.Base64;
 
+import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.widget.Toast;
 
@@ -43,8 +44,8 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 public class SingletonPawsManager implements OrganizationsListener, AnimalListener{
 
     //API local address (may change each time you start your machine)
-    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
-    //private static final String COMPUTER_LOCAL_IP = "192.168.1.65";
+//    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
+    private static final String COMPUTER_LOCAL_IP = "10.20.228.42";
     //private static final String COMPUTER_LOCAL_IP = "192.168.1.70";
 //    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
 
@@ -347,6 +348,10 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param animal
      */
     public void updateAnimalDB(Animal animal){
+
+        if(animals == null){
+            return;
+        }
 
         if(!animals.contains(animal)){
             return;
@@ -671,27 +676,28 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             }
         }
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, mUrlAPIAnimals + "/" + animal_id, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Animal animal = JsonParser.toAnimal(response);
-                            if (animal != null) {
-                                if(animalListener != null){
-                                    animalListener.onGetAnimalAPI(animal);
-                                }
-                                System.out.println("--> Animals: " + response);
-                            } else {
-                                //requestListener.onRequestError("Erro ao obter lista de animais da API");
-                                Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Animal animal = JsonParser.toAnimal(response);
+                        if (animal != null) {
+                            if(animalListener != null){
+                                animalListener.onGetAnimalAPI(animal);
                             }
+                            System.out.println("--> Animals: " + response);
+                        } else {
+                            //requestListener.onRequestError("Erro ao obter lista de animais da API");
+                            Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                         }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    //requestListener.onRequestError("Erro ao obter a lista de animais da API");
-                    Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
-                    System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
-                }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //requestListener.onRequestError("Erro ao obter a lista de animais da API");
+                        Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
+                        System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
+                    }
             });
             volleyQueue.add(request);
     }
@@ -703,7 +709,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param context
      */
     public void insertAnimalAPI(final Animal animal, final String apiService, final String token, final Context context){
-        JSONObject bodyParameters = this.getAnimalParameters(animal, apiService);
+        JSONObject bodyParameters = this.getAnimalParameters(animal, apiService, RockChisel.ACTION_CREATE);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_LOCAL_URL + apiService, bodyParameters,
             new Response.Listener<JSONObject>() {
@@ -727,7 +733,8 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     String errormessage = error.getMessage();
-                    requestListener.onRequestError(errormessage);
+                    //requestListener.onRequestError(errormessage);
+                    Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                     System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
                 }
             })
@@ -751,9 +758,10 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param context
      */
     public void updateAnimalAPI(final Animal animal, final String apiService, final String token, final Context context){
-        JSONObject bodyParameters = this.getAnimalParameters(animal, apiService);
+        JSONObject bodyParameters = this.getAnimalParameters(animal, apiService, RockChisel.ACTION_UPDATE);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, API_LOCAL_URL + "/" + apiService + "/" + animal.getId(), bodyParameters,
+        String serviceUrl = API_LOCAL_URL + apiService + "/" + animal.getId();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, serviceUrl, bodyParameters,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -764,6 +772,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                         if (animalListener != null) {
                             animalListener.onRefreshAnimalsList(animals);
                         }
+
+                        Toast.makeText(context, "Animal atualizado com sucesso", Toast.LENGTH_SHORT).show();
+
                         //requestListener.onRequestSuccess("Animal atualizado com sucesso");
                     } else {
                         //requestListener.onRequestError("Erro ao atualizar o animal");
@@ -824,9 +835,12 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param apiService
      * @return
      */
-    public JSONObject getAnimalParameters(Animal animal, String apiService){
+    public JSONObject getAnimalParameters(Animal animal, String apiService, @Nullable String actionType){
         JSONObject params = new JSONObject();
         try {
+            if(actionType == RockChisel.ACTION_UPDATE){
+                params.put("id", animal.getId());
+            }
             params.put("name", animal.getName());
             params.put("chipId", animal.getChipId());
             params.put("description", animal.getDescription());
