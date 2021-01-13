@@ -99,5 +99,6 @@
     <string name="update_missing_animal">Editar Animal Perdido</string>
     <string name="update_found_animal">Editar Animal Perdido</string>
     <string name="select_furlength">Selecione o tipo de pelagem</string>
+    <string name="error_received_message">Erro na mensagem recebida</string>
 
 </resources>

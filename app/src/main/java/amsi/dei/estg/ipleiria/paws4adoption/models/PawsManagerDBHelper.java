@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
-public class OrganizationsDBHelper extends SQLiteOpenHelper {
+public class PawsManagerDBHelper extends SQLiteOpenHelper {
 
     //Tables name declaration
     private static final String TABLE_NAME = "organizations";
@@ -88,7 +88,7 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
      * Constructor for this class
      * @param context
      */
-    public OrganizationsDBHelper(Context context){
+    public PawsManagerDBHelper(Context context){
         super(context, RockChisel.DB_NAME, null, RockChisel.DB_VERSION);
         this.sqLiteDatabase = this.getReadableDatabase();
     }
@@ -456,7 +456,7 @@ public class OrganizationsDBHelper extends SQLiteOpenHelper {
      */
     public Animal getAnimalDB(int id){
 
-        Animal auxAnimal = new Animal();
+        Animal auxAnimal = null;
 
         Cursor cursor = this.sqLiteDatabase.query(ANIMAL_TABLE_NAME, new String[]{
                 ID, NAME, CHIP_ID, NATURE_ID, NATURE_NAME, NATURE_PARENT_ID, NATURE_PARENT_NAME, FUR_LENGTH_ID, FUR_LENGTH, FUR_COLOR_ID, FUR_COLOR, SIZE_ID, SIZE, SEX, DESCRIPTION, CREATE_AT, PHOTO, TYPE, PUBLISHER_ID, PUBLISHER_NAME, IS_FAT, MISSING_FOUND_DATE, FOUND_ANIMAL_LOCATION_ID, FOUND_ANIMAL_STREET, FOUND_ANIMAL_CITY, FOUND_ANIMAL_DISTRICT_ID, FOUND_ANIMAL_DESTRICT_NAME, ORGANIZATION_ID, ORGANIZATION_NAME, ORGANIZATION_NIF, ORGANIZATION_EMAIL, ORGANIZATION_ADDRESS_ID, ORGANIZATION_STREET, ORGANIZATION_DOOR_NUMBER, ORGANIZATION_FLOOR, ORGANIZATION_CITY, ORGANIZATION_POSTAL_CODE,ORGANIZATION_STREET_CODE, ORGANIZATION_DISTRICT_ID, ORGANIZATION_DISTRICT_NAME

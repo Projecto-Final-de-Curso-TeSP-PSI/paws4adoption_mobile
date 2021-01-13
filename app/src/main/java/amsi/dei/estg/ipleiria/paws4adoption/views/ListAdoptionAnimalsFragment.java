@@ -3,36 +3,32 @@ package amsi.dei.estg.ipleiria.paws4adoption.views;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SearchView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListAnimalsAdapter;
-import amsi.dei.estg.ipleiria.paws4adoption.adapters.OrganizationListAdapter;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
-import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
 
 public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AnimalListener {
 
-    private ListView lvListAdoptionAnimal;
+    //################ INTENT PARAMETERS ################
+    private static final String scenario = null;
+    private static final String animal_type = RockChisel.ADOPTION_ANIMAL;
 
+    private ListView lvListAdoptionAnimal;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -52,7 +48,8 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
                 System.out.println("--> " + hasAnimal.getName());
 
                 Intent intent = new Intent(getContext(), AnimalDetailsActivity.class);
-                intent.putExtra(AnimalDetailsActivity.ANIMAL_DETAILS, hasAnimal.getId());
+                intent.putExtra(AnimalDetailsActivity.ANIMAL_ID, hasAnimal.getId());
+                intent.putExtra(AnimalDetailsActivity.SCENARIO, hasAnimal.getType());
                 startActivity(intent);
             }
         });

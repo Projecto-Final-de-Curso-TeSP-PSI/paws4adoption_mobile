@@ -5,7 +5,6 @@ import android.content.Context;
 import java.util.ArrayList;
 //import java.util.Base64;
 
-import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.widget.Toast;
 
@@ -17,7 +16,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -75,7 +73,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     RequestListener requestListener;
 
     //BD Helper's declaration
-    OrganizationsDBHelper organizationsDBHelper;
+    PawsManagerDBHelper organizationsDBHelper;
 
     //Endpoints for requests
     private static final String mUrlAPILogin = API_LOCAL_URL + "users/token";
@@ -107,7 +105,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param context
      */
     private SingletonPawsManager(Context context) {
-        this.organizationsDBHelper = new OrganizationsDBHelper(context);
+        this.organizationsDBHelper = new PawsManagerDBHelper(context);
     }
 
 
@@ -643,6 +641,8 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     if(animals != null){
                         insertAllAnimalsDB(animals);
                         if (animalListener != null) {
+
+
                             animalListener.onRefreshAnimalsList(animals);
                         }
                         System.out.println("--> Animals: " + response);
@@ -673,7 +673,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
             //Carregar dados da base de dados
             if(animalListener != null){
-                animalListener.onRefreshAnimalsList(organizationsDBHelper.getAllAnimalsDB());
+                animalListener.onGetAnimalAPI(organizationsDBHelper.getAnimalDB(animal_id));
             }
         }
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, mUrlAPIAnimals + "/" + animal_id, null,
