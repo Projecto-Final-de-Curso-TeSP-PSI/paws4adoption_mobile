@@ -270,7 +270,7 @@ public class JsonParser {
                 String sex = animal.getString("sex");
                 String description = animal.getString("description");
                 String createAt = animal.getString("createdAt");
-                String photo = null;
+                String photo = animal.getString("photo");
 
                 String type = animal.getString("type");
 

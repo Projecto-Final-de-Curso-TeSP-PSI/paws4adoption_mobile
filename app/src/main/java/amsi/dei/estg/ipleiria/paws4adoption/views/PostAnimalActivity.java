@@ -38,6 +38,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -542,7 +544,12 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 spSex.setSelection(1);
             }
 
-            //animal.setPhoto();
+            Glide.with(getApplicationContext())
+                    .load(animal.getPhoto())
+                    .placeholder(R.drawable.paws4adoption_logo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(ivPhoto);
+
 
             etMissingFoundDate.setText(animal.getMissingFound_date());
 
@@ -562,7 +569,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     }
 
-
     private int getSpinnerAttributteID(Spinner spNature, int item_id) {
         for (int i = 0; i < spNature.getCount(); i++) {
             Attribute auxAttribute = (Attribute)spNature.getItemAtPosition(i);
@@ -578,7 +584,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
      */
     private void setScenario() {
 
-        if(action.equals(RockChisel.ACTION_CREATE)){
+//        if(action.equals(RockChisel.ACTION_CREATE)){
             switch(scenario){
                 case RockChisel.SCENARIO_MISSING_ANIMAL:
                     setTitle("Publicar animal desaparecido");
@@ -590,7 +596,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                     llFoundAnimal.setVisibility(View.VISIBLE);
                     break;
             }
-        }
+//        }
 
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
 
