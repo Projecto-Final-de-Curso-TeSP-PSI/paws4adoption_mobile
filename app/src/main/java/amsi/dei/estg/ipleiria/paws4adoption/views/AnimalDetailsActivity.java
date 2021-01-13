@@ -5,8 +5,12 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.os.Bundle;
 import android.text.Layout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
@@ -22,6 +26,8 @@ public class AnimalDetailsActivity extends AppCompatActivity {
 
     private int id_animal;
     private Animal animal;
+    private ImageView imgRetrato;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,7 @@ public class AnimalDetailsActivity extends AppCompatActivity {
         layout_foundDate = findViewById(R.id.layout_foundDate);
         layout_location = findViewById(R.id.layout_location);
 
-
+        imgRetrato = findViewById(R.id.imgRetrato);
 
         if(animal != null){
             setTitle("Detalhes " + animal.getName());
@@ -66,6 +72,13 @@ public class AnimalDetailsActivity extends AppCompatActivity {
             textView_size.setText(animal.getSize());
             textView_furColor.setText(animal.getFur_color());
             textView_furLength.setText(animal.getFur_length());
+
+            Glide.with(getApplicationContext())
+                    .load(animal.getPhoto())
+                    .placeholder(R.drawable.paws4adoption_logo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imgRetrato);
+
             switch (animal.getType()){
                 case "adoptionAnimal":
                     textView_type.setText("Animal para Adoção");

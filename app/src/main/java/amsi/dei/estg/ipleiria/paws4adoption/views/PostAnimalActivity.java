@@ -65,6 +65,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.services.FetchAddressIntentService;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 
 public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, AnimalListener {
 
@@ -130,6 +131,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     boolean onTouch = false;
 
     private String currentPhotoPath;
+    private Bitmap photo;
 
     /**
      * On Create method of the Activity
@@ -454,6 +456,12 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 newAnimalPost.setId(animal_id);
             }
 
+            String newPhoto = null;
+            if(this.photo != null){
+                newPhoto = Wrench.bmpToBase64(this.photo);
+                newAnimalPost.setPhoto(newPhoto);
+            }
+
             newAnimalPost.setName(name);
             newAnimalPost.setChipId(chipId);
             newAnimalPost.setDescription(description);
@@ -463,7 +471,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             newAnimalPost.setSize_id(size.getId());
             newAnimalPost.setSex(sex.getName());
             newAnimalPost.setMissingFound_date(missingFoundDate.toString());
-            //animal.setPhoto();
+
 
             if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
                 String locationStreet = etLocationStreet.getText().toString();
@@ -748,6 +756,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                         final Uri imageUri = data.getData();
                         imageStream = getContentResolver().openInputStream(imageUri);
                         final Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                        photo = bitmap;
                         ivPhoto.setImageBitmap(bitmap);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -761,6 +770,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 if (resultCode == RESULT_OK) {
                     String[] paths = new String[]{currentPhotoPath};
                     Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+                    photo = bitmap;
                     ivPhoto.setImageBitmap(bitmap);
 
                     MediaScannerConnection.scanFile(this, paths, null,

@@ -11,7 +11,6 @@ public class Animal {
             fur_length_id,
             fur_color_id,
             size_id,
-            photo,
             publisher_id,
             organization_id,
             organization_nif,
@@ -46,7 +45,8 @@ public class Animal {
             foundAnimal_city,
             foundAnimal_district_name,
             organization_door_number,
-            organization_floor;
+            organization_floor,
+            photo;
 
 
 
@@ -98,7 +98,7 @@ public class Animal {
      * @param organization_district_id
      * @param organization_district_name
      */
-    public Animal(Integer id, String name, String chipId, Integer nature_id, String nature_name, Integer nature_parent_id, String nature_parent_name, Integer fur_length_id, String fur_length, Integer fur_color_id, String fur_color, Integer size_id, String size, String sex, String description, String createAt, Integer photo, String type, Integer publisher_id, String publisher_name, Integer is_fat, String missingFound_date, Integer foundAnimal_location_id, String foundAnimal_street, String foundAnimal_city, Integer foundAnimal_district_id, String foundAnimal_district_name, Integer organization_id, String organization_name, Integer organization_nif, String organization_email, Integer organization_address_id, String organization_street, String organization_door_number, String organization_floor, String organization_city, Integer organization_postal_code, Integer organization_street_code, Integer organization_district_id, String organization_district_name
+    public Animal(Integer id, String name, String chipId, Integer nature_id, String nature_name, Integer nature_parent_id, String nature_parent_name, Integer fur_length_id, String fur_length, Integer fur_color_id, String fur_color, Integer size_id, String size, String sex, String description, String createAt, String photo, String type, Integer publisher_id, String publisher_name, Integer is_fat, String missingFound_date, Integer foundAnimal_location_id, String foundAnimal_street, String foundAnimal_city, Integer foundAnimal_district_id, String foundAnimal_district_name, Integer organization_id, String organization_name, Integer organization_nif, String organization_email, Integer organization_address_id, String organization_street, String organization_door_number, String organization_floor, String organization_city, Integer organization_postal_code, Integer organization_street_code, Integer organization_district_id, String organization_district_name
 
     ) {
         this.id = id;
@@ -195,11 +195,11 @@ public class Animal {
         this.size_id = size_id;
     }
 
-    public Integer getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Integer photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 

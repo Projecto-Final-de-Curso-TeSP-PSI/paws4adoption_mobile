@@ -22,9 +22,14 @@ import amsi.dei.estg.ipleiria.paws4adoption.views.LoginActivity;
  */
 public class Wrench {
 
-    public static String getStringImage(Bitmap bmp) {
+    /**
+     * Enconde0's an bmp to aBase64 String
+     * @param bmp
+     * @return
+     */
+    public static String bmpToBase64(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 1, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
@@ -86,6 +91,7 @@ public class Wrench {
         return calendar.getTime();
     }
 
+
     public static boolean isNull(String str) {
         if (str == null || str.length() == 0 || str.equals("null"))
             return true;
@@ -99,8 +105,6 @@ public class Wrench {
 
         return true;
     }
-
-
 
 }
 

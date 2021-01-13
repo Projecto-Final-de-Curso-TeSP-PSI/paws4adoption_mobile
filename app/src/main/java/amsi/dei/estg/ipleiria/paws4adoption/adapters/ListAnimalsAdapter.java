@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import java.util.ArrayList;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
@@ -69,7 +72,8 @@ public class ListAnimalsAdapter extends BaseAdapter {
             size = convertView.findViewById(R.id.textView_size);
             sex = convertView.findViewById(R.id.textView_sex);
             postDate = convertView.findViewById(R.id.textView_postDate);
-           // imageAnimal = convertView.findViewById(R.id.imgAnimalPhoto);
+            imageAnimal = convertView.findViewById(R.id.imgAnimalList);
+
         }
 
         public void update(Animal animal){
@@ -94,7 +98,11 @@ public class ListAnimalsAdapter extends BaseAdapter {
             size.setText(animal.getSize());
             sex.setText(animal.getSex());
             postDate.setText(animal.getCreateAt());
-            //imageAnimal.setImageResource(animal.getPhoto());
+            Glide.with(context)
+                    .load(animal.getPhoto())
+                    .placeholder(R.drawable.paws4adoption_logo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageAnimal);
         }
     }
 }

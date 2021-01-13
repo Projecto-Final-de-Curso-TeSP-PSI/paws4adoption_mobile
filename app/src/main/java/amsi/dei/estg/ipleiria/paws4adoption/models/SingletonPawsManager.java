@@ -17,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -45,8 +46,8 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
 
     //API local address (may change each time you start your machine)
 //    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
-    private static final String COMPUTER_LOCAL_IP = "10.20.228.42";
-    //private static final String COMPUTER_LOCAL_IP = "192.168.1.70";
+    //private static final String COMPUTER_LOCAL_IP = "10.20.228.42";
+    private static final String COMPUTER_LOCAL_IP = "192.168.1.65";
 //    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
 
 
@@ -732,7 +733,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    String errormessage = error.getMessage();
+                     String errormessage = error.getMessage();
                     //requestListener.onRequestError(errormessage);
                     Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                     System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
@@ -849,7 +850,11 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             params.put("fur_color_id", animal.getFur_color_id());
             params.put("size_id", animal.getSize_id());
             params.put("sex", animal.getSex());
-            //params.put("photo", "" + animal.getPhoto());
+
+            if(animal.getPhoto() != null){
+
+                params.put("photo", "" + animal.getPhoto());
+            }
             switch(apiService){
                 case RockChisel.MISSING_ANIMALS_API_SERVICE:
                     params.put("missing_date", "20201220");
