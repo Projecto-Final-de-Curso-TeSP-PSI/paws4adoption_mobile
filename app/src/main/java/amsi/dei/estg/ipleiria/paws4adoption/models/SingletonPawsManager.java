@@ -818,7 +818,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                         if (animalListener != null) {
                             animalListener.onRefreshAnimalsList(animals);
                         }
-                        //TODO: update my list animals
+                        Toast.makeText(context, "Animal eliminado com sucesso", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new Response.ErrorListener() {

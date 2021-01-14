@@ -57,6 +57,9 @@ public class RockChisel {
     public static final String SCENARIO_ADOPTION_ANIMAL = "adoptionAnimal";
     public static final String SCENARIO_MISSING_ANIMAL = "missingAnimal";
     public static final String SCENARIO_FOUND_ANIMAL = "foundAnimal";
+    public static final String SCENARIO_MY_ANIMAL = "myAnimal";
+    public static final String SCENARIO = "scenario";
+
 
     //Actions
     public static final String ACTION_CREATE = "create";
