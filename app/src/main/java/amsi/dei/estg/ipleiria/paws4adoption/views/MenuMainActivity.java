@@ -29,6 +29,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private FragmentManager fragmentManager;
+    private String typeAnimal;
 
     /**
      * On create state of the activity
@@ -95,6 +96,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             previousSelectedItem.setChecked(false);
 
         menuItem.setChecked(true);
+        Bundle bundle = new Bundle();
 
         switch (menuItem .getItemId()) {
             case R.id.navHome:
@@ -104,8 +106,25 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
             case R.id.navSearchAnimals:
                 fragment = new ListAdoptionAnimalsFragment();
+                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_ADOPTION_ANIMAL);
+                fragment.setArguments(bundle);
                 setTitle(menuItem.getTitle());
                 break;
+
+            case R.id.navSearchMissing:
+                fragment = new ListAdoptionAnimalsFragment();
+                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_MISSING_ANIMAL);
+                fragment.setArguments(bundle);
+                setTitle(menuItem.getTitle());
+                break;
+
+            case R.id.navSearchFound:
+                fragment = new ListAdoptionAnimalsFragment();
+                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_FOUND_ANIMAL);
+                fragment.setArguments(bundle);
+                setTitle(menuItem.getTitle());
+                break;
+
 
             case R.id.navSearchAssociations:
                 fragment = new ListOrganizationsFragment();
@@ -113,6 +132,10 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 break;
 
             case R.id.navMyAnimals:
+                fragment = new ListAdoptionAnimalsFragment();
+                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_MY_LIST);
+                fragment.setArguments(bundle);
+                setTitle(menuItem.getTitle());
                 break;
 
             case R.id.navPostWanderingAnimal:

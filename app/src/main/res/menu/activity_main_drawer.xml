@@ -10,10 +10,19 @@
 
         <item android:title="@string/search" >
             <menu >
-                    <item android:title="@string/searchAnimal"
-                        android:id="@+id/navSearchAnimals"/>
-                    <item android:title="@string/searchAssociation"
-                        android:id="@+id/navSearchAssociations"/>
+                <item
+                    android:id="@+id/navSearchAnimals"
+                    android:title="@string/animais_para_ado_o" />
+                <item
+                    android:id="@+id/navSearchMissing"
+                    android:title="@string/animais_desaparcidos" />
+                <item
+                    android:id="@+id/navSearchFound"
+                    android:title="@string/animais_errantes" />
+                <item
+                    android:id="@+id/navSearchAssociations"
+                    android:title="@string/searchAssociation" />
+
             </menu>
         </item>
 

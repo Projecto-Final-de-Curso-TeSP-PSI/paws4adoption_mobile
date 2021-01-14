@@ -26,7 +26,7 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
 
     //################ INTENT PARAMETERS ################
     private static final String scenario = null;
-    private static final String animal_type = RockChisel.ADOPTION_ANIMAL;
+    private String animal_type = null;
 
     private ListView lvListAdoptionAnimal;
 
@@ -35,7 +35,12 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //setHasOptionsMenu(true);
+        // setHasOptionsMenu(true);
+
+        Bundle bundle = this.getArguments();
+        if(bundle != null){
+            animal_type = bundle.getString(RockChisel.ANIMAL_TYPE);
+        }
 
         View rootView = inflater.inflate(R.layout.fragment_list_adoption_animals, container, false);
 
@@ -70,8 +75,25 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
 
     @Override
     public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
-        if(animalsList != null)
-            lvListAdoptionAnimal.setAdapter(new ListAnimalsAdapter(getContext(), animalsList));
+        ArrayList<Animal> listAnimals = new ArrayList<>();
+        ArrayList<Animal> listMyAnimals = new ArrayList<>();
+        if (animalsList != null){
+            if(animal_type.equals(RockChisel.SCENARIO_MY_LIST)){
+                for (Animal animal : animalsList) {
+                    if (animal.getPublisher_id().equals(12)) {
+                        listAnimals.add(animal);
+                    }
+                }
+            }else{
+                for (Animal animal : animalsList) {
+                    if (animal.getType().equals(animal_type)) {
+                        listAnimals.add(animal);
+                    }
+                }
+            }
+
+            lvListAdoptionAnimal.setAdapter(new ListAnimalsAdapter(getContext(), listAnimals));
+        }
     }
 
     @Override
