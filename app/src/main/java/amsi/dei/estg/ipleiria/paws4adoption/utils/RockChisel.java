@@ -24,6 +24,7 @@ public class RockChisel {
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
     public static final String TOKEN = "token";
+    public static final String ID_USER = "id";
 
     //Database related constants
     public static final String DB_NAME = "paws4adoptionDB";
@@ -57,6 +58,9 @@ public class RockChisel {
     public static final String SCENARIO_ADOPTION_ANIMAL = "adoptionAnimal";
     public static final String SCENARIO_MISSING_ANIMAL = "missingAnimal";
     public static final String SCENARIO_FOUND_ANIMAL = "foundAnimal";
+    public static final String SCENARIO_MY_LIST = "myList";
+    public static final String SCENARIO = "scenario";
+    public static final String ANIMAL_TYPE = "animalType";
 
     //Actions
     public static final String ACTION_CREATE = "create";

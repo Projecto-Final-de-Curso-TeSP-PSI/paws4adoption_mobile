@@ -47,6 +47,7 @@ public class Vault {
         sharedPreferences.edit().clear().apply();
     }
 
+
     /**
      * Returns the logged user, or null if not exists
      *
