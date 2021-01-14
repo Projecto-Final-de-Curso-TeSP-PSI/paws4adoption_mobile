@@ -68,7 +68,7 @@ public class UserProfileActivity extends AppCompatActivity implements UserProfil
         int districtId = spinnerDistricts.getSelectedItemPosition();
 
         UserProfile userProfile = new UserProfile(
-                0, email, username,
+                email, username,
                 firstName, lastName, nif, phone,
                 street, doorNumber, floor, postalCode, streetCode, city, districtId);
 

@@ -410,19 +410,18 @@ public class JsonParser {
      * @param response
      * @return UserProfile
      */
-    public static UserProfile parserJsonUserProfile(String response){
+    public static UserProfile parserJsonUserProfile(JSONObject response){
         UserProfile userProfile = null;
         try{
-            JSONObject result = new JSONObject(response);
-            int id = result.getInt("id");
-            String email = result.getString("email");
-            String username = result.getString("username");
-            String firstName = result.getString("firstName");
-            String lastName = result.getString("lastName");
-            String nif = result.getString("nif");
-            String phone = result.getString("phone");
+            int id = response.getInt("id");
+            String email = response.getString("email");
+            String username = response.getString("username");
+            String firstName = response.getString("firstName");
+            String lastName = response.getString("lastName");
+            String nif = response.getString("nif");
+            String phone = response.getString("phone");
 
-            JSONObject address = result.getJSONObject("address");
+            JSONObject address = response.getJSONObject("address");
             String street = address.getString("street");
             String door_number = address.getString("door_number");
             String floor = address.getString("floor");
@@ -435,14 +434,15 @@ public class JsonParser {
             String districtName = district.getString("name");
 
             userProfile = new UserProfile(
-                   id, email, username,
+                   email, username,
                    firstName, lastName, nif, phone,
                    street, door_number, floor, postal_code, street_code, city, districtId);
+
+            userProfile.setId(id);
 
         }catch (JSONException e){
             e.printStackTrace();
         }
         return userProfile;
     }
-
 }

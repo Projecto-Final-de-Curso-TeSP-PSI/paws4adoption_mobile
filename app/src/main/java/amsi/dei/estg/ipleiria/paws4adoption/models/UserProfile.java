@@ -9,12 +9,11 @@ public class UserProfile {
     private String password;
     private String token;
 
-    public UserProfile(int id, String email, String username,
+    public UserProfile(String email, String username,
                        String firstName, String lastName,  String nif, String phone,
                        String street, String doorNumber, String floor,
                        String postalCode, String streetCode, String city, int districtId)
     {
-        this.id = id;
         this.email = email;
         this.username = username;
         this.firstName = firstName;
