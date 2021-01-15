@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
+import amsi.dei.estg.ipleiria.paws4adoption.models.UserProfile;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
-public class LoginActivity extends AppCompatActivity implements LoginListener{
+public class LoginActivity extends AppCompatActivity implements LoginListener, UserProfileListener {
 
     private EditText etUsername;
     private EditText etPassword;
@@ -37,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         if(username == null){
             return false;
         }
-        return username.length() >= 8;
+        return username.length() >= 4;
     }
 
     /**
@@ -62,12 +65,12 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         String username = etUsername.getText().toString();
         String password = etPassword.getText().toString();
 
-        if(isUsernameValid(username) == false) {
+        if(!isUsernameValid(username)) {
             etUsername.setError(getString(R.string.invalidUsername));
             return;
         }
 
-        if(isPasswordValid(password) == false){
+        if(!isPasswordValid(password)){
             etPassword.setError(getString(R.string.invalidPassword));
             return;
         }
@@ -99,5 +102,12 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
     public void onClickSignup(View view) {
         Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onUserProfileRequest(UserProfile userProfile) {
+        if(userProfile != null){
+            Toast.makeText(getApplicationContext(), "Registado com sucesso!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

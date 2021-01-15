@@ -45,11 +45,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     //API local address (may change each time you start your machine)
     private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
     //private static final String COMPUTER_LOCAL_IP = "10.20.228.42";
-<<<<<<< Updated upstream
-    private static final String COMPUTER_LOCAL_IP = "192.168.1.69";
-=======
-//    private static final String COMPUTER_LOCAL_IP = "192.168.1.65";
->>>>>>> Stashed changes
+//    private static final String COMPUTER_LOCAL_IP = "192.168.1.69";
 //    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
 
 
@@ -969,6 +965,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     public void addUserAPI(final UserProfile userProfile, final Context context) {
         JSONObject params = new JSONObject();
         try {
+            params.put("username", userProfile.getUsername());
             params.put("password", userProfile.getPassword());
             params.put("email", userProfile.getEmail());
             params.put("firstName", userProfile.getFirstName());
@@ -994,7 +991,6 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Toast.makeText(context, response.getString("firstName"), Toast.LENGTH_SHORT).show();
                             UserProfile userProfileVindoDaAPI = JsonParser.parserJsonUserProfile(response);
                             userProfileListener.onUserProfileRequest(userProfileVindoDaAPI);
                         } catch (Exception e){
@@ -1017,7 +1013,6 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     public Map<String, String> getHeaders() throws AuthFailureError {
                         HashMap<String, String> headers = new HashMap<String, String>();
                         headers.put("Content-Type", "application/json");
-
                         return headers;
                     }
                 };

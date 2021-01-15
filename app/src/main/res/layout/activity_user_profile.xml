@@ -72,8 +72,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="NIF"
-                    android:inputType="textPersonName"
-                    android:text="Name" />
+                    android:inputType="textPersonName" />
 
                 <EditText
                     android:id="@+id/etPhone"
