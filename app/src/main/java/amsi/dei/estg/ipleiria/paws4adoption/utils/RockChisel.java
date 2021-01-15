@@ -7,7 +7,10 @@ package amsi.dei.estg.ipleiria.paws4adoption.utils;
 public class RockChisel {
 
     //Package related constants
-    private static final String PACKAGE_NAME = "amsi.dei.estg.ipleiria.paws4adoption";
+    public static final String PACKAGE_NAME = "amsi.dei.estg.ipleiria.paws4adoption";
+    public static final String COMPUTER_LOCAL_IP = "192.168.1.65";
+    public static final String API_LOCAL_URL = "http://" + COMPUTER_LOCAL_IP + "/pet-adoption/paws4adoption_web/backend/web/api/";
+    public static final String PHOTO_LOCAL_URL =  "http://" + COMPUTER_LOCAL_IP + "/pet-adoption/paws4adoption_web/frontend/web/images/animal/";
 
     //Location related constants
     public static final String RESULT_DATAKEY = PACKAGE_NAME + ".RESULT_DATA_KEY";
@@ -55,13 +58,21 @@ public class RockChisel {
     public static final String ATTR_DISTRICT_SYMLINK = "name";
 
     //Scenarios
+    public static final String SCENARIO = "scenario";
+
     public static final String SCENARIO_ADOPTION_ANIMAL = "adoptionAnimal";
     public static final String SCENARIO_MISSING_ANIMAL = "missingAnimal";
     public static final String SCENARIO_FOUND_ANIMAL = "foundAnimal";
-    public static final String SCENARIO_MY_ANIMAL = "myAnimal";
-    public static final String SCENARIO = "scenario";
+
+    public static final String SCENARIO_GENERAL_LIST = "generalList";
     public static final String SCENARIO_MY_LIST = "myList";
+
+    public static final String SCENARIO_GENERAL_ANIMAL = "generalAnimal";
+    public static final String SCENARIO_MY_ANIMAL = "myAnimal";
+
     public static final String ANIMAL_TYPE = "animalType";
+    public static final String ANIMAL_ID = "animalId";
+
 
 
     //Actions
@@ -71,7 +82,7 @@ public class RockChisel {
     //Animal types
     public static final String ADOPTION_ANIMAL = "adoptionAnimal";
     public static final String MISSING_ANIMAL = "missingAnimal";
-    public static final String FOUNDANIMAL = "foundAnimal";
+    public static final String FOUND_ANIMAL = "foundAnimal";
 
     //Request types
     public static final String ANIMAL_REQUEST = "animal_request";

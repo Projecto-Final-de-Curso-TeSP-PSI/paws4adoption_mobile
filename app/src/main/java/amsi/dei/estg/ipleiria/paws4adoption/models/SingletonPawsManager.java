@@ -42,16 +42,6 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
 public class SingletonPawsManager implements OrganizationsListener, AnimalListener{
 
-    //API local address (may change each time you start your machine)
-//    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
-    //private static final String COMPUTER_LOCAL_IP = "10.20.228.42";
-    private static final String COMPUTER_LOCAL_IP = "192.168.1.69";
-//    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
-
-
-    //private static final String COMPUTER_LOCAL_IP = "localhost";
-    private static final String API_LOCAL_URL = "http://" + COMPUTER_LOCAL_IP + "/pet-adoption/paws4adoption_web/backend/web/api/";
-
     //Singleton instance
     private static SingletonPawsManager instance = null;
 
@@ -73,15 +63,15 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     RequestListener requestListener;
 
     //BD Helper's declaration
-    PawsManagerDBHelper organizationsDBHelper;
+    PawsManagerDBHelper pawsManagerDBHelper;
 
     //Endpoints for requests
-    private static final String mUrlAPILogin = API_LOCAL_URL + "users/token";
-    private static final String mUrlAPIUserProfile = API_LOCAL_URL + "users";
-    private static final String mUrlAPIOrganizations = API_LOCAL_URL + "organizations";
-    private static final String mUrlAPIAnimals = API_LOCAL_URL + "animals";
-    private static final String mUrlAPIMissingAnimals = API_LOCAL_URL + "missing-animals";
-    private static final String mUrlAPIFoundAnimal = API_LOCAL_URL + "found-animals";
+    private static final String mUrlAPILogin = RockChisel.API_LOCAL_URL + "users/token";
+    private static final String mUrlAPIUserProfile = RockChisel.API_LOCAL_URL + "users";
+    private static final String mUrlAPIOrganizations = RockChisel.API_LOCAL_URL + "organizations";
+    private static final String mUrlAPIAnimals = RockChisel.API_LOCAL_URL + "animals";
+    private static final String mUrlAPIMissingAnimals = RockChisel.API_LOCAL_URL + "missing-animals";
+    private static final String mUrlAPIFoundAnimal = RockChisel.API_LOCAL_URL + "found-animals";
 
 
     /**
@@ -105,7 +95,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param context
      */
     private SingletonPawsManager(Context context) {
-        this.organizationsDBHelper = new PawsManagerDBHelper(context);
+        this.pawsManagerDBHelper = new PawsManagerDBHelper(context);
     }
 
 
@@ -224,8 +214,8 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @return
      */
     public ArrayList<Organization> getAllOrganizationsDB(){
-        organizations = organizationsDBHelper.getAllOrganizationsDB();
-        return organizations;
+        this.organizations = pawsManagerDBHelper.getAllOrganizationsDB();
+        return this.organizations;
     }
 
     /**
@@ -233,7 +223,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param id
      * @return
      */
-    public Organization getOrganization(int id){
+    public Organization getOrganizationDB(int id){
         for (Organization organization : organizations) {
             if(organization.getId()== id){
                 return organization;
@@ -247,7 +237,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param organization
      */
     public void insertOrganizationDB(Organization organization){
-        organizationsDBHelper.insertOrganizationDB(organization);
+        pawsManagerDBHelper.insertOrganizationDB(organization);
         System.out.println("--> Organization inserted successfully on the DB");
     }
 
@@ -261,7 +251,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             return;
         }
 
-        Organization auxOrg =  getOrganization(organization.getId());
+        Organization auxOrg =  getOrganizationDB(organization.getId());
 
         auxOrg.setId(organization.getId());
         auxOrg.setName(organization.getName());
@@ -278,7 +268,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
         auxOrg.setDistrict_id(organization.getDistrict_id());
         auxOrg.setDistrict_name(organization.getDistrict_name());
 
-        if(organizationsDBHelper.updateOrganizationDB(auxOrg)){
+        if(pawsManagerDBHelper.updateOrganizationDB(auxOrg)){
             System.out.println("--> organization updated successfully on the DB");
         }
 
@@ -289,10 +279,10 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param id
      */
     public void deleteOrganizationDB(int id){
-        Organization organization = getOrganization(id);
+        Organization organization = getOrganizationDB(id);
 
         if(organization != null){
-            if(organizationsDBHelper.deleteOrganizationDB(organization.getId())){
+            if(pawsManagerDBHelper.deleteOrganizationDB(organization.getId())){
                 organizations.remove(organization);
                 System.out.println("--> organization successfully deleted from the DB");
             }
@@ -304,7 +294,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param organizations
      */
     public void insertAllOrganizationsDB(ArrayList<Organization> organizations){
-        organizationsDBHelper.deleteAllOrganizationsDB();
+        pawsManagerDBHelper.deleteAllOrganizationsDB();
 
         for (Organization org : organizations) {
             insertOrganizationDB(org);
@@ -320,8 +310,8 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @return
      */
     public ArrayList<Animal> getAllAnimalsDB(){
-        animals = organizationsDBHelper.getAllAnimalsDB();
-        return animals;
+        this.animals = pawsManagerDBHelper.getAllAnimalsDB();
+        return this.animals;
     }
 
     /**
@@ -329,8 +319,14 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param id
      * @return
      */
-    public Animal getAnimalBD(int id){
-        return organizationsDBHelper.getAnimalDB(id);
+    public Animal getAnimalDB(int id){
+//        return pawsManagerDBHelper.getAnimalDB(id);
+        for (Animal animal : animals) {
+            if(animal.getId()== id){
+                return animal;
+            }
+        }
+        return null;
     }
 
     /**
@@ -338,7 +334,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param animal the animal to be inserted
      */
     public void insertAnimalDB(Animal animal){
-        organizationsDBHelper.insertAnimalDB(animal);
+        pawsManagerDBHelper.insertAnimalDB(animal);
         System.out.println("--> Animal inserted successfully on the DB");
     }
 
@@ -356,7 +352,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             return;
         }
 
-        Animal auxAnimal =  getAnimalBD(animal.getId());
+        Animal auxAnimal =  getAnimalDB(animal.getId());
 
         auxAnimal.setId(animal.getId());
         auxAnimal.setName(animal.getName());
@@ -379,7 +375,6 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
         auxAnimal.setType(animal.getType());
         auxAnimal.setPublisher_id(animal.getPublisher_id());
         auxAnimal.setPublisher_name(animal.getPublisher_name());
-        auxAnimal.setIs_fat(animal.getIs_fat());
         auxAnimal.setMissingFound_date(animal.getMissingFound_date());
         auxAnimal.setFoundAnimal_location_id(animal.getFoundAnimal_location_id());
         auxAnimal.setFoundAnimal_street(animal.getFoundAnimal_street());
@@ -401,7 +396,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
         auxAnimal.setOrganization_district_name(animal.getOrganization_district_name());
 
 
-        if(organizationsDBHelper.updateAnimalDB(animal)){
+        if(pawsManagerDBHelper.updateAnimalDB(animal)){
             System.out.println("--> animal updated successfully on the DB");
         }
 
@@ -412,10 +407,10 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param id
      */
     public void deleteAnimalDB(int id){
-        Animal animal = getAnimalBD(id);
+        Animal animal = getAnimalDB(id);
 
         if(animal != null){
-            if(organizationsDBHelper.deleteAnimalDB(animal.getId())){
+            if(pawsManagerDBHelper.deleteAnimalDB(animal.getId())){
                 animals.remove(animal);
                 System.out.println("--> animal successfully deleted from the DB");
             }
@@ -427,7 +422,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param animalsList
      */
     public void insertAllAnimalsDB(ArrayList<Animal> animalsList){
-        organizationsDBHelper.deleteAllAnimalsDB();
+        pawsManagerDBHelper.deleteAllAnimalsDB();
 
         for (Animal animal : animals) {
             insertAnimalDB(animal);
@@ -446,10 +441,10 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      */
     public void getAllOrganizationsAPI(final Context context){
 
-        if(!FortuneTeller.isThereInternetConnection(context)){
+        if(!FortuneTeller.isInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
             if(organizationsListener != null){
-                organizationsListener.onRefreshOrganizationsList(organizationsDBHelper.getAllOrganizationsDB());
+                organizationsListener.onRefreshOrganizationsList(this.getAllOrganizationsDB());
             }
         } else{
             JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, mUrlAPIOrganizations, null, new Response.Listener<JSONArray>() {
@@ -619,6 +614,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
         return params;
     }
 
+
     //################ ANIMAL ################
 
     /**
@@ -627,11 +623,11 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      */
     public void getAllAnimalsAPI(final Context context){
 
-        if(!FortuneTeller.isThereInternetConnection(context)){
+        if(!FortuneTeller.isInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
             //Carregar dados da base de dados
             if(animalListener != null){
-                animalListener.onRefreshAnimalsList(organizationsDBHelper.getAllAnimalsDB());
+                animalListener.onRefreshAnimalsList(this.getAllAnimalsDB());
             }
         } else{
             JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, mUrlAPIAnimals, null, new Response.Listener<JSONArray>() {
@@ -669,21 +665,21 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      */
     public void getAnimalAPI(final Context context, final int animal_id){
 
-        if(!FortuneTeller.isThereInternetConnection(context)){
+        if(!FortuneTeller.isInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
             //Carregar dados da base de dados
             if(animalListener != null){
-                animalListener.onGetAnimalAPI(organizationsDBHelper.getAnimalDB(animal_id));
+                animalListener.onGetAnimalAPI(this.getAnimalDB(animal_id));
             }
-        }
+        } else {
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, mUrlAPIAnimals + "/" + animal_id, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Animal animal = JsonParser.toAnimal(response);
                         if (animal != null) {
-                            if(animalListener != null){
-                                animalListener.onGetAnimalAPI(animal);
+                            if (requestListener != null) {
+                                requestListener.onRequestSuccess(animal);
                             }
                             System.out.println("--> Animals: " + response);
                         } else {
@@ -699,8 +695,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                         Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
                         System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
                     }
-            });
+                });
             volleyQueue.add(request);
+        }
     }
 
     /**
@@ -712,7 +709,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     public void insertAnimalAPI(final Animal animal, final String apiService, final String token, final Context context){
         JSONObject bodyParameters = this.getAnimalParameters(animal, apiService, RockChisel.ACTION_CREATE);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API_LOCAL_URL + apiService, bodyParameters,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, RockChisel.API_LOCAL_URL + apiService, bodyParameters,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -761,7 +758,8 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
     public void updateAnimalAPI(final Animal animal, final String apiService, final String token, final Context context){
         JSONObject bodyParameters = this.getAnimalParameters(animal, apiService, RockChisel.ACTION_UPDATE);
 
-        String serviceUrl = API_LOCAL_URL + apiService + "/" + animal.getId();
+        String serviceUrl = RockChisel.API_LOCAL_URL + apiService + "/" + animal.getId();
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, serviceUrl, bodyParameters,
             new Response.Listener<JSONObject>() {
                 @Override
@@ -809,24 +807,40 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param context
      */
     public void deleteAnimalAPI(final Animal animal, final String apiService, final String token, final Context context){
-        StringRequest request = new StringRequest(Request.Method.DELETE, API_LOCAL_URL + "/" + apiService + "/" + animal.getId(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        onUpdateAnimalsList(animal, RockChisel.DELETE_BD);
 
-                        if (animalListener != null) {
-                            animalListener.onRefreshAnimalsList(animals);
-                        }
-                        Toast.makeText(context, "Animal eliminado com sucesso", Toast.LENGTH_SHORT).show();
+        String serviceUrl = RockChisel.API_LOCAL_URL + apiService + "/" + animal.getId();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.DELETE, serviceUrl, null,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Animal auxAnimal = JsonParser.toAnimal(response);
+
+                    onUpdateAnimalsList(animal, RockChisel.DELETE_BD);
+
+                    if (animalListener != null) {
+                        animalListener.onRefreshAnimalsList(animals);
+                        requestListener.onRequestError("Eliminado com sucesso");
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    Toast.makeText(context, "Animal eliminado com sucesso", Toast.LENGTH_SHORT).show();
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            })
+            {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Content-Type", "application/json");
+                    headers.put("Authorization", "Bearer "+ token);
+                    return headers;
+                }
+            };
         volleyQueue.add(request);
     }
 
@@ -882,7 +896,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      */
     public void getAttributesAPI(final Context context, final String attributeType, final String attSymLink, final @Nullable Integer id){
 
-        if(!FortuneTeller.isThereInternetConnection(context)){
+        if(!FortuneTeller.isInternetConnection(context)){
             Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
 
             //TODO: a implementar o que fazer se não houver net
@@ -891,9 +905,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
 
             String jsonRequest = null;
             if(attributeType.equals(RockChisel.ATTR_SUBSPECIE)){
-                jsonRequest = API_LOCAL_URL + RockChisel.ATTR_SPECIE + "/" + id + "/" + RockChisel.ATTR_SUBSPECIE;
+                jsonRequest = RockChisel.API_LOCAL_URL + RockChisel.ATTR_SPECIE + "/" + id + "/" + RockChisel.ATTR_SUBSPECIE;
             } else{
-                jsonRequest = API_LOCAL_URL + attributeType;
+                jsonRequest = RockChisel.API_LOCAL_URL + attributeType;
             }
 
             JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, jsonRequest, null, new Response.Listener<JSONArray>() {

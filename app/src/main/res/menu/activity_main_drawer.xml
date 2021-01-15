@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
@@ -11,11 +12,11 @@
         <item android:title="@string/search" >
             <menu >
                 <item
-                    android:id="@+id/navSearchAnimals"
+                    android:id="@+id/navSearchAdoption"
                     android:title="@string/animais_para_ado_o" />
                 <item
                     android:id="@+id/navSearchMissing"
-                    android:title="@string/animais_desaparcidos" />
+                    android:title="@string/missing_animals" />
                 <item
                     android:id="@+id/navSearchFound"
                     android:title="@string/animais_errantes" />
@@ -32,10 +33,6 @@
                         android:id="@+id/navPostWanderingAnimal"/>
                     <item android:title="@string/postLostAnimal"
                     android:id="@+id/navPostLostAnimal"/>
-                    <item android:title="@string/update_missing_animal"
-                        android:id="@+id/navUpdateWanderingAnimal"/>
-                    <item android:title="@string/update_missing_animal"
-                        android:id="@+id/navUpdateLostAnimal"/>
             </menu>
         </item>
 

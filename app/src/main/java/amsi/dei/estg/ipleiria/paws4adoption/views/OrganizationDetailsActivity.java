@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
@@ -36,7 +34,7 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organization_details);
 
         id_organization = getIntent().getIntExtra(ORG_DETAILS, 0);
-        organization = SingletonPawsManager.getInstance(getApplicationContext()).getOrganization(id_organization);
+        organization = SingletonPawsManager.getInstance(getApplicationContext()).getOrganizationDB(id_organization);
 
         tvName = findViewById(R.id.tvName);
         tvAddress = findViewById(R.id.tvAddress);

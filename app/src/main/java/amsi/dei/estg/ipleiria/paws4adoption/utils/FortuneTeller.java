@@ -15,11 +15,14 @@ public class FortuneTeller {
      * @param context
      * @return
      */
-    public static boolean isThereInternetConnection(Context context){
+    public static boolean isInternetConnection(Context context){
+//        return false;
+
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+
     }
 
     /**
@@ -27,7 +30,7 @@ public class FortuneTeller {
      *
      * @return string|null
      */
-    public static boolean isThereLoggedUser(Context context) {
+    public static boolean isLoggedUser(Context context) {
         String username;
         try{
             SharedPreferences sharedPreferences = context.getSharedPreferences(RockChisel.USER_PREFERENCES, Context.MODE_PRIVATE);

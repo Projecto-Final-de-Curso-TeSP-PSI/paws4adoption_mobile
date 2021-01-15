@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -90,12 +91,12 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         Fragment fragment = null;
         Intent intent = null;
 
-        MenuItem previousSelectedItem = navigationView.getCheckedItem();
-
-        if(previousSelectedItem != null )
-            previousSelectedItem.setChecked(false);
-
-        menuItem.setChecked(true);
+//        MenuItem previousSelectedItem = navigationView.getCheckedItem();
+//
+//        if(previousSelectedItem != null )
+//            previousSelectedItem.setChecked(false);
+//
+//        menuItem.setChecked(true);
         Bundle bundle = new Bundle();
 
         switch (menuItem .getItemId()) {
@@ -104,27 +105,29 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 setTitle("Home");
                 break;
 
-            case R.id.navSearchAnimals:
-                fragment = new ListAdoptionAnimalsFragment();
+            case R.id.navSearchAdoption:
+                fragment = new ListAnimalsFragment();
+                bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_GENERAL_LIST);
                 bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_ADOPTION_ANIMAL);
                 fragment.setArguments(bundle);
                 setTitle(menuItem.getTitle());
                 break;
 
             case R.id.navSearchMissing:
-                fragment = new ListAdoptionAnimalsFragment();
+                fragment = new ListAnimalsFragment();
+                bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_GENERAL_LIST);
                 bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_MISSING_ANIMAL);
                 fragment.setArguments(bundle);
                 setTitle(menuItem.getTitle());
                 break;
 
             case R.id.navSearchFound:
-                fragment = new ListAdoptionAnimalsFragment();
+                fragment = new ListAnimalsFragment();
+                bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_GENERAL_LIST);
                 bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_FOUND_ANIMAL);
                 fragment.setArguments(bundle);
                 setTitle(menuItem.getTitle());
                 break;
-
 
             case R.id.navSearchAssociations:
                 fragment = new ListOrganizationsFragment();
@@ -132,40 +135,50 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 break;
 
             case R.id.navMyAnimals:
-                fragment = new ListAdoptionAnimalsFragment();
-                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_MY_LIST);
+                fragment = new ListAnimalsFragment();
+                bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_MY_LIST);
                 fragment.setArguments(bundle);
                 setTitle(menuItem.getTitle());
                 break;
 
             case R.id.navPostWanderingAnimal:
-                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
-                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_FOUND_ANIMAL);
-                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
+
+                if(FortuneTeller.isInternetConnection(getApplicationContext())){
+
+                    if(FortuneTeller.isLoggedUser(getApplicationContext())){
+                        intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                        intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_FOUND_ANIMAL);
+                        intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
+                    } else{
+                        intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    }
+
+                } else {
+                    Toast.makeText(this, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
 
             case R.id.navPostLostAnimal:
-                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
-                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MISSING_ANIMAL);
-                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
-                break;
 
-            case R.id.navUpdateWanderingAnimal:
-                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
-                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MISSING_ANIMAL);
-                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
-                intent.putExtra(PostAnimalActivity.ANIMAL_ID, 2);
-                break;
+                if(FortuneTeller.isInternetConnection(getApplicationContext())){
 
-            case R.id.navUpdateLostAnimal:
-                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
-                intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_FOUND_ANIMAL);
-                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
-                intent.putExtra(PostAnimalActivity.ANIMAL_ID, 13);
+                    if(FortuneTeller.isLoggedUser(getApplicationContext())){
+                        intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                        intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MISSING_ANIMAL);
+                        intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
+                    } else{
+                        intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    }
+
+                } else {
+                    Toast.makeText(this, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
 
             case R.id.navLogin:
-                if(FortuneTeller.isThereLoggedUser(getApplicationContext())){
+                if(FortuneTeller.isLoggedUser(getApplicationContext())){
                     Vault.clearPreferences(getApplicationContext(), RockChisel.USER_PREFERENCES);
                 } else{
                     intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -198,9 +211,9 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         TextView usernameDisplay = hview.findViewById(R.id.tvUsername);
         MenuItem navLoginItem = menu.findItem(R.id.navLogin);
 
-        if(FortuneTeller.isThereInternetConnection(getApplicationContext())){
+        if(FortuneTeller.isInternetConnection(getApplicationContext())){
 
-            if(FortuneTeller.isThereLoggedUser(getApplicationContext())){
+            if(FortuneTeller.isLoggedUser(getApplicationContext())){
 
                 String loginAwareness = getString(R.string.user_prefix) + Vault.getLoggedUser(getApplicationContext());
 

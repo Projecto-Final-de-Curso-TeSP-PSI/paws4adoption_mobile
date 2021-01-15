@@ -22,10 +22,10 @@ import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
 
-public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AnimalListener {
+public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AnimalListener {
 
     //################ INTENT PARAMETERS ################
-    private static final String scenario = null;
+    private String scenario = null;
     private String animal_type = null;
 
     private ListView lvListAdoptionAnimal;
@@ -39,7 +39,10 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
 
         Bundle bundle = this.getArguments();
         if(bundle != null){
-            animal_type = bundle.getString(RockChisel.ANIMAL_TYPE);
+            scenario = bundle.getString(RockChisel.SCENARIO);
+
+            if(!scenario.equals(RockChisel.SCENARIO_MY_LIST))
+                animal_type = bundle.getString(RockChisel.ANIMAL_TYPE);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_list_adoption_animals, container, false);
@@ -53,8 +56,9 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
                 System.out.println("--> " + hasAnimal.getName());
 
                 Intent intent = new Intent(getContext(), AnimalDetailsActivity.class);
-                intent.putExtra(AnimalDetailsActivity.ANIMAL_ID, hasAnimal.getId());
-                intent.putExtra(AnimalDetailsActivity.SCENARIO, hasAnimal.getType());
+                intent.putExtra(RockChisel.SCENARIO, scenario);
+                intent.putExtra(RockChisel.ANIMAL_ID, hasAnimal.getId());
+
                 startActivity(intent);
             }
         });
@@ -66,8 +70,6 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
 
     }
 
-
-
     @Override
     public void onRefresh() {
         //TODO::
@@ -75,25 +77,33 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
 
     @Override
     public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
-        ArrayList<Animal> listAnimals = new ArrayList<>();
-        ArrayList<Animal> listMyAnimals = new ArrayList<>();
-        if (animalsList != null){
-            if(animal_type.equals(RockChisel.SCENARIO_MY_LIST)){
-                for (Animal animal : animalsList) {
-                    if (animal.getPublisher_id().equals(12)) {
-                        listAnimals.add(animal);
-                    }
-                }
-            }else{
+        ArrayList<Animal> newListAnimals = new ArrayList<>();
+
+        switch (scenario){
+
+            case RockChisel.SCENARIO_GENERAL_LIST:
+
                 for (Animal animal : animalsList) {
                     if (animal.getType().equals(animal_type)) {
-                        listAnimals.add(animal);
+                        newListAnimals.add(animal);
                     }
                 }
-            }
 
-            lvListAdoptionAnimal.setAdapter(new ListAnimalsAdapter(getContext(), listAnimals));
+                break;
+
+            case RockChisel.SCENARIO_MY_LIST:
+
+                for (Animal animal : animalsList) {
+                    //TODO: colocar o id do utilizador dinamico
+                    if (animal.getPublisher_id().equals(14) && (animal.getType().equals(RockChisel.MISSING_ANIMAL) || animal.getType().equals(RockChisel.FOUND_ANIMAL))) {
+                        newListAnimals.add(animal);
+                    }
+                }
+
+                break;
         }
+
+        lvListAdoptionAnimal.setAdapter(new ListAnimalsAdapter(getContext(), newListAnimals));
     }
 
     @Override

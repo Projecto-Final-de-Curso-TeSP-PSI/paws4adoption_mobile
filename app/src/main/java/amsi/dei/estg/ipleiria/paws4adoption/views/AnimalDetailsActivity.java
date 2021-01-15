@@ -1,9 +1,11 @@
 package amsi.dei.estg.ipleiria.paws4adoption.views;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,21 +21,18 @@ import java.util.ArrayList;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.RequestListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 
-import static amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel.SCENARIO;
-
-public class AnimalDetailsActivity extends AppCompatActivity implements AnimalListener {
+public class AnimalDetailsActivity extends AppCompatActivity implements RequestListener {
 
     //################ INTENT PARAMETERS ################
-    public static final String ANIMAL_ID = "animal_id";
     private int animal_id = -1;
-
-    public static final String SCENARIO = "scenario";
     private String scenario = null;
 
     private TextView textView_name, textView_chipId, textView_nature, textView_breed, textView_sex, textView_size, textView_furColor, textView_furLength, textView_type, textView_createAt, textView_missingDate, textView_organization, textView_foundDate, textView_location;
@@ -54,14 +53,14 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animal_details);
 
-        animal_id = getIntent().getIntExtra(ANIMAL_ID, 0);
-        scenario = getIntent().getStringExtra(SCENARIO);
+        scenario = getIntent().getStringExtra(RockChisel.SCENARIO);
+        animal_id = getIntent().getIntExtra(RockChisel.ANIMAL_ID, 0);
 
         importGraphicalElements();
 
         implementListeners();
 
-        SingletonPawsManager.getInstance(getApplicationContext()).setAnimalListener(this);
+        SingletonPawsManager.getInstance(getApplicationContext()).setRequestListener(this);
         SingletonPawsManager.getInstance(getApplicationContext()).getAnimalAPI(getApplicationContext(), this.animal_id);
 
     }
@@ -91,19 +90,12 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalLi
 
         imgRetrato = findViewById(R.id.imgRetrato);
 
-        btnLeft = findViewById(R.id.btnLeft);
-        btnRight = findViewById(R.id.btnRight);
-
         fabAdd = findViewById(R.id.fabAdd);
         fabUp = findViewById(R.id.fabUp);
         fabDown = findViewById(R.id.fabDown);
-        fabUpText = findViewById(R.id.fabUpText);
-        fabDownText = findViewById(R.id.fabDownText);
 
         fabUp.setVisibility(View.GONE);
-        fabUpText.setVisibility(View.GONE);
         fabDown.setVisibility(View.GONE);
-        fabDownText.setVisibility(View.GONE);
     }
 
     public void implementListeners(){
@@ -115,16 +107,10 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalLi
                     if (!areFabsVisible) {
                         fabUp.show();
                         fabDown.show();
-                        fabUpText.setVisibility(View.VISIBLE);
-                        fabDownText.setVisibility(View.VISIBLE);
-
                         areFabsVisible = true;
                     } else {
                         fabUp.hide();
                         fabDown.hide();
-                        fabUpText.setVisibility(View.GONE);
-                        fabDownText.setVisibility(View.GONE);
-
                         areFabsVisible = false;
                     }
                 }
@@ -135,22 +121,17 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalLi
                 @Override
                 public void onClick(View view) {
                     Intent intent = null;
+
                     switch(scenario){
 
-                        case RockChisel.SCENARIO_ADOPTION_ANIMAL:
-                            Toast.makeText(AnimalDetailsActivity.this, "Pedido de adoção não implementado!", Toast.LENGTH_SHORT).show();
+                        case RockChisel.SCENARIO_GENERAL_LIST:
+                            if(animal.getType().equals(RockChisel.ADOPTION_ANIMAL)){
+                                Toast.makeText(AnimalDetailsActivity.this, "Pedido de adoção não implementado!", Toast.LENGTH_SHORT).show();
+                            }
                             break;
 
-                        case RockChisel.SCENARIO_MISSING_ANIMAL:
-                        case RockChisel.SCENARIO_FOUND_ANIMAL:
-                            new Intent(getApplicationContext(), PostAnimalActivity.class);
-                            intent.putExtra(PostAnimalActivity.SCENARIO, animal.getType());
-                            intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
-                            intent.putExtra(PostAnimalActivity.ANIMAL_ID, animal_id);
-                            break;
-
-                        case RockChisel.SCENARIO_MY_ANIMAL:
-                            new Intent(getApplicationContext(), PostAnimalActivity.class);
+                        case RockChisel.SCENARIO_MY_LIST:
+                            intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
                             intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MY_ANIMAL);
                             intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
                             intent.putExtra(PostAnimalActivity.ANIMAL_ID, animal_id);
@@ -167,29 +148,41 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalLi
             new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = null;
 
-                    switch(scenario){
+                    switch(scenario) {
 
-                        case RockChisel.SCENARIO_ADOPTION_ANIMAL:
-                            Toast.makeText(AnimalDetailsActivity.this, "Pedido de FAT não implementado!", Toast.LENGTH_SHORT).show();
+                        case RockChisel.SCENARIO_GENERAL_LIST:
+
+                            switch (animal.getType()){
+
+                                case RockChisel.ADOPTION_ANIMAL:
+                                    Toast.makeText(AnimalDetailsActivity.this, "Pedido de FAT não implementado!", Toast.LENGTH_SHORT).show();
+                                    break;
+
+                                case RockChisel.MISSING_ANIMAL:
+                                case RockChisel.FOUND_ANIMAL:
+                                    Toast.makeText(AnimalDetailsActivity.this, "Pedido de contato não implementado!", Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
                             break;
 
-                        case RockChisel.SCENARIO_MISSING_ANIMAL:
-                        case RockChisel.SCENARIO_FOUND_ANIMAL:
-                            Toast.makeText(AnimalDetailsActivity.this, "Peidod de contato não implementado!", Toast.LENGTH_SHORT).show();
-                            break;
+                        case RockChisel.SCENARIO_MY_LIST:
 
-                        case RockChisel.SCENARIO_MY_ANIMAL:
-                            SingletonPawsManager
-                                    .getInstance(getApplicationContext())
-                                    .deleteAnimalAPI(animal, animal.getType(), Vault.getAuthToken(getApplicationContext()), getApplicationContext());
-                            break;
+                            switch (animal.getType()) {
+                                case RockChisel.MISSING_ANIMAL:
+                                    SingletonPawsManager
+                                        .getInstance(getApplicationContext())
+                                        .deleteAnimalAPI(animal, RockChisel.MISSING_ANIMALS_API_SERVICE , Vault.getAuthToken(getApplicationContext()), getApplicationContext());
+                                    break;
+                                case RockChisel.FOUND_ANIMAL:
+                                    SingletonPawsManager
+                                        .getInstance(getApplicationContext())
+                                        .deleteAnimalAPI(animal, RockChisel.FOUND_ANIMALS_API_SERVICE , Vault.getAuthToken(getApplicationContext()), getApplicationContext());
+                                    break;
 
+                            }
+                            break;
                     }
-
-                    if(intent != null)
-                        startActivity(intent);
                 }
             });
 
@@ -200,51 +193,58 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalLi
      */
     public void setScenario(){
 
+        if(!FortuneTeller.isInternetConnection(getApplicationContext())){
+            fabAdd.setVisibility(View.GONE);
+            fabUp.setVisibility(View.GONE);
+            fabDown.setVisibility(View.GONE);
+            return;
+        }
+
+
         switch (scenario){
 
-            case RockChisel.SCENARIO_ADOPTION_ANIMAL:
-                setTitle("Animal para Adoção");
-                fabUp.setImageResource(R.drawable.ic_baseline_family_restroom_24);
-                fabDown.setImageResource(R.drawable.ic_baseline_hourglass_top_24);
-                layout_organization.setVisibility(LinearLayout.VISIBLE);
-                textView_organization.setText(animal.getOrganization_name());
+            case RockChisel.SCENARIO_GENERAL_LIST:
+                switch(animal.getType()){
+                    case RockChisel.SCENARIO_ADOPTION_ANIMAL:
+                        setTitle("Animal para Adoção");
+                        fabUp.setImageResource(R.drawable.ic_baseline_family_restroom_24);
+                        fabDown.setImageResource(R.drawable.ic_baseline_hourglass_top_24);
+                        layout_organization.setVisibility(LinearLayout.VISIBLE);
+                        textView_organization.setText(animal.getOrganization_name());
+                        break;
+
+                    case RockChisel.SCENARIO_MISSING_ANIMAL:
+                        setTitle("Animal desaparecido");
+                        fabDown.setImageResource(R.drawable.ic_baseline_phone_forwarded_24);
+                        fabDown.show();
+                        fabUp.setVisibility(View.INVISIBLE);
+                        fabAdd.setVisibility(View.INVISIBLE);
+                        layout_missingDate.setVisibility(LinearLayout.VISIBLE);
+                        textView_missingDate.setText(animal.getMissingFound_date());
+                        break;
+
+                    case RockChisel.SCENARIO_FOUND_ANIMAL:
+                        setTitle("Animal errante");
+                        fabDown.setImageResource(R.drawable.ic_baseline_phone_forwarded_24);
+                        fabDown.show();
+                        fabUp.setVisibility(View.INVISIBLE);
+                        fabAdd.setVisibility(View.INVISIBLE);
+                        layout_foundDate.setVisibility(LinearLayout.VISIBLE);
+                        textView_foundDate.setText(animal.getMissingFound_date());
+                        layout_location.setVisibility(LinearLayout.VISIBLE);
+                        textView_location.setText(
+                                Wrench.encode("", animal.getOrganization_street(), " - ")+
+                                        Wrench.encode("", animal.getFoundAnimal_city(), " ") +
+                                        Wrench.encode("(", animal.getFoundAnimal_district_name(), ")")
+                        );
+                        break;
+                }
                 break;
 
-            case RockChisel.SCENARIO_MISSING_ANIMAL:
-                setTitle("Animal desaparecido");
-                fabDown.setImageResource(R.drawable.ic_baseline_phone_forwarded_24);
-                fabDown.show();
-                fabUp.setVisibility(View.INVISIBLE);
-                fabAdd.setVisibility(View.INVISIBLE);
-                layout_missingDate.setVisibility(LinearLayout.VISIBLE);
-                textView_missingDate.setText(animal.getMissingFound_date());
-                break;
-
-            case RockChisel.SCENARIO_FOUND_ANIMAL:
-                setTitle("Animal errante");
-                fabDown.setImageResource(R.drawable.ic_baseline_phone_forwarded_24);
-                fabDown.show();
-                fabUp.setVisibility(View.INVISIBLE);
-                fabAdd.setVisibility(View.INVISIBLE);
-                layout_foundDate.setVisibility(LinearLayout.VISIBLE);
-                textView_foundDate.setText(animal.getMissingFound_date());
-                layout_location.setVisibility(LinearLayout.VISIBLE);
-                textView_location.setText(
-                        Wrench.encode("", animal.getOrganization_street(), " - ")+
-                        Wrench.encode("", animal.getFoundAnimal_city(), " ") +
-                        Wrench.encode("(", animal.getFoundAnimal_district_name(), ")")
-                );
-                break;
-
-            case RockChisel.SCENARIO_MY_ANIMAL:
-                setTitle("Meu Animal");
-                fabUp.setImageResource(R.drawable.ic_baseline_family_restroom_24);
+            case RockChisel.SCENARIO_MY_LIST:
+                setTitle("Meu Animal ");
+                fabUp.setImageResource(R.drawable.ic_baseline_edit_24);
                 fabDown.setImageResource(R.drawable.ic_baseline_delete_24);
-
-                break;
-
-            default:
-                break;
         }
 
     }
@@ -274,19 +274,8 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalLi
 
     }
 
-    //################ ANIMAL LISTENER METHODS ################
     @Override
-    public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
-        finish();
-    }
-
-    @Override
-    public void onUpdateAnimalsList(Animal animal, int operation) {
-
-    }
-
-    @Override
-    public void onGetAnimalAPI(Animal animal) {
+    public void onRequestSuccess(Animal animal) {
         this.animal = animal;
 
         if(animal != null){
@@ -297,9 +286,8 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalLi
             Toast.makeText(this, getString(R.string.error_received_message), Toast.LENGTH_SHORT).show();
     }
 
-    public void onClick_btnLeft(View view) {
-    }
-
-    public void onClick_btnRight(View view) {
+    @Override
+    public void onRequestError(String message) {
+        finish();
     }
 }

@@ -13,8 +13,8 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 public class PawsManagerDBHelper extends SQLiteOpenHelper {
 
     //Tables name declaration
-    private static final String TABLE_NAME = "organizations";
-    private static final String ANIMAL_TABLE_NAME = "animals";
+    private static final String ORGANIZATIONS_TABLE_NAME = "organizations";
+    private static final String ANIMALS_TABLE_NAME = "animals";
 
 
     //commom animal and organization tables fields declaration
@@ -57,7 +57,6 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
 
     private static final String PUBLISHER_ID = "publisher_id";
     private static final String PUBLISHER_NAME = "publisher_name";
-    private static final String IS_FAT = "is_fat";
     private static final String MISSING_FOUND_DATE = "missingFound_date";
     private static final String FOUND_ANIMAL_LOCATION_ID = "foundAnimal_location_id";
     private static final String FOUND_ANIMAL_STREET = "foundAnimal_street";
@@ -100,8 +99,8 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String createOrganizationsTable =
-                "CREATE TABLE " + TABLE_NAME + "(" +
-                        ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "CREATE TABLE " + ORGANIZATIONS_TABLE_NAME + "(" +
+                        ID + " INTEGER, " +
                         NAME + " TEXT NOT NULL, " +
                         NIF + " TEXT NOT NULL, " +
                         EMAIL + " TEXT, " +
@@ -119,8 +118,8 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(createOrganizationsTable);
 
         String createAnimalsTable =
-                "CREATE TABLE " + ANIMAL_TABLE_NAME + "(" +
-                        ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "CREATE TABLE " + ANIMALS_TABLE_NAME + "(" +
+                        ID + " INTEGER, " +
                         NAME + " TEXT, " +
                         CHIP_ID + " TEXT, " +
                         NATURE_ID + " INT NOT NULL, " +
@@ -140,7 +139,6 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
                         TYPE + " TEXT NOT NULL," +
                         PUBLISHER_ID + " INT NOT NULL," +
                         PUBLISHER_NAME + " TEXT NOT NULL," +
-                        IS_FAT + " INT NOT NULL," +
                         MISSING_FOUND_DATE + " TEXT," +
                         FOUND_ANIMAL_LOCATION_ID + " INT," +
                         FOUND_ANIMAL_STREET + " TEXT," +
@@ -172,8 +170,8 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ANIMAL_TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ORGANIZATIONS_TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ANIMALS_TABLE_NAME);
         this.onCreate(sqLiteDatabase);
     }
 
@@ -184,6 +182,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
     public void insertOrganizationDB(Organization organization){
         ContentValues values= new ContentValues();
 
+        values.put(ID, organization.getId());
         values.put(NAME, organization.getName());
         values.put(NIF, organization.getNif());
         values.put(EMAIL, organization.getEmail());
@@ -198,7 +197,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         values.put(DISTRICT_ID, organization.getDistrict_id());
         values.put(DISTRICT_NAME, organization.getDistrict_name());
 
-        this.sqLiteDatabase.insert(TABLE_NAME, null, values);
+        this.sqLiteDatabase.insert(ORGANIZATIONS_TABLE_NAME, null, values);
     }
 
     /**
@@ -208,6 +207,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
     public void insertAnimalDB(Animal animal) {
         ContentValues values = new ContentValues();
 
+        values.put(ID, animal.getId());
         values.put(NAME, animal.getName());
         values.put(CHIP_ID, animal.getChipId());
         values.put(NATURE_ID, animal.getNature_id());
@@ -227,7 +227,6 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         values.put(TYPE, animal.getType());
         values.put(PUBLISHER_ID, animal.getPublisher_id());
         values.put(PUBLISHER_NAME, animal.getPublisher_name());
-        values.put(IS_FAT, animal.getIs_fat());
         values.put(MISSING_FOUND_DATE, animal.getMissingFound_date());
         values.put(FOUND_ANIMAL_LOCATION_ID, animal.getFoundAnimal_location_id());
         values.put(FOUND_ANIMAL_STREET, animal.getFoundAnimal_street());
@@ -248,7 +247,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         values.put(ORGANIZATION_DISTRICT_ID, animal.getOrganization_district_id());
         values.put(ORGANIZATION_DISTRICT_NAME, animal.getOrganization_district_name());
 
-        this.sqLiteDatabase.insert(ANIMAL_TABLE_NAME, null, values);
+        this.sqLiteDatabase.insert(ANIMALS_TABLE_NAME, null, values);
     }
 
 
@@ -260,6 +259,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
     public boolean updateOrganizationDB(Organization organization){
         ContentValues values= new ContentValues();
 
+        values.put(ID, organization.getId());
         values.put(NAME, organization.getName());
         values.put(NIF, organization.getNif());
         values.put(EMAIL, organization.getEmail());
@@ -274,7 +274,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         values.put(DISTRICT_ID, organization.getDistrict_id());
         values.put(DISTRICT_NAME, organization.getDistrict_name());
 
-        return this.sqLiteDatabase.update(TABLE_NAME, values,"id = ?", new String[]{"" + organization.getId()}) > 0;
+        return this.sqLiteDatabase.update(ORGANIZATIONS_TABLE_NAME, values,"id = ?", new String[]{"" + organization.getId()}) > 0;
     }
 
     /**
@@ -285,6 +285,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
     public boolean updateAnimalDB(Animal animal){
         ContentValues values= new ContentValues();
 
+        values.put(ID, animal.getId());
         values.put(NAME, animal.getName());
         values.put(CHIP_ID, animal.getChipId());
         values.put(NATURE_ID, animal.getNature_id());
@@ -304,7 +305,6 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         values.put(TYPE, animal.getType());
         values.put(PUBLISHER_ID, animal.getPublisher_id());
         values.put(PUBLISHER_NAME, animal.getPublisher_name());
-        values.put(IS_FAT, animal.getIs_fat());
         values.put(MISSING_FOUND_DATE, animal.getMissingFound_date());
         values.put(FOUND_ANIMAL_LOCATION_ID, animal.getFoundAnimal_location_id());
         values.put(FOUND_ANIMAL_STREET, animal.getFoundAnimal_street());
@@ -325,9 +325,8 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         values.put(ORGANIZATION_DISTRICT_ID, animal.getOrganization_district_id());
         values.put(ORGANIZATION_DISTRICT_NAME, animal.getOrganization_district_name());
 
-        return this.sqLiteDatabase.update(ANIMAL_TABLE_NAME, values,"id = ?", new String[]{"" + animal.getId()}) > 0;
+        return this.sqLiteDatabase.update(ANIMALS_TABLE_NAME, values,"id = ?", new String[]{"" + animal.getId()}) > 0;
     }
-
 
     /**
      * Deletes an organization from the organizations tables
@@ -335,7 +334,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
      * @return true if successfully deleted, or false otherwise
      */
     public boolean deleteOrganizationDB(int id){
-        return (this.sqLiteDatabase.delete(TABLE_NAME, "id = ?", new String[]{"" + id})) == 1;
+        return (this.sqLiteDatabase.delete(ORGANIZATIONS_TABLE_NAME, "id = ?", new String[]{"" + id}) == 1);
     }
 
     /**
@@ -344,7 +343,8 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
      * @return
      */
     public boolean deleteAnimalDB(int idAnimal){
-        return (this.sqLiteDatabase.delete(ANIMAL_TABLE_NAME, "id = ?", new String[]{"" + idAnimal})) == 1;
+        boolean deleted = (this.sqLiteDatabase.delete(ANIMALS_TABLE_NAME, "id = ?", new String[]{"" + idAnimal}) == 1);
+        return deleted;
     }
 
     /**
@@ -354,7 +354,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
     public ArrayList<Organization> getAllOrganizationsDB(){
         ArrayList<Organization> organizations = new ArrayList<>();
 
-        Cursor cursor = this.sqLiteDatabase.query(TABLE_NAME, new String[]{
+        Cursor cursor = this.sqLiteDatabase.query(ORGANIZATIONS_TABLE_NAME, new String[]{
            ID, NAME, NIF, EMAIL, PHONE, ADDRESS_ID, STREET, DOOR_NUMBER, FLOOR, POSTAL_CODE, STREET_CODE, CITY, DISTRICT_ID, DISTRICT_NAME},
                 null, null, null, null, null
         );
@@ -393,15 +393,53 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
     public ArrayList<Animal> getAllAnimalsDB(){
         ArrayList<Animal> animals = new ArrayList<>();
 
-        Cursor cursor = this.sqLiteDatabase.query(ANIMAL_TABLE_NAME, new String[]{
-                        ID, NAME, CHIP_ID, NATURE_ID, NATURE_NAME, NATURE_PARENT_ID, NATURE_PARENT_NAME, FUR_LENGTH_ID, FUR_LENGTH, FUR_COLOR_ID, FUR_COLOR, SIZE_ID, SIZE, SEX, DESCRIPTION, CREATE_AT, PHOTO, TYPE, PUBLISHER_ID, PUBLISHER_NAME, IS_FAT, MISSING_FOUND_DATE, FOUND_ANIMAL_LOCATION_ID, FOUND_ANIMAL_STREET, FOUND_ANIMAL_CITY, FOUND_ANIMAL_DISTRICT_ID, FOUND_ANIMAL_DESTRICT_NAME, ORGANIZATION_ID, ORGANIZATION_NAME, ORGANIZATION_NIF, ORGANIZATION_EMAIL, ORGANIZATION_ADDRESS_ID, ORGANIZATION_STREET, ORGANIZATION_DOOR_NUMBER, ORGANIZATION_FLOOR, ORGANIZATION_CITY, ORGANIZATION_POSTAL_CODE,ORGANIZATION_STREET_CODE, ORGANIZATION_DISTRICT_ID, ORGANIZATION_DISTRICT_NAME },
+        Cursor cursor = this.sqLiteDatabase.query(ANIMALS_TABLE_NAME, new String[]{
+                        ID,
+                        NAME,
+                        CHIP_ID,
+                        NATURE_ID,
+                        NATURE_NAME,
+                        NATURE_PARENT_ID,
+                        NATURE_PARENT_NAME,
+                        FUR_LENGTH_ID,
+                        FUR_LENGTH,
+                        FUR_COLOR_ID,
+                        FUR_COLOR, //10
+                        SIZE_ID,
+                        SIZE,
+                        SEX,
+                        DESCRIPTION,
+                        CREATE_AT,
+                        PHOTO,
+                        TYPE,
+                        PUBLISHER_ID,
+                        PUBLISHER_NAME,
+                        MISSING_FOUND_DATE,
+                        FOUND_ANIMAL_LOCATION_ID,
+                        FOUND_ANIMAL_STREET,
+                        FOUND_ANIMAL_CITY,
+                        FOUND_ANIMAL_DISTRICT_ID,
+                        FOUND_ANIMAL_DESTRICT_NAME,
+                        ORGANIZATION_ID,
+                        ORGANIZATION_NAME,
+                        ORGANIZATION_NIF,
+                        ORGANIZATION_EMAIL, //30
+                        ORGANIZATION_ADDRESS_ID,
+                        ORGANIZATION_STREET,
+                        ORGANIZATION_DOOR_NUMBER,
+                        ORGANIZATION_FLOOR,
+                        ORGANIZATION_CITY,
+                        ORGANIZATION_POSTAL_CODE,
+                        ORGANIZATION_STREET_CODE,
+                        ORGANIZATION_DISTRICT_ID,
+                        ORGANIZATION_DISTRICT_NAME },
                 null, null, null, null, null
         );
 
         if(cursor.moveToFirst()) {
 
             do {
-                Animal auxOrg = new Animal(
+                Animal auxAnimal = new Animal(
                         cursor.getInt(0),
                         cursor.getString(1),
                         cursor.getString(2),
@@ -422,28 +460,27 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
                         cursor.getString(17),
                         cursor.getInt(18),
                         cursor.getString(19),
-                        cursor.getInt(20),
-                        cursor.getString(21),
-                        cursor.getInt(22),
+                        cursor.getString(20),
+                        cursor.getInt(21),
+                        cursor.getString(22),
                         cursor.getString(23),
-                        cursor.getString(24),
-                        cursor.getInt(25),
-                        cursor.getString(26),
-                        cursor.getInt(27),
-                        cursor.getString(28),
-                        cursor.getInt(29),
-                        cursor.getString(30),
-                        cursor.getInt(31),
+                        cursor.getInt(24),
+                        cursor.getString(25),
+                        cursor.getInt(26),
+                        cursor.getString(27),
+                        cursor.getInt(28),
+                        cursor.getString(29),
+                        cursor.getInt(30),
+                        cursor.getString(31),
                         cursor.getString(32),
                         cursor.getString(33),
                         cursor.getString(34),
-                        cursor.getString(35),
+                        cursor.getInt(35),
                         cursor.getInt(36),
                         cursor.getInt(37),
-                        cursor.getInt(38),
-                        cursor.getString(39)
+                        cursor.getString(38)
                 );
-
+                animals.add(auxAnimal);
             } while (cursor.moveToNext());
         }
 
@@ -458,8 +495,46 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
 
         Animal auxAnimal = null;
 
-        Cursor cursor = this.sqLiteDatabase.query(ANIMAL_TABLE_NAME, new String[]{
-                ID, NAME, CHIP_ID, NATURE_ID, NATURE_NAME, NATURE_PARENT_ID, NATURE_PARENT_NAME, FUR_LENGTH_ID, FUR_LENGTH, FUR_COLOR_ID, FUR_COLOR, SIZE_ID, SIZE, SEX, DESCRIPTION, CREATE_AT, PHOTO, TYPE, PUBLISHER_ID, PUBLISHER_NAME, IS_FAT, MISSING_FOUND_DATE, FOUND_ANIMAL_LOCATION_ID, FOUND_ANIMAL_STREET, FOUND_ANIMAL_CITY, FOUND_ANIMAL_DISTRICT_ID, FOUND_ANIMAL_DESTRICT_NAME, ORGANIZATION_ID, ORGANIZATION_NAME, ORGANIZATION_NIF, ORGANIZATION_EMAIL, ORGANIZATION_ADDRESS_ID, ORGANIZATION_STREET, ORGANIZATION_DOOR_NUMBER, ORGANIZATION_FLOOR, ORGANIZATION_CITY, ORGANIZATION_POSTAL_CODE,ORGANIZATION_STREET_CODE, ORGANIZATION_DISTRICT_ID, ORGANIZATION_DISTRICT_NAME
+        Cursor cursor = this.sqLiteDatabase.query(ANIMALS_TABLE_NAME, new String[]{
+                ID,
+                NAME,
+                CHIP_ID,
+                NATURE_ID,
+                NATURE_NAME,
+                NATURE_PARENT_ID,
+                NATURE_PARENT_NAME,
+                FUR_LENGTH_ID,
+                FUR_LENGTH,
+                FUR_COLOR_ID,
+                FUR_COLOR, //10
+                SIZE_ID,
+                SIZE,
+                SEX,
+                DESCRIPTION,
+                CREATE_AT,
+                PHOTO,
+                TYPE,
+                PUBLISHER_ID,
+                PUBLISHER_NAME,
+                MISSING_FOUND_DATE,
+                FOUND_ANIMAL_LOCATION_ID,
+                FOUND_ANIMAL_STREET,
+                FOUND_ANIMAL_CITY,
+                FOUND_ANIMAL_DISTRICT_ID,
+                FOUND_ANIMAL_DESTRICT_NAME,
+                ORGANIZATION_ID,
+                ORGANIZATION_NAME,
+                ORGANIZATION_NIF,
+                ORGANIZATION_EMAIL, //30
+                ORGANIZATION_ADDRESS_ID,
+                ORGANIZATION_STREET,
+                ORGANIZATION_DOOR_NUMBER,
+                ORGANIZATION_FLOOR,
+                ORGANIZATION_CITY,
+                ORGANIZATION_POSTAL_CODE,
+                ORGANIZATION_STREET_CODE,
+                ORGANIZATION_DISTRICT_ID,
+                ORGANIZATION_DISTRICT_NAME
         }, ID + "=" + id, null, null, null, null, null);
 
                 auxAnimal = new Animal(
@@ -483,26 +558,25 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
                         cursor.getString(17),
                         cursor.getInt(18),
                         cursor.getString(19),
-                        cursor.getInt(20),
-                        cursor.getString(21),
-                        cursor.getInt(22),
+                        cursor.getString(20),
+                        cursor.getInt(21),
+                        cursor.getString(22),
                         cursor.getString(23),
-                        cursor.getString(24),
-                        cursor.getInt(25),
-                        cursor.getString(26),
+                        cursor.getInt(24),
+                        cursor.getString(25),
+                        cursor.getInt(26),
+                        cursor.getString(27),
                         cursor.getInt(27),
-                        cursor.getString(28),
-                        cursor.getInt(29),
-                        cursor.getString(30),
-                        cursor.getInt(31),
+                        cursor.getString(29),
+                        cursor.getInt(30),
+                        cursor.getString(31),
                         cursor.getString(32),
                         cursor.getString(33),
                         cursor.getString(34),
-                        cursor.getString(35),
+                        cursor.getInt(35),
                         cursor.getInt(36),
                         cursor.getInt(37),
-                        cursor.getInt(38),
-                        cursor.getString(39)
+                        cursor.getString(38)
                 );
 
         return auxAnimal;
@@ -513,7 +587,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
      *
      */
     public void deleteAllOrganizationsDB(){
-        this.sqLiteDatabase.delete(TABLE_NAME, null, null);
+        this.sqLiteDatabase.delete(ORGANIZATIONS_TABLE_NAME, null, null);
     }
 
     /**
@@ -521,7 +595,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
      *
      */
     public void deleteAllAnimalsDB(){
-        this.sqLiteDatabase.delete(ANIMAL_TABLE_NAME, null, null);
+        this.sqLiteDatabase.delete(ANIMALS_TABLE_NAME, null, null);
     }
 
 }

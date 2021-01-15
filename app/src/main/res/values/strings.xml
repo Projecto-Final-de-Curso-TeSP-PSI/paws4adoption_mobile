@@ -100,7 +100,7 @@
     <string name="update_found_animal">Editar Animal Perdido</string>
     <string name="select_furlength">Selecione o tipo de pelagem</string>
     <string name="error_received_message">Erro na mensagem recebida</string>
-    <string name="animais_desaparcidos">Animais Desaparcidos</string>
+    <string name="missing_animals">Animais Desaparecidos</string>
     <string name="animais_errantes">Animais Errantes</string>
     <string name="animais_para_ado_o">Animais para Adoção</string>
     <string name="a_minha_lista">A Minha Lista</string>

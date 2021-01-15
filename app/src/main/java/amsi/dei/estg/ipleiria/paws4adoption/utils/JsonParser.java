@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -140,11 +141,10 @@ public class JsonParser {
                 String sex = animal.getString("sex");
                 String description = animal.getString("description");
                 String createAt = animal.getString("createdAt");
-                String photo = animal.getString("photo");
+                String photo = RockChisel.PHOTO_LOCAL_URL + animal.getString("photo");
 
                 String type = animal.getString("type");
 
-                Integer is_fat = null;
                 String missingFound_date = null;
                 Integer foundAnimal_location_id = null;
                 String foundAnimal_street = null;
@@ -170,10 +170,9 @@ public class JsonParser {
                 switch(Objects.requireNonNull(type)){
                     case "adoptionAnimal":
                         JSONObject adoptionAnimal = animal.getJSONObject("adoptionAnimal");
-                        is_fat = adoptionAnimal.getInt("is_on_fat");
-
 
                         JSONObject associatedUser = adoptionAnimal.getJSONObject("associatedUser");
+
                         publisher_id = associatedUser.getInt("id");
                         publisher_name = associatedUser.getString("fullName");
 
@@ -225,7 +224,9 @@ public class JsonParser {
                         break;
                 }
 
-                Animal auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, is_fat, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
+
+
+                Animal auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
                 animalsList.add(auxAnimal);
             }
         } catch(JSONException e){
@@ -270,11 +271,10 @@ public class JsonParser {
                 String sex = animal.getString("sex");
                 String description = animal.getString("description");
                 String createAt = animal.getString("createdAt");
-                String photo = animal.getString("photo");
+                String photo = RockChisel.PHOTO_LOCAL_URL + animal.getString("photo");
 
                 String type = animal.getString("type");
 
-                Integer is_fat = null;
                 String missingFound_date = null;
                 Integer foundAnimal_location_id = null;
                 String foundAnimal_street = null;
@@ -300,8 +300,6 @@ public class JsonParser {
                 switch(Objects.requireNonNull(type)){
                     case "adoptionAnimal":
                         JSONObject adoptionAnimal = animal.getJSONObject("adoptionAnimal");
-                        is_fat = adoptionAnimal.getInt("is_on_fat");
-
 
                         JSONObject associatedUser = adoptionAnimal.getJSONObject("associatedUser");
                         publisher_id = associatedUser.getInt("id");
@@ -355,7 +353,7 @@ public class JsonParser {
                         break;
                 }
 
-                auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, is_fat, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
+                auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
 
             } catch (JSONException jsonException) {
                 jsonException.printStackTrace();

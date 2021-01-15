@@ -19,8 +19,7 @@ public class Animal {
             organization_postal_code,
             organization_street_code,
             foundAnimal_location_id,
-            foundAnimal_district_id,
-            is_fat;
+            foundAnimal_district_id;
 
     private String
             chipId,
@@ -77,7 +76,6 @@ public class Animal {
      * @param type
      * @param publisher_id
      * @param publisher_name
-     * @param is_fat
      * @param missingFound_date
      * @param foundAnimal_location_id
      * @param foundAnimal_street
@@ -98,7 +96,7 @@ public class Animal {
      * @param organization_district_id
      * @param organization_district_name
      */
-    public Animal(Integer id, String name, String chipId, Integer nature_id, String nature_name, Integer nature_parent_id, String nature_parent_name, Integer fur_length_id, String fur_length, Integer fur_color_id, String fur_color, Integer size_id, String size, String sex, String description, String createAt, String photo, String type, Integer publisher_id, String publisher_name, Integer is_fat, String missingFound_date, Integer foundAnimal_location_id, String foundAnimal_street, String foundAnimal_city, Integer foundAnimal_district_id, String foundAnimal_district_name, Integer organization_id, String organization_name, Integer organization_nif, String organization_email, Integer organization_address_id, String organization_street, String organization_door_number, String organization_floor, String organization_city, Integer organization_postal_code, Integer organization_street_code, Integer organization_district_id, String organization_district_name
+    public Animal(Integer id, String name, String chipId, Integer nature_id, String nature_name, Integer nature_parent_id, String nature_parent_name, Integer fur_length_id, String fur_length, Integer fur_color_id, String fur_color, Integer size_id, String size, String sex, String description, String createAt, String photo, String type, Integer publisher_id, String publisher_name, String missingFound_date, Integer foundAnimal_location_id, String foundAnimal_street, String foundAnimal_city, Integer foundAnimal_district_id, String foundAnimal_district_name, Integer organization_id, String organization_name, Integer organization_nif, String organization_email, Integer organization_address_id, String organization_street, String organization_door_number, String organization_floor, String organization_city, Integer organization_postal_code, Integer organization_street_code, Integer organization_district_id, String organization_district_name
 
     ) {
         this.id = id;
@@ -121,7 +119,6 @@ public class Animal {
         this.type = type;
         this.publisher_id = publisher_id;
         this.publisher_name = publisher_name;
-        this.is_fat = is_fat;
         this.missingFound_date = missingFound_date;
         this.foundAnimal_location_id = foundAnimal_location_id;
         this.foundAnimal_street = foundAnimal_street;
@@ -273,14 +270,6 @@ public class Animal {
 
     public void setFoundAnimal_district_id(Integer foundAnimal_district_id) {
         this.foundAnimal_district_id = foundAnimal_district_id;
-    }
-
-    public Integer getIs_fat() {
-        return is_fat;
-    }
-
-    public void setIs_fat(Integer is_fat) {
-        this.is_fat = is_fat;
     }
 
     public String getChipId() {

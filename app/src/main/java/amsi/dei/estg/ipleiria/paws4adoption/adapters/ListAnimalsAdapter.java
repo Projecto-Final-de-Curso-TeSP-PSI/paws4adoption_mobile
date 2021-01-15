@@ -98,6 +98,7 @@ public class ListAnimalsAdapter extends BaseAdapter {
             size.setText(animal.getSize());
             sex.setText(animal.getSex());
             postDate.setText(animal.getCreateAt());
+
             Glide.with(context)
                     .load(animal.getPhoto())
                     .placeholder(R.drawable.paws4adoption_logo)

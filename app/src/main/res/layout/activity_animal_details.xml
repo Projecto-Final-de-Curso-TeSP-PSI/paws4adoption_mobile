@@ -24,7 +24,7 @@
                 android:layout_marginTop="10dp"
                 android:contentDescription="@string/descriptionimganimal"
                 android:padding="20dp"
-                app:srcCompat="@drawable/gato" />
+                app:srcCompat="@drawable/paws4adoption_logo" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -344,30 +344,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:id="@+id/llMyAnimalsButtons">
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/btnLeft"
-                        android:onClick="onClick_btnLeft"
-                        android:text="Left"
-                        android:layout_gravity="center_horizontal"/>
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/btnRight"
-                        android:onClick="onClick_btnRight"
-                        android:text="Right"
-                        android:layout_gravity="center_horizontal"/>
-
-                </LinearLayout>
-
             </LinearLayout>
 
         </LinearLayout>
@@ -381,7 +357,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="#DCA730"
+        android:tint="#DCA730"
         app:srcCompat="@drawable/ic_baseline_add_circle_24"
         app:fabSize="normal"
         android:contentDescription="Ver Opções" />
@@ -392,7 +368,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="100dp"
-
         app:fabSize="normal"
         android:visibility="gone"
         app:layout_anchor="@id/fabAdd"
@@ -400,15 +375,15 @@
         app:srcCompat="@drawable/ic_baseline_hourglass_top_24"
         android:contentDescription="FAT" />
 
-    <TextView
-        android:id="@+id/fabDownText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="FAT"
-        app:layout_constraintBottom_toBottomOf="@+id/fabDown"
-        app:layout_constraintEnd_toStartOf="@+id/fabDown"
-        app:layout_constraintTop_toTopOf="@+id/fabDown" />
+<!--    <TextView-->
+<!--        android:id="@+id/fabDownText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:text="FAT"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/fabDown"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/fabDown"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/fabDown" />-->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabUp"
@@ -416,7 +391,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="168dp"
-        android:background="#DCA730"
         app:fabSize="normal"
         android:focusable="true"
         app:layout_anchor="@id/fabDown"
@@ -424,14 +398,14 @@
         app:srcCompat="@drawable/ic_baseline_family_restroom_24"
         android:contentDescription="Adotar" />
 
-    <TextView
-        android:id="@+id/fabUpText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="ADOTAR"
-        app:layout_constraintBottom_toBottomOf="@+id/fabUp"
-        app:layout_constraintEnd_toStartOf="@+id/fabUp"
-        app:layout_constraintTop_toTopOf="@+id/fabUp" />
+<!--    <TextView-->
+<!--        android:id="@+id/fabUpText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:text="ADOTAR"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/fabUp"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/fabUp"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/fabUp" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -10,6 +10,6 @@ import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
  */
 
 public interface RequestListener {
-    void onRequestSuccess(String message);
+    void onRequestSuccess(Animal animal);
     void onRequestError(String message);
 }
