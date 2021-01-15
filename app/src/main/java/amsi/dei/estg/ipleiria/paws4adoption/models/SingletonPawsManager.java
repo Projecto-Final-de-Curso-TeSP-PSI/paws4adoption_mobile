@@ -866,7 +866,6 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
             params.put("sex", animal.getSex());
 
             if(animal.getPhoto() != null){
-
                 params.put("photo", "" + animal.getPhoto());
             }
             switch(apiService){
@@ -958,26 +957,15 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                         error.getStackTrace();
                     }
                 })
-//        {
-//            @RequiresApi(api = Build.VERSION_CODES.O)
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                System.out.println("--> método getHeaders");
-//                Map<String, String> headers = new HashMap<>();
-//                headers.putIfAbsent("Cookie", "XDEBUG_SESSION_START=PHPSTORM");
-//                headers.putIfAbsent("authorization", createBasicAuth(username, password));
-//                return headers;
-//            }
-//        };
-        {
-            //Passagem dos dados por parametro no pedido à API
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put(RockChisel.USERNAME, username);
-                params.put(RockChisel.PASSWORD, password);
-                return params;
-            }
+                {
+                    //Passagem dos dados por parametro no pedido à API
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put(RockChisel.USERNAME, username);
+                        params.put(RockChisel.PASSWORD, password);
+                        return params;
+                }
         };
 
         volleyQueue.add(request);
@@ -989,17 +977,38 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      * @param context
      */
     public void addUserAPI(final UserProfile userProfile, final Context context) {
-        StringRequest request = new StringRequest(
+        JSONObject params = new JSONObject();
+        try {
+            params.put("username", userProfile.getUsername());
+            params.put("password", userProfile.getPassword());
+            params.put("email", userProfile.getEmail());
+            params.put("firstName", userProfile.getFirstName());
+            params.put("lastName", userProfile.getLastName());
+            params.put("nif", userProfile.getNif());
+            params.put("phone", userProfile.getPhone());
+            params.put("street", userProfile.getStreet());
+            params.put("door_number", userProfile.getDoorNumber());
+            params.put("floor", userProfile.getFloor());
+            params.put("postal_code", userProfile.getPostalCode());
+            params.put("street_code", userProfile.getStreetCode());
+            params.put("city", userProfile.getCity());
+            params.put("district_id", "" + userProfile.getDistrictId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
                 mUrlAPIUserProfile,
-                new Response.Listener<String>() {
+                params,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         try {
-                            Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
                             UserProfile userProfileVindoDaAPI = JsonParser.parserJsonUserProfile(response);
                             userProfileListener.onUserProfileRequest(userProfileVindoDaAPI);
                         } catch (Exception e){
+                            System.out.println("--> Lançou excepção ao receber resposta.");
                             e.printStackTrace();
                         }
                     }
@@ -1008,31 +1017,20 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(context, "Erro ao criar novo utilizador.", Toast.LENGTH_SHORT).show();
+                        System.out.println("--> Recebido erro.");
                         error.printStackTrace();
                     }
                 })
                 {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("username", userProfile.getUsername());
-                        params.put("password", userProfile.getPassword());
-                        params.put("email", userProfile.getEmail());
-                        params.put("firstName", userProfile.getFirstName());
-                        params.put("lastName", userProfile.getLastName());
-                        params.put("nif", userProfile.getNif());
-                        params.put("phone", userProfile.getPhone());
-                        params.put("street", userProfile.getStreet());
-                        params.put("door_number", userProfile.getDoorNumber());
-                        params.put("floor", userProfile.getFloor());
-                        params.put("postal_code", userProfile.getPostalCode());
-                        params.put("street_code", userProfile.getStreetCode());
-                        params.put("city", userProfile.getCity());
-                        params.put("district_id", "" + userProfile.getDistrictId());
-
-                        return params;
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        headers.put("Content-Type", "application/json");
+                        return headers;
                     }
                 };
+
         volleyQueue.add(request);
     }
 

@@ -11,9 +11,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
+import amsi.dei.estg.ipleiria.paws4adoption.models.UserProfile;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
-public class SignupActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity implements UserProfileListener {
 
     private ImageView iv;
     private EditText usernameTxt, emailTxt, passwordTxt;
@@ -35,6 +37,13 @@ public class SignupActivity extends AppCompatActivity {
         passwordTxt = findViewById(R.id.etPassword);
     }
 
+    private boolean isUsernameValido(String username){
+        if(username == null){
+            return false;
+        }
+        return username.length() >= 4;
+    }
+
     private boolean isEmailValido(String email) {
         if(email == null){
             return false;
@@ -54,13 +63,17 @@ public class SignupActivity extends AppCompatActivity {
         String email = emailTxt.getText().toString();
         String password = passwordTxt.getText().toString();
 
+        if(!isUsernameValido(username)){
+            usernameTxt.setError("Username tem de ter 4 ou mais caracteres.");
+        }
+
         if(!isEmailValido(email)){
             emailTxt.setError("Email inválido");
             return;
         }
 
         if(!isPasswordValida(password)){
-            passwordTxt.setError("A password não cumpre os requisitos");
+            passwordTxt.setError("A password tem de ter 8 ou mais caracteres.");
             return;
         }
 
@@ -69,5 +82,12 @@ public class SignupActivity extends AppCompatActivity {
         intent.putExtra(RockChisel.EMAIL, email);
         intent.putExtra(RockChisel.PASSWORD, password);
         startActivity(intent);
+    }
+
+    @Override
+    public void onUserProfileRequest(UserProfile userProfile) {
+        if(userProfile != null){
+            finish();
+        }
     }
 }
