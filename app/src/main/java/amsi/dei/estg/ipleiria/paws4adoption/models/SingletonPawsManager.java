@@ -43,7 +43,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 public class SingletonPawsManager implements OrganizationsListener, AnimalListener{
 
     //API local address (may change each time you start your machine)
-    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
+    private static final String COMPUTER_LOCAL_IP = "192.168.1.69";
     //private static final String COMPUTER_LOCAL_IP = "10.20.228.42";
 //    private static final String COMPUTER_LOCAL_IP = "192.168.1.69";
 //    private static final String COMPUTER_LOCAL_IP = "10.0.2.2";
@@ -931,9 +931,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String token = JsonParser.parserJsonLogin(response);
-                        Toast.makeText(context, token, Toast.LENGTH_SHORT).show();
-                        loginListener.onValidLogin(token, username);
+                        Login login = JsonParser.parserJsonLogin(response);
+                        Toast.makeText(context, login.getToken(), Toast.LENGTH_SHORT).show();
+                        loginListener.onValidLogin(login, username);
                     }
                 },
                 new Response.ErrorListener() {

@@ -20,13 +20,14 @@ import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
 
 public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AnimalListener {
 
     //################ INTENT PARAMETERS ################
     private static final String scenario = null;
-    private String animal_type = null;
+    private String type_list = null;
 
     private ListView lvListAdoptionAnimal;
 
@@ -39,7 +40,7 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
 
         Bundle bundle = this.getArguments();
         if(bundle != null){
-            animal_type = bundle.getString(RockChisel.ANIMAL_TYPE);
+            type_list = bundle.getString(RockChisel.ANIMAL_TYPE);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_list_adoption_animals, container, false);
@@ -76,17 +77,19 @@ public class ListAdoptionAnimalsFragment extends Fragment implements SwipeRefres
     @Override
     public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
         ArrayList<Animal> listAnimals = new ArrayList<>();
-        ArrayList<Animal> listMyAnimals = new ArrayList<>();
         if (animalsList != null){
-            if(animal_type.equals(RockChisel.SCENARIO_MY_LIST)){
+            if(type_list.equals(RockChisel.SCENARIO_MY_LIST)){
                 for (Animal animal : animalsList) {
-                    if (animal.getPublisher_id().equals(12)) {
-                        listAnimals.add(animal);
+                    if (animal.getPublisher_id().equals(Vault.getIdLoggedUser(getContext()))){
+                        if(!animal.getType().equals("adoptionAnimal")) {
+                            listAnimals.add(animal);
+                        }
+
                     }
                 }
             }else{
                 for (Animal animal : animalsList) {
-                    if (animal.getType().equals(animal_type)) {
+                    if (animal.getType().equals(type_list)) {
                         listAnimals.add(animal);
                     }
                 }

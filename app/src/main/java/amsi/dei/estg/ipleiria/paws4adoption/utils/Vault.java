@@ -7,6 +7,8 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import amsi.dei.estg.ipleiria.paws4adoption.models.Login;
+
 /**
  * Class that implements several static methods to work with the shared preferences
  */
@@ -18,13 +20,14 @@ public class Vault {
      * @param token
      * @param username
      */
-    public static void saveUserPreferences(Context context, String token, String username){
+    public static void saveUserPreferences(Context context, Login login, String username){
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences(RockChisel.USER_PREFERENCES,
                         Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(RockChisel.USERNAME, username);
-        editor.putString(RockChisel.TOKEN, token);
+        editor.putString(RockChisel.TOKEN, login.getToken());
+        editor.putInt(RockChisel.ID_USER, login.getId());
         editor.apply();
     }
 
@@ -45,6 +48,23 @@ public class Vault {
     public static void clearUserPreferences(Context context){
         SharedPreferences sharedPreferences = context.getSharedPreferences(RockChisel.USER_PREFERENCES, Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
+    }
+
+    /**
+     * Returns the logged user, or null if not exists
+     *
+     * @return string|null
+     */
+    public static int getIdLoggedUser(Context context) {
+        int id;
+        try{
+            SharedPreferences sharedPreferences = context.getSharedPreferences(RockChisel.USER_PREFERENCES, Context.MODE_PRIVATE);
+            id = sharedPreferences.getInt(RockChisel.ID_USER, 0);
+        } catch(Exception e){
+            System.out.println("getIdLoggedUser error --> " + e);
+            return 0;
+        }
+        return id;
     }
 
 
