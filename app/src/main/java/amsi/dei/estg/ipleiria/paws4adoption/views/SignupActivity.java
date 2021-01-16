@@ -65,6 +65,7 @@ public class SignupActivity extends AppCompatActivity {
 
         if(!isUsernameValido(username)){
             usernameTxt.setError("Username tem de ter 4 ou mais caracteres.");
+            return;
         }
 
         if(!isEmailValido(email)){

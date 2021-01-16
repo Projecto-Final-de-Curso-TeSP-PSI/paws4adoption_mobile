@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,6 @@ public class UserProfileActivity extends AppCompatActivity implements AttributeL
     }
 
     public void onClickSignup(View view) {
-        System.out.println("--> Click no registar");
         String username = getIntent().getStringExtra(USERNAME);
         String email = getIntent().getStringExtra(EMAIL);
         String password = getIntent().getStringExtra(PASSWORD);
@@ -71,7 +71,53 @@ public class UserProfileActivity extends AppCompatActivity implements AttributeL
         String postalCode = etPostalCode.getText().toString();
         String streetCode = etStreetCode.getText().toString();
         String city = etCity.getText().toString();
+
+        if(!isTxtFiledValid(firstName)){
+            etFirstName.setError("Tem de ter pelo menos 2 caracteres.");
+            return;
+        }
+
+        if(!isTxtFiledValid(lastName)){
+            etLastName.setError("Tem de ter pelo menos 2 caracteres.");
+            return;
+        }
+
+        if(!isNIFValid(nif)){
+            etNif.setError("Tem de ter exactemente 9 dígitos.");
+            return;
+        }
+
+        if(!isPhoneValid(phone)){
+            etPhone.setError("Tem de ter exactemente 9 dígitos.");
+            return;
+        }
+
+        if(!isTxtFiledValid(street)){
+            etStreet.setError("Tem de ter pelo menos 2 caracteres.");
+            return;
+        }
+
+        if(!isPostalCodeValid(postalCode)){
+            etPostalCode.setError("Tem de ter exactamente 4 dígitos.");
+            return;
+        }
+
+        if(!isStreetCodeValid(streetCode)){
+            etStreetCode.setError("Tem de ter exactamente 3 dígitos.");
+            return;
+        }
+
+        if(!isTxtFiledValid(city)){
+            etCity.setError("Tem de ter pelo menos 2 caracteres.");
+            return;
+        }
+
         int districtId = spinnerDistricts.getSelectedItemPosition();
+
+        if (districtId == 0) {
+            Toast.makeText(getApplicationContext(), "Tem de escolher um distrito.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         UserProfile userProfile = new UserProfile(
                 email, username,
@@ -85,8 +131,47 @@ public class UserProfileActivity extends AppCompatActivity implements AttributeL
         finish();
     }
 
+    private boolean isTxtFiledValid(String txtField){
+        if(txtField == null){
+            return false;
+        }
+        return txtField.length() >= 2;
+    }
+
+    private boolean isNIFValid(String nif){
+        if(nif == null){
+            return false;
+        }
+        return nif.length() == 9;
+    }
+
+    private boolean isPhoneValid(String phone){
+        if(phone == null){
+            return false;
+        }
+        return phone.length() == 9;
+    }
+
+    private boolean isPostalCodeValid(String postalCode){
+        if(postalCode == null){
+            return false;
+        }
+        return postalCode.length() == 4;
+    }
+
+    private boolean isStreetCodeValid(String streetCode){
+        if(streetCode == null){
+            return false;
+        }
+        return streetCode.length() == 3;
+    }
+
     public void initAttributesSpinners(){
-        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
+        SingletonPawsManager.getInstance(
+                getApplicationContext()).getAttributesAPI(getApplicationContext(),
+                RockChisel.ATTR_DISTRICT,
+                RockChisel.ATTR_DISTRICT_SYMLINK,
+                null);
     }
 
     /**
@@ -97,9 +182,11 @@ public class UserProfileActivity extends AppCompatActivity implements AttributeL
      */
     private void initSpinner(Spinner spinner, String promptMessage, @Nullable List<Attribute> listAttributes){
         Attribute promptObject = new Attribute(-1, promptMessage);
+        if(listAttributes != null){
+            listAttributes.add(0, promptObject);
+        }
 
         ArrayAdapter<Attribute> dataAdapterSpinnerDistrict = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, listAttributes);
-        dataAdapterSpinnerDistrict.add(promptObject);
 
         dataAdapterSpinnerDistrict.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapterSpinnerDistrict);
