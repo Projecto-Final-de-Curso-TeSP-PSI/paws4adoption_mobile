@@ -64,6 +64,9 @@ public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.
             }
         });
 
+        swipeRefreshLayout =  rootView.findViewById(R.id.swipe);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         SingletonPawsManager.getInstance(getContext()).setAnimalListener(this);
         SingletonPawsManager.getInstance(getContext()).getAllAnimalsAPI(getContext());
 
@@ -73,7 +76,8 @@ public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.
 
     @Override
     public void onRefresh() {
-        //TODO::
+        SingletonPawsManager.getInstance(getContext()).getAllAnimalsAPI(getContext());
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
