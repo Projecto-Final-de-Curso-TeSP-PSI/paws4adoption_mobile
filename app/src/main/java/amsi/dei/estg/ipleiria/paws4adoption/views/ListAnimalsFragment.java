@@ -20,6 +20,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
 
 public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AnimalListener {
@@ -95,7 +96,7 @@ public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.
 
                 for (Animal animal : animalsList) {
                     //TODO: colocar o id do utilizador dinamico
-                    if (animal.getPublisher_id().equals(14) && (animal.getType().equals(RockChisel.MISSING_ANIMAL) || animal.getType().equals(RockChisel.FOUND_ANIMAL))) {
+                    if (animal.getPublisher_id().equals(Vault.getIdLoggedUser(getContext())) && (animal.getType().equals(RockChisel.MISSING_ANIMAL) || animal.getType().equals(RockChisel.FOUND_ANIMAL))) {
                         newListAnimals.add(animal);
                     }
                 }

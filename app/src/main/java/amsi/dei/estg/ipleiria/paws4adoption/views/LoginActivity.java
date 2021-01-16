@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
+import amsi.dei.estg.ipleiria.paws4adoption.models.Login;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.models.UserProfile;
@@ -80,13 +81,13 @@ public class LoginActivity extends AppCompatActivity implements LoginListener, U
 
     /**
      * Method that implements an event for valid login of the loginListener
-     * @param token
      * @param username
      */
     @Override
-    public void onValidLogin(String token, String username) {
-        if(token != null){
-            Vault.saveUserPreferences(getApplicationContext(), token, username);
+    public void onValidLogin(Login login, String username) {
+        if(login != null){
+            System.out.println("onLogin --->" + login.getId());
+            Vault.saveUserPreferences(getApplicationContext(), login, username);
 
             Intent intent = new Intent(getApplicationContext(), MenuMainActivity.class);
             startActivity(intent);

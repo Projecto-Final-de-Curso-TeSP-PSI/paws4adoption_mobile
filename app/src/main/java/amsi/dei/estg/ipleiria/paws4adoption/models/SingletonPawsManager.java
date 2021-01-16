@@ -614,7 +614,6 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
         return params;
     }
 
-
     //################ ANIMAL ################
 
     /**
@@ -945,9 +944,9 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String token = JsonParser.parserJsonLogin(response);
-                        Toast.makeText(context, token, Toast.LENGTH_SHORT).show();
-                        loginListener.onValidLogin(token, username);
+                        Login login = JsonParser.parserJsonLogin(response);
+                        Toast.makeText(context, login.getToken(), Toast.LENGTH_SHORT).show();
+                        loginListener.onValidLogin(login, username);
                     }
                 },
                 new Response.ErrorListener() {

@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
+import amsi.dei.estg.ipleiria.paws4adoption.models.Login;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
 
 /**
@@ -391,17 +392,18 @@ public class JsonParser {
      * @param response
      * @returns the token received on the JSON object response
      */
-    public static String parserJsonLogin (String response){
-        String token = null;
+    public static Login parserJsonLogin (String response){
+        Login loginModel = new Login();
         try{
             JSONObject login = new JSONObject(response);
             if(login.getBoolean("success")){
-                token = login.getString("token");
+                loginModel.setToken(login.getString("token"));
+                loginModel.setId(login.getInt("id"));
             }
         }catch (JSONException e){
             e.printStackTrace();
         }
-        return token;
+        return loginModel;
     }
 
     /**
