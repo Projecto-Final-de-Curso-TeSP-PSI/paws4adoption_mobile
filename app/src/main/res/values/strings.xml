@@ -5,27 +5,10 @@
     <string name="email">Email</string>
     <string name="nome_de_utilizador">Nome de utilizador</string>
     <string name="paws_4_adoption_logo">Paws 4 Adoption Logo</string>
-    <string name="escolher_distrito">Escolher Distrito</string>
-    <string name="district1">Distrito 1</string>
-    <string name="district2">Distrito 2</string>
-    <string name="district3">Distrito 3</string>
-    <string name="district4">Distrito 4</string>
-    <string name="district5">Distrito 5</string>
-    <string name="district6">Distrito 6</string>
     <string name="type_animal">Tipo de animal</string>
     <string name="name_animal">Nome:</string>
     <string name="size_animal">Porte:</string>
     <string name="todo">TODO</string>
-    <string-array name="districtslist">
-        <item>@string/escolher_distrito</item>
-        <item>@string/district1</item>
-        <item>@string/district2</item>
-        <item>@string/district3</item>
-        <item>@string/district4</item>
-        <item>@string/district5</item>
-        <item>@string/district6</item>
-    </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="insertUsername">Introduza o username</string>
     <string name="insertPassword">Introduza a password</string>
@@ -87,7 +70,7 @@
 
 
 
-    <string name="set_location">Marcar localização</string>
+    <string name="set_location">Obter localização</string>
     <string name="dash">-</string>
     <string name="location_simbol_image">Simbolo da localização</string>
     <string name="upload_picture">Upload Imagem</string>
@@ -104,5 +87,15 @@
     <string name="animais_errantes">Animais Errantes</string>
     <string name="animais_para_ado_o">Animais para Adoção</string>
     <string name="a_minha_lista">A Minha Lista</string>
+    <string name="localidade">Localidade</string>
+    <string name="extensao">Extensão</string>
+    <string name="codigo_postal">Código Postal</string>
+    <string name="andar">Andar</string>
+    <string name="n_da_porta">N.º da Porta</string>
+    <string name="rua">Rua</string>
+    <string name="telefone">Telefone</string>
+    <string name="nif">NIF</string>
+    <string name="apelido">Apelido</string>
+    <string name="nome">Nome</string>
 
 </resources>

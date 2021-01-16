@@ -1,24 +1,30 @@
 package amsi.dei.estg.ipleiria.paws4adoption.views;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import amsi.dei.estg.ipleiria.paws4adoption.R;
-import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
+import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.models.UserProfile;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
 import static amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel.EMAIL;
 import static amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel.PASSWORD;
 import static amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel.USERNAME;
 
-public class UserProfileActivity extends AppCompatActivity implements UserProfileListener{
+public class UserProfileActivity extends AppCompatActivity implements AttributeListener {
 
     private ImageView ivUserIcon;
     private EditText etFirstName, etLastName, etNif, etPhone,
@@ -31,8 +37,8 @@ public class UserProfileActivity extends AppCompatActivity implements UserProfil
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         initComponents();
-
-        SingletonPawsManager.getInstance(getApplicationContext()).setUserProfileListener(this);
+        initAttributesSpinners(); // Gets the list of districts from the API
+        SingletonPawsManager.getInstance(getApplicationContext()).setAttributeListener(this);
     }
 
     private void initComponents(){
@@ -75,15 +81,33 @@ public class UserProfileActivity extends AppCompatActivity implements UserProfil
         userProfile.setPassword(password);
 
         SingletonPawsManager.getInstance(getApplicationContext()).addUserAPI(userProfile, getApplicationContext());
+
+        finish();
     }
 
+    public void initAttributesSpinners(){
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
+    }
+
+    /**
+     * Initializaes all the spinners for the
+     * @param spinner
+     * @param promptMessage
+     * @param listAttributes
+     */
+    private void initSpinner(Spinner spinner, String promptMessage, @Nullable List<Attribute> listAttributes){
+        Attribute promptObject = new Attribute(-1, promptMessage);
+
+        ArrayAdapter<Attribute> dataAdapterSpinnerDistrict = new ArrayAdapter<Attribute>(this, android.R.layout.simple_spinner_dropdown_item, listAttributes);
+        dataAdapterSpinnerDistrict.add(promptObject);
+
+        dataAdapterSpinnerDistrict.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapterSpinnerDistrict);
+        spinner.setSelection(dataAdapterSpinnerDistrict.getPosition(promptObject));
+    }
 
     @Override
-    public void onUserProfileRequest(UserProfile userProfile) {
-        if(userProfile != null){
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
+    public void onReceivedAttributes(ArrayList<Attribute> attributes, String attributeType) {
+        initSpinner(spinnerDistricts, "Selecione o distrito", attributes);
     }
 }

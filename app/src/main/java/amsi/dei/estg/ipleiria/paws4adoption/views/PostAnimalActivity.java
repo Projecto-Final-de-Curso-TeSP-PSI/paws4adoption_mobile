@@ -503,10 +503,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         }
 
         return newAnimalPost;
-    }    /**
-     * Method that validades the animal input fields
-     * @return the animal object
-     */
+    }
 
     public void initAttributesSpinners(){
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
@@ -829,7 +826,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     //################ ATTRIBUTES REQUEST FOR THE COMBOBOX's ################
 
     /**
-     * When getting an attribute type, asks fro teh next one, until filling all the combobox
+     * When getting an attribute type, asks for the next one, until filling all the combobox
      * @param attributes The attributes array
      * @param attributeType The type of attribute
      */

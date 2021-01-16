@@ -42,7 +42,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
-                        android:hint="Nome"
+                        android:hint="@string/nome"
                         android:inputType="textPersonName" />
 
                     <EditText
@@ -50,7 +50,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:ems="10"
-                        android:hint="Apelido"
+                        android:hint="@string/apelido"
                         android:inputType="textPersonName" />
 
                 </LinearLayout>
@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="NIF"
+                    android:hint="@string/nif"
                     android:inputType="textPersonName" />
 
                 <EditText
@@ -79,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Telefone"
+                    android:hint="@string/telefone"
                     android:inputType="phone" />
             </LinearLayout>
 
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:autofillHints=""
                 android:ems="10"
-                android:hint="Rua"
+                android:hint="@string/rua"
                 android:inputType="textPostalAddress" />
 
             <LinearLayout
@@ -106,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="N.º da Porta"
+                    android:hint="@string/n_da_porta"
                     android:inputType="textPostalAddress" />
 
                 <EditText
@@ -114,7 +114,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Andar"
+                    android:hint="@string/andar"
                     android:inputType="textPostalAddress" />
             </LinearLayout>
 
@@ -132,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Código Postal"
+                    android:hint="@string/codigo_postal"
                     android:inputType="number" />
 
                 <EditText
@@ -140,7 +140,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Código de Rua"
+                    android:hint="@string/extensao"
                     android:inputType="number" />
             </LinearLayout>
 
@@ -158,7 +158,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:hint="Localidade"
+                    android:hint="@string/localidade"
                     android:inputType="textPostalAddress" />
 
                 <Spinner
@@ -166,8 +166,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:dropDownWidth="wrap_content"
-                    android:entries="@array/districtslist"
-                    android:spinnerMode="dialog" />
+                    android:spinnerMode="dialog"/>
             </LinearLayout>
 
             <Space
@@ -185,7 +184,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-
 
 </LinearLayout>
