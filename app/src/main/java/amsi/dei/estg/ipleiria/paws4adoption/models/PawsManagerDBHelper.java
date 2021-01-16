@@ -175,177 +175,8 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         this.onCreate(sqLiteDatabase);
     }
 
-    /**
-     * Inserts an organizartion into the organizations table
-     * @param organization to insert into the database
-     */
-    public void insertOrganizationDB(Organization organization){
-        ContentValues values= new ContentValues();
 
-        values.put(ID, organization.getId());
-        values.put(NAME, organization.getName());
-        values.put(NIF, organization.getNif());
-        values.put(EMAIL, organization.getEmail());
-        values.put(PHONE, organization.getPhone());
-        values.put(ADDRESS_ID, organization.getAddress_id());
-        values.put(STREET, organization.getStreet());
-        values.put(DOOR_NUMBER, organization.getDoor_number());
-        values.put(FLOOR, organization.getFloor());
-        values.put(POSTAL_CODE, organization.getPostal_code());
-        values.put(STREET_CODE, organization.getStreet_code());
-        values.put(CITY, organization.getCity());
-        values.put(DISTRICT_ID, organization.getDistrict_id());
-        values.put(DISTRICT_NAME, organization.getDistrict_name());
-
-        this.sqLiteDatabase.insert(ORGANIZATIONS_TABLE_NAME, null, values);
-    }
-
-    /**
-     *
-     * @param animal
-     */
-    public void insertAnimalDB(Animal animal) {
-        ContentValues values = new ContentValues();
-
-        values.put(ID, animal.getId());
-        values.put(NAME, animal.getName());
-        values.put(CHIP_ID, animal.getChipId());
-        values.put(NATURE_ID, animal.getNature_id());
-        values.put(NATURE_NAME, animal.getNature_name());
-        values.put(NATURE_PARENT_ID, animal.getNature_parent_id());
-        values.put(NATURE_PARENT_NAME, animal.getNature_parent_name());
-        values.put(FUR_LENGTH_ID, animal.getFur_length_id());
-        values.put(FUR_LENGTH, animal.getFur_length());
-        values.put(FUR_COLOR_ID, animal.getFur_color_id());
-        values.put(FUR_COLOR, animal.getFur_color());
-        values.put(SIZE_ID, animal.getSize_id());
-        values.put(SIZE, animal.getSize());
-        values.put(SEX, animal.getSex());
-        values.put(DESCRIPTION, animal.getDescription());
-        values.put(CREATE_AT, animal.getCreateAt());
-        values.put(PHOTO, animal.getPhoto());
-        values.put(TYPE, animal.getType());
-        values.put(PUBLISHER_ID, animal.getPublisher_id());
-        values.put(PUBLISHER_NAME, animal.getPublisher_name());
-        values.put(MISSING_FOUND_DATE, animal.getMissingFound_date());
-        values.put(FOUND_ANIMAL_LOCATION_ID, animal.getFoundAnimal_location_id());
-        values.put(FOUND_ANIMAL_STREET, animal.getFoundAnimal_street());
-        values.put(FOUND_ANIMAL_CITY, animal.getFoundAnimal_city());
-        values.put(FOUND_ANIMAL_DISTRICT_ID, animal.getFoundAnimal_district_id());
-        values.put(FOUND_ANIMAL_DESTRICT_NAME, animal.getFoundAnimal_district_name());
-        values.put(ORGANIZATION_ID, animal.getOrganization_id());
-        values.put(ORGANIZATION_NAME, animal.getOrganization_name());
-        values.put(ORGANIZATION_NIF, animal.getOrganization_nif());
-        values.put(ORGANIZATION_EMAIL, animal.getOrganization_email());
-        values.put(ORGANIZATION_ADDRESS_ID, animal.getOrganization_address_id());
-        values.put(ORGANIZATION_STREET, animal.getOrganization_street());
-        values.put(ORGANIZATION_DOOR_NUMBER, animal.getOrganization_door_number());
-        values.put(ORGANIZATION_FLOOR, animal.getOrganization_floor());
-        values.put(ORGANIZATION_CITY, animal.getOrganization_city());
-        values.put(ORGANIZATION_POSTAL_CODE, animal.getOrganization_postal_code());
-        values.put(ORGANIZATION_STREET_CODE, animal.getOrganization_street_code());
-        values.put(ORGANIZATION_DISTRICT_ID, animal.getOrganization_district_id());
-        values.put(ORGANIZATION_DISTRICT_NAME, animal.getOrganization_district_name());
-
-        this.sqLiteDatabase.insert(ANIMALS_TABLE_NAME, null, values);
-    }
-
-
-    /**
-     * Updates an organization into the organizations table
-     * @param organization to update on the database
-     * @return true if successfully updated
-     */
-    public boolean updateOrganizationDB(Organization organization){
-        ContentValues values= new ContentValues();
-
-        values.put(ID, organization.getId());
-        values.put(NAME, organization.getName());
-        values.put(NIF, organization.getNif());
-        values.put(EMAIL, organization.getEmail());
-        values.put(PHONE, organization.getPhone());
-        values.put(ADDRESS_ID, organization.getAddress_id());
-        values.put(STREET, organization.getStreet());
-        values.put(DOOR_NUMBER, organization.getDoor_number());
-        values.put(FLOOR, organization.getFloor());
-        values.put(POSTAL_CODE, organization.getPostal_code());
-        values.put(STREET_CODE, organization.getStreet_code());
-        values.put(CITY, organization.getCity());
-        values.put(DISTRICT_ID, organization.getDistrict_id());
-        values.put(DISTRICT_NAME, organization.getDistrict_name());
-
-        return this.sqLiteDatabase.update(ORGANIZATIONS_TABLE_NAME, values,"id = ?", new String[]{"" + organization.getId()}) > 0;
-    }
-
-    /**
-     *
-     * @param animal
-     * @return
-     */
-    public boolean updateAnimalDB(Animal animal){
-        ContentValues values= new ContentValues();
-
-        values.put(ID, animal.getId());
-        values.put(NAME, animal.getName());
-        values.put(CHIP_ID, animal.getChipId());
-        values.put(NATURE_ID, animal.getNature_id());
-        values.put(NATURE_NAME, animal.getNature_name());
-        values.put(NATURE_PARENT_ID, animal.getNature_parent_id());
-        values.put(NATURE_PARENT_NAME, animal.getNature_parent_name());
-        values.put(FUR_LENGTH_ID, animal.getFur_length_id());
-        values.put(FUR_LENGTH, animal.getFur_length());
-        values.put(FUR_COLOR_ID, animal.getFur_color_id());
-        values.put(FUR_COLOR, animal.getFur_color());
-        values.put(SIZE_ID, animal.getSize_id());
-        values.put(SIZE, animal.getSize());
-        values.put(SEX, animal.getSex());
-        values.put(DESCRIPTION, animal.getDescription());
-        values.put(CREATE_AT, animal.getCreateAt());
-        values.put(PHOTO, animal.getPhoto());
-        values.put(TYPE, animal.getType());
-        values.put(PUBLISHER_ID, animal.getPublisher_id());
-        values.put(PUBLISHER_NAME, animal.getPublisher_name());
-        values.put(MISSING_FOUND_DATE, animal.getMissingFound_date());
-        values.put(FOUND_ANIMAL_LOCATION_ID, animal.getFoundAnimal_location_id());
-        values.put(FOUND_ANIMAL_STREET, animal.getFoundAnimal_street());
-        values.put(FOUND_ANIMAL_CITY, animal.getFoundAnimal_city());
-        values.put(FOUND_ANIMAL_DISTRICT_ID, animal.getFoundAnimal_district_id());
-        values.put(FOUND_ANIMAL_DESTRICT_NAME, animal.getFoundAnimal_district_name());
-        values.put(ORGANIZATION_ID, animal.getOrganization_id());
-        values.put(ORGANIZATION_NAME, animal.getOrganization_name());
-        values.put(ORGANIZATION_NIF, animal.getOrganization_nif());
-        values.put(ORGANIZATION_EMAIL, animal.getOrganization_email());
-        values.put(ORGANIZATION_ADDRESS_ID, animal.getOrganization_address_id());
-        values.put(ORGANIZATION_STREET, animal.getOrganization_street());
-        values.put(ORGANIZATION_DOOR_NUMBER, animal.getOrganization_door_number());
-        values.put(ORGANIZATION_FLOOR, animal.getOrganization_floor());
-        values.put(ORGANIZATION_CITY, animal.getOrganization_city());
-        values.put(ORGANIZATION_POSTAL_CODE, animal.getOrganization_postal_code());
-        values.put(ORGANIZATION_STREET_CODE, animal.getOrganization_street_code());
-        values.put(ORGANIZATION_DISTRICT_ID, animal.getOrganization_district_id());
-        values.put(ORGANIZATION_DISTRICT_NAME, animal.getOrganization_district_name());
-
-        return this.sqLiteDatabase.update(ANIMALS_TABLE_NAME, values,"id = ?", new String[]{"" + animal.getId()}) > 0;
-    }
-
-    /**
-     * Deletes an organization from the organizations tables
-     * @param id of the record to delete
-     * @return true if successfully deleted, or false otherwise
-     */
-    public boolean deleteOrganizationDB(int id){
-        return (this.sqLiteDatabase.delete(ORGANIZATIONS_TABLE_NAME, "id = ?", new String[]{"" + id}) == 1);
-    }
-
-    /**
-     *
-     * @param idAnimal
-     * @return
-     */
-    public boolean deleteAnimalDB(int idAnimal){
-        boolean deleted = (this.sqLiteDatabase.delete(ANIMALS_TABLE_NAME, "id = ?", new String[]{"" + idAnimal}) == 1);
-        return deleted;
-    }
+    //################ ORGANIZATIONS ################
 
     /**
      * Get all organizations
@@ -355,7 +186,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         ArrayList<Organization> organizations = new ArrayList<>();
 
         Cursor cursor = this.sqLiteDatabase.query(ORGANIZATIONS_TABLE_NAME, new String[]{
-           ID, NAME, NIF, EMAIL, PHONE, ADDRESS_ID, STREET, DOOR_NUMBER, FLOOR, POSTAL_CODE, STREET_CODE, CITY, DISTRICT_ID, DISTRICT_NAME},
+                        ID, NAME, NIF, EMAIL, PHONE, ADDRESS_ID, STREET, DOOR_NUMBER, FLOOR, POSTAL_CODE, STREET_CODE, CITY, DISTRICT_ID, DISTRICT_NAME},
                 null, null, null, null, null
         );
 
@@ -385,6 +216,77 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
 
         return organizations;
     }
+
+    /**
+     * Inserts an organizartion into the organizations table
+     * @param organization to insert into the database
+     */
+    public boolean insertOrganizationDB(Organization organization){
+        ContentValues values= new ContentValues();
+
+        values.put(ID, organization.getId());
+        values.put(NAME, organization.getName());
+        values.put(NIF, organization.getNif());
+        values.put(EMAIL, organization.getEmail());
+        values.put(PHONE, organization.getPhone());
+        values.put(ADDRESS_ID, organization.getAddress_id());
+        values.put(STREET, organization.getStreet());
+        values.put(DOOR_NUMBER, organization.getDoor_number());
+        values.put(FLOOR, organization.getFloor());
+        values.put(POSTAL_CODE, organization.getPostal_code());
+        values.put(STREET_CODE, organization.getStreet_code());
+        values.put(CITY, organization.getCity());
+        values.put(DISTRICT_ID, organization.getDistrict_id());
+        values.put(DISTRICT_NAME, organization.getDistrict_name());
+
+        return (this.sqLiteDatabase.insert(ORGANIZATIONS_TABLE_NAME, null, values)) != -1;
+    }
+
+    /**
+     * Updates an organization into the organizations table
+     * @param organization to update on the database
+     * @return true if successfully updated
+     */
+    public boolean updateOrganizationDB(Organization organization){
+        ContentValues values= new ContentValues();
+
+        values.put(ID, organization.getId());
+        values.put(NAME, organization.getName());
+        values.put(NIF, organization.getNif());
+        values.put(EMAIL, organization.getEmail());
+        values.put(PHONE, organization.getPhone());
+        values.put(ADDRESS_ID, organization.getAddress_id());
+        values.put(STREET, organization.getStreet());
+        values.put(DOOR_NUMBER, organization.getDoor_number());
+        values.put(FLOOR, organization.getFloor());
+        values.put(POSTAL_CODE, organization.getPostal_code());
+        values.put(STREET_CODE, organization.getStreet_code());
+        values.put(CITY, organization.getCity());
+        values.put(DISTRICT_ID, organization.getDistrict_id());
+        values.put(DISTRICT_NAME, organization.getDistrict_name());
+
+        return this.sqLiteDatabase.update(ORGANIZATIONS_TABLE_NAME, values,"id = ?", new String[]{"" + organization.getId()}) > 0;
+    }
+
+    /**
+     * Deletes an organization from the organizations tables
+     * @param id of the record to delete
+     * @return true if successfully deleted, or false otherwise
+     */
+    public boolean deleteOrganizationDB(int id){
+        return (this.sqLiteDatabase.delete(ORGANIZATIONS_TABLE_NAME, "id = ?", new String[]{"" + id}) == 1);
+    }
+
+    /**
+     * Deletes all organizations from the organizations table
+     *
+     */
+    public void deleteAllOrganizationsDB(){
+        this.sqLiteDatabase.delete(ORGANIZATIONS_TABLE_NAME, null, null);
+    }
+
+
+    //################ ANIMALS ################
 
     /**
      * Get all animals
@@ -583,11 +485,114 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Deletes all organizations from the organizations table
-     *
+     * Inserts one animal into the DB
+     * @param animal
      */
-    public void deleteAllOrganizationsDB(){
-        this.sqLiteDatabase.delete(ORGANIZATIONS_TABLE_NAME, null, null);
+    public boolean insertAnimalDB(Animal animal) {
+        ContentValues values = new ContentValues();
+
+        values.put(ID, animal.getId());
+        values.put(NAME, animal.getName());
+        values.put(CHIP_ID, animal.getChipId());
+        values.put(NATURE_ID, animal.getNature_id());
+        values.put(NATURE_NAME, animal.getNature_name());
+        values.put(NATURE_PARENT_ID, animal.getNature_parent_id());
+        values.put(NATURE_PARENT_NAME, animal.getNature_parent_name());
+        values.put(FUR_LENGTH_ID, animal.getFur_length_id());
+        values.put(FUR_LENGTH, animal.getFur_length());
+        values.put(FUR_COLOR_ID, animal.getFur_color_id());
+        values.put(FUR_COLOR, animal.getFur_color());
+        values.put(SIZE_ID, animal.getSize_id());
+        values.put(SIZE, animal.getSize());
+        values.put(SEX, animal.getSex());
+        values.put(DESCRIPTION, animal.getDescription());
+        values.put(CREATE_AT, animal.getCreateAt());
+        values.put(PHOTO, animal.getPhoto());
+        values.put(TYPE, animal.getType());
+        values.put(PUBLISHER_ID, animal.getPublisher_id());
+        values.put(PUBLISHER_NAME, animal.getPublisher_name());
+        values.put(MISSING_FOUND_DATE, animal.getMissingFound_date());
+        values.put(FOUND_ANIMAL_LOCATION_ID, animal.getFoundAnimal_location_id());
+        values.put(FOUND_ANIMAL_STREET, animal.getFoundAnimal_street());
+        values.put(FOUND_ANIMAL_CITY, animal.getFoundAnimal_city());
+        values.put(FOUND_ANIMAL_DISTRICT_ID, animal.getFoundAnimal_district_id());
+        values.put(FOUND_ANIMAL_DESTRICT_NAME, animal.getFoundAnimal_district_name());
+        values.put(ORGANIZATION_ID, animal.getOrganization_id());
+        values.put(ORGANIZATION_NAME, animal.getOrganization_name());
+        values.put(ORGANIZATION_NIF, animal.getOrganization_nif());
+        values.put(ORGANIZATION_EMAIL, animal.getOrganization_email());
+        values.put(ORGANIZATION_ADDRESS_ID, animal.getOrganization_address_id());
+        values.put(ORGANIZATION_STREET, animal.getOrganization_street());
+        values.put(ORGANIZATION_DOOR_NUMBER, animal.getOrganization_door_number());
+        values.put(ORGANIZATION_FLOOR, animal.getOrganization_floor());
+        values.put(ORGANIZATION_CITY, animal.getOrganization_city());
+        values.put(ORGANIZATION_POSTAL_CODE, animal.getOrganization_postal_code());
+        values.put(ORGANIZATION_STREET_CODE, animal.getOrganization_street_code());
+        values.put(ORGANIZATION_DISTRICT_ID, animal.getOrganization_district_id());
+        values.put(ORGANIZATION_DISTRICT_NAME, animal.getOrganization_district_name());
+
+        return this.sqLiteDatabase.insert(ANIMALS_TABLE_NAME, null, values) != -1;
+    }
+
+    /**
+     * Updates one animal into the DB
+     * @param animal
+     * @return
+     */
+    public boolean updateAnimalDB(Animal animal){
+        ContentValues values= new ContentValues();
+
+        values.put(ID, animal.getId());
+        values.put(NAME, animal.getName());
+        values.put(CHIP_ID, animal.getChipId());
+        values.put(NATURE_ID, animal.getNature_id());
+        values.put(NATURE_NAME, animal.getNature_name());
+        values.put(NATURE_PARENT_ID, animal.getNature_parent_id());
+        values.put(NATURE_PARENT_NAME, animal.getNature_parent_name());
+        values.put(FUR_LENGTH_ID, animal.getFur_length_id());
+        values.put(FUR_LENGTH, animal.getFur_length());
+        values.put(FUR_COLOR_ID, animal.getFur_color_id());
+        values.put(FUR_COLOR, animal.getFur_color());
+        values.put(SIZE_ID, animal.getSize_id());
+        values.put(SIZE, animal.getSize());
+        values.put(SEX, animal.getSex());
+        values.put(DESCRIPTION, animal.getDescription());
+        values.put(CREATE_AT, animal.getCreateAt());
+        values.put(PHOTO, animal.getPhoto());
+        values.put(TYPE, animal.getType());
+        values.put(PUBLISHER_ID, animal.getPublisher_id());
+        values.put(PUBLISHER_NAME, animal.getPublisher_name());
+        values.put(MISSING_FOUND_DATE, animal.getMissingFound_date());
+        values.put(FOUND_ANIMAL_LOCATION_ID, animal.getFoundAnimal_location_id());
+        values.put(FOUND_ANIMAL_STREET, animal.getFoundAnimal_street());
+        values.put(FOUND_ANIMAL_CITY, animal.getFoundAnimal_city());
+        values.put(FOUND_ANIMAL_DISTRICT_ID, animal.getFoundAnimal_district_id());
+        values.put(FOUND_ANIMAL_DESTRICT_NAME, animal.getFoundAnimal_district_name());
+        values.put(ORGANIZATION_ID, animal.getOrganization_id());
+        values.put(ORGANIZATION_NAME, animal.getOrganization_name());
+        values.put(ORGANIZATION_NIF, animal.getOrganization_nif());
+        values.put(ORGANIZATION_EMAIL, animal.getOrganization_email());
+        values.put(ORGANIZATION_ADDRESS_ID, animal.getOrganization_address_id());
+        values.put(ORGANIZATION_STREET, animal.getOrganization_street());
+        values.put(ORGANIZATION_DOOR_NUMBER, animal.getOrganization_door_number());
+        values.put(ORGANIZATION_FLOOR, animal.getOrganization_floor());
+        values.put(ORGANIZATION_CITY, animal.getOrganization_city());
+        values.put(ORGANIZATION_POSTAL_CODE, animal.getOrganization_postal_code());
+        values.put(ORGANIZATION_STREET_CODE, animal.getOrganization_street_code());
+        values.put(ORGANIZATION_DISTRICT_ID, animal.getOrganization_district_id());
+        values.put(ORGANIZATION_DISTRICT_NAME, animal.getOrganization_district_name());
+
+        return this.sqLiteDatabase.update(ANIMALS_TABLE_NAME, values,"id = ?", new String[]{"" + animal.getId()}) > 0;
+    }
+
+    /**
+     * Deletes one animal on the DB
+     * @param idAnimal
+     * @return
+     */
+    public boolean deleteAnimalDB(int idAnimal){
+        boolean deleted = (this.sqLiteDatabase.delete(ANIMALS_TABLE_NAME, "id = ?", new String[]{"" + idAnimal}) == 1);
+        return deleted;
     }
 
     /**

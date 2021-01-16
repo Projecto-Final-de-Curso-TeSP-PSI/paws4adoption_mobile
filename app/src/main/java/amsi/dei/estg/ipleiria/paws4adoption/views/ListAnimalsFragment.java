@@ -11,19 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListAnimalsAdapter;
-import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalsListListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
 
-public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AnimalListener {
+public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, AnimalsListListener {
 
     //################ INTENT PARAMETERS ################
     private String scenario = null;
@@ -64,18 +65,25 @@ public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.
             }
         });
 
-        SingletonPawsManager.getInstance(getContext()).setAnimalListener(this);
+        SingletonPawsManager.getInstance(getContext()).setAnimalsListListener(this);
         SingletonPawsManager.getInstance(getContext()).getAllAnimalsAPI(getContext());
 
         return rootView;
 
     }
 
+    /**
+     * Method called when the swipe is triggered
+     */
     @Override
     public void onRefresh() {
-        //TODO::
+        SingletonPawsManager.getInstance(getContext()).getAllAnimalsAPI(getContext());
     }
 
+    /**
+     * Method called when the animals list is refreshed
+     * @param animalsList
+     */
     @Override
     public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
         ArrayList<Animal> newListAnimals = new ArrayList<>();
@@ -113,7 +121,18 @@ public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.
     }
 
     @Override
-    public void onGetAnimalAPI(Animal animal) {
-
+    public void onCreateAnimalFromList() {
+        Toast.makeText(getContext(), "Animal criado com sucesso", Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onUpdateAnimalFromList() {
+        Toast.makeText(getContext(), "Animal atualizado com sucesso", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDeleteAnimalFromList() {
+        Toast.makeText(getContext(), "Animal eliminado com sucesso", Toast.LENGTH_SHORT).show();
+    }
+
 }

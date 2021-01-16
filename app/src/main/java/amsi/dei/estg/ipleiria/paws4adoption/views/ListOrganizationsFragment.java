@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,12 +24,12 @@ import java.util.List;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.adapters.OrganizationListAdapter;
-import amsi.dei.estg.ipleiria.paws4adoption.listeners.OrganizationsListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.OrganizationsListListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 
 
-public class ListOrganizationsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OrganizationsListener {
+public class ListOrganizationsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OrganizationsListListener {
 
     private ListView lvOrganizations;
     private ArrayList<Organization> listOrganizations;
@@ -73,7 +71,7 @@ public class ListOrganizationsFragment extends Fragment implements SwipeRefreshL
         swipeRefreshLayout = rootView.findViewById(R.id.swipe);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        SingletonPawsManager.getInstance(getContext()).setOrganizationsListener(this);
+        SingletonPawsManager.getInstance(getContext()).setOrganizationsListListener(this);
         SingletonPawsManager.getInstance(getContext()).getAllOrganizationsAPI(getContext());
 
         return rootView;

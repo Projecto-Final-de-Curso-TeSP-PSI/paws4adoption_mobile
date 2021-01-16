@@ -26,7 +26,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -58,8 +57,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.RequestListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
@@ -69,7 +68,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 
-public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, AnimalListener {
+public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, RequestListener {
 
     //################ PERMISSIONS REQUEST TYPES ################
     private static final int GALLERY_REQUEST = 1;
@@ -157,7 +156,8 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         initAttributesSpinners();
 
         SingletonPawsManager.getInstance(getApplicationContext()).setAttributeListener(this);
-        SingletonPawsManager.getInstance(getApplicationContext()).setAnimalListener(this);
+
+        SingletonPawsManager.getInstance(getApplicationContext()).setRequestListener(this);
 
         setScenario();
 
@@ -547,7 +547,8 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             Glide.with(getApplicationContext())
                     .load(animal.getPhoto())
                     .placeholder(R.drawable.paws4adoption_logo)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(ivPhoto);
 
 
@@ -588,11 +589,13 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             switch(scenario){
                 case RockChisel.SCENARIO_MISSING_ANIMAL:
                     setTitle("Publicar animal desaparecido");
-                    etMissingFoundDate.setHint("Data do desaparecimento");
+                    etMissingFoundDate.setHint("Data do desaparecimento (DD-MM-AAAA)");
+                    llFoundAnimal.setVisibility(View.GONE);
                     break;
+
                 case RockChisel.SCENARIO_FOUND_ANIMAL:
                     setTitle("Publicar animal abandonado");
-                    etMissingFoundDate.setHint("Data do avistamento");
+                    etMissingFoundDate.setHint("Data do avistamento (DD-MM-AAAA)");
                     llFoundAnimal.setVisibility(View.VISIBLE);
                     break;
             }
@@ -759,11 +762,16 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 if (resultCode == RESULT_OK) {
                     InputStream imageStream = null;
                     try {
-                        final Uri imageUri = data.getData();
-                        imageStream = getContentResolver().openInputStream(imageUri);
-                        final Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
-                        photo = bitmap;
-                        ivPhoto.setImageBitmap(bitmap);
+                        assert data != null;
+                        if(data.getData() != null) {
+                            final Uri imageUri = data.getData();
+                            imageStream = getContentResolver().openInputStream(imageUri);
+                            final Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                            photo = bitmap;
+                            ivPhoto.setImageBitmap(bitmap);
+                        } else{
+                            Toast.makeText(this, "Erro ao importar fot da galeria", Toast.LENGTH_SHORT).show();
+                        }
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                         Toast.makeText(this, "Erro ao importar a foto da galeria", Toast.LENGTH_SHORT).show();
@@ -910,21 +918,41 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         }
     }
 
+
+    //################ REQUEST LISTENER ################
     @Override
-    public void onRefreshAnimalsList(ArrayList<Animal> animalsList) {
-        int a = 1;
+    public void onRequestSuccess(String action, Animal animal) {
+
     }
 
     @Override
-    public void onUpdateAnimalsList(Animal animal, int operation) {
-        int a = 2;
+    public void onRequestError(String message) {
+
     }
 
     @Override
-    public void onGetAnimalAPI(Animal animal) {
+    public void onReadAnimal(Animal animal) {
         this.editAnimal = animal;
-        //fillAnimal(editAnimal);
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, animal.getNature_parent_id());
     }
+
+    @Override
+    public void onCreateAnimal() {
+        finish();
+    }
+
+    @Override
+    public void onUpdateAnimal() {
+//        this.editAnimal = animal;
+//        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, animal.getNature_parent_id());
+        finish();
+    }
+
+    @Override
+    public void onDeleteAnimal() {
+        finish();
+    }
+
+
 }
 

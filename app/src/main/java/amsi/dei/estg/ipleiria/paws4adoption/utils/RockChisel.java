@@ -73,11 +73,11 @@ public class RockChisel {
     public static final String ANIMAL_TYPE = "animalType";
     public static final String ANIMAL_ID = "animalId";
 
-
-
     //Actions
     public static final String ACTION_CREATE = "create";
+    public static final String ACTION_READ = "read";
     public static final String ACTION_UPDATE = "update";
+    public static final String ACTION_DELETE = "delete";
 
     //Animal types
     public static final String ADOPTION_ANIMAL = "adoptionAnimal";
@@ -87,5 +87,4 @@ public class RockChisel {
     //Request types
     public static final String ANIMAL_REQUEST = "animal_request";
     public static final String ORGANIZATION_REQUEST = "organization_request";
-
 }

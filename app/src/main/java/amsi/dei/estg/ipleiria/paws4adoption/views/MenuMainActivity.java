@@ -51,12 +51,18 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         drawer = findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.ndOpen, R.string.ndClose){
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-//                app.sendScreenView("Menu");
-                setScenario();
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//                super.onDrawerOpened(drawerView);
+////                app.sendScreenView("Menu");
+//                setScenario();
+//
+//            }
 
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                setScenario();
             }
         };
         toggle.syncState();
@@ -134,13 +140,6 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 setTitle(menuItem.getTitle());
                 break;
 
-            case R.id.navMyAnimals:
-                fragment = new ListAnimalsFragment();
-                bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_MY_LIST);
-                fragment.setArguments(bundle);
-                setTitle(menuItem.getTitle());
-                break;
-
             case R.id.navPostWanderingAnimal:
 
                 if(FortuneTeller.isInternetConnection(getApplicationContext())){
@@ -177,13 +176,42 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
                 break;
 
-            case R.id.navLogin:
-                if(FortuneTeller.isLoggedUser(getApplicationContext())){
-                    Vault.clearPreferences(getApplicationContext(), RockChisel.USER_PREFERENCES);
-                } else{
-                    intent = new Intent(getApplicationContext(), LoginActivity.class);
+            case R.id.navMyAnimals:
+
+                if(FortuneTeller.isInternetConnection(getApplicationContext())){
+
+                    if(FortuneTeller.isLoggedUser(getApplicationContext())){
+                        fragment = new ListAnimalsFragment();
+                        bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_MY_LIST);
+                        fragment.setArguments(bundle);
+                        setTitle(menuItem.getTitle());
+                    } else {
+                        intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    }
+
+                } else {
+                    Toast.makeText(this, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
                 }
+
+
                 break;
+
+            case R.id.navLogin:
+
+                if(FortuneTeller.isInternetConnection(getApplicationContext())) {
+
+                    if (FortuneTeller.isLoggedUser(getApplicationContext())) {
+                        Vault.clearPreferences(getApplicationContext(), RockChisel.USER_PREFERENCES);
+                    } else {
+                        intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    }
+                } else {
+                    Toast.makeText(this, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
+
             default:
                 //lista de ultimos animais publicados
         }
@@ -226,7 +254,6 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         }
         else{
             usernameDisplay.setText(R.string.internet_connection_down);
-            navLoginItem.setVisible(false);
         }
 
     }

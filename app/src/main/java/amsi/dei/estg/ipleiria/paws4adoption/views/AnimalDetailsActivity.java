@@ -1,11 +1,9 @@
 package amsi.dei.estg.ipleiria.paws4adoption.views;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,11 +15,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-
 import amsi.dei.estg.ipleiria.paws4adoption.R;
-import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalListener;
-import amsi.dei.estg.ipleiria.paws4adoption.listeners.RequestListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalDetailListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
@@ -29,7 +24,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 
-public class AnimalDetailsActivity extends AppCompatActivity implements RequestListener {
+public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDetailListener {
 
     //################ INTENT PARAMETERS ################
     private int animal_id = -1;
@@ -60,7 +55,7 @@ public class AnimalDetailsActivity extends AppCompatActivity implements RequestL
 
         implementListeners();
 
-        SingletonPawsManager.getInstance(getApplicationContext()).setRequestListener(this);
+        SingletonPawsManager.getInstance(getApplicationContext()).setAnimalDetailListener(this);
         SingletonPawsManager.getInstance(getApplicationContext()).getAnimalAPI(getApplicationContext(), this.animal_id);
 
     }
@@ -132,15 +127,14 @@ public class AnimalDetailsActivity extends AppCompatActivity implements RequestL
 
                         case RockChisel.SCENARIO_MY_LIST:
                             intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
-                            intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MY_ANIMAL);
+                            intent.putExtra(PostAnimalActivity.SCENARIO, animal.getType());
                             intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
                             intent.putExtra(PostAnimalActivity.ANIMAL_ID, animal_id);
+                            finish();
+                            startActivity(intent);
                             break;
 
                     }
-
-                    if(intent != null)
-                        startActivity(intent);
                 }
             });
 
@@ -181,6 +175,8 @@ public class AnimalDetailsActivity extends AppCompatActivity implements RequestL
                                     break;
 
                             }
+
+                            finish();
                             break;
                     }
                 }
@@ -275,7 +271,7 @@ public class AnimalDetailsActivity extends AppCompatActivity implements RequestL
     }
 
     @Override
-    public void onRequestSuccess(Animal animal) {
+    public void onGetAnimal(Animal animal) {
         this.animal = animal;
 
         if(animal != null){
@@ -287,7 +283,12 @@ public class AnimalDetailsActivity extends AppCompatActivity implements RequestL
     }
 
     @Override
-    public void onRequestError(String message) {
+    public void onDeleteAnimalFromList() {
+        finish();
+    }
+
+    @Override
+    public void onUpdateAnimalFromList() {
         finish();
     }
 }

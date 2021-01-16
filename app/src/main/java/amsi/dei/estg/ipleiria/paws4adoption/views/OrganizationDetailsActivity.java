@@ -1,19 +1,18 @@
 package amsi.dei.estg.ipleiria.paws4adoption.views;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.OrganizationDetailListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 
-public class OrganizationDetailsActivity extends AppCompatActivity {
+public class OrganizationDetailsActivity extends AppCompatActivity implements OrganizationDetailListener {
 
     public static final String ORG_DETAILS = "organization";
 
@@ -34,7 +33,6 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organization_details);
 
         id_organization = getIntent().getIntExtra(ORG_DETAILS, 0);
-        organization = SingletonPawsManager.getInstance(getApplicationContext()).getOrganizationDB(id_organization);
 
         tvName = findViewById(R.id.tvName);
         tvAddress = findViewById(R.id.tvAddress);
@@ -43,47 +41,39 @@ public class OrganizationDetailsActivity extends AppCompatActivity {
         tvEmail = findViewById(R.id.tvEmail);
         tvPhone = findViewById(R.id.tvPhone);
 
-        if(organization != null){
+        SingletonPawsManager.getInstance(getApplicationContext()).setOrganizationDetailListener(this);
+        SingletonPawsManager.getInstance(getApplicationContext()).getOrganizationAPI(getApplicationContext(), id_organization);
+    }
+
+    /**
+     * Fills the fileds of the oaganization page
+     */
+    public void fillOrganization(){
             setTitle("Detalhes: " + organization.getName());
 
             tvName.setText(organization.getName());
             tvAddress.setText(
-                Wrench.encode("", organization.getStreet(), " ")+
-                Wrench.encode("", organization.getDoor_number(), " ") +
-                Wrench.encode("", organization.getFloor(), " ")
+                    Wrench.encode("", organization.getStreet(), " ")+
+                            Wrench.encode("", organization.getDoor_number(), " ") +
+                            Wrench.encode("", organization.getFloor(), " ")
             );
             tvPostalCode.setText(
-                Wrench.encode("", organization.getPostal_code() + "", " ") +
-                Wrench.encode(" - ", organization.getStreet_code() + "", " ") +
-                Wrench.encode("", organization.getCity() + "", " ")
+                    Wrench.encode("", organization.getPostal_code() + "", " ") +
+                            Wrench.encode(" - ", organization.getStreet_code() + "", " ") +
+                            Wrench.encode("", organization.getCity() + "", " ")
             );
             tvDistrict.setText(organization.getDistrict_name());
             tvEmail.setText(organization.getEmail());
             tvPhone.setText(organization.getPhone());
-        } else{
-            finish();
-        }
     }
-
 
     /**
-     *
-     * @param view
+     * On getting the response from the organization detail request fill teh page
+     * @param organization
      */
-    public void onClickGetAnimals(View view) {
-
-    }
-
-    private void dialogSearchByDistrict(){
-        AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(this);
-
-        builder
-            .setTitle("Pesquisar por distrito")
-            .setMessage("Selecione o distrito");
-
-
-
-
+    @Override
+    public void onGetOrganization(Organization organization) {
+        this.organization = organization;
+        fillOrganization();
     }
 }
