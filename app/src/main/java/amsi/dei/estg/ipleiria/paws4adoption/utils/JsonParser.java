@@ -104,6 +104,7 @@ public class JsonParser {
         return auxOrg;
     }
 
+
     /**
      * Get's a Json response wih all animals and parses to an animal's object's list
      * @param animals
