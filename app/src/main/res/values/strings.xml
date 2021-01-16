@@ -87,7 +87,7 @@
 
 
 
-    <string name="set_location">Marcar localização</string>
+    <string name="set_location">Obter localização</string>
     <string name="dash">-</string>
     <string name="location_simbol_image">Simbolo da localização</string>
     <string name="upload_picture">Upload Imagem</string>

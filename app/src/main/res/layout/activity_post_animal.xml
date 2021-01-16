@@ -31,11 +31,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="52dp"
                 android:layout_gravity="center"
-                android:clickable="false"
-                android:drawableStart="@mipmap/ic_action_upload"
+                android:background="#B0D3A020"
+                android:clickable="true"
+                android:drawableStart="@drawable/ic_action_upload_foreground"
                 android:padding="10dp"
                 android:text="@string/upload_picture"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/primary_text_light_nodisable" />
 
             <NumberPicker
                 android:layout_width="match_parent"
@@ -43,154 +44,169 @@
                 android:id="@+id/npId"
                 android:visibility="gone" />
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:padding="20dp"
-                android:layout_marginTop="10dp"
-                android:hint="@string/insert_name"
-                android:id="@+id/etName"
-                android:autofillHints="no"/>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:padding="20dp"
-                android:layout_marginTop="10dp"
-                android:hint="@string/id_chip"
-                android:id="@+id/etChipId"
-                android:autofillHints="no"/>
-
-            <EditText
-                android:id="@+id/etDescription"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="10dp"
-                android:gravity="top|start"
-                android:hint="@string/description"
-                android:inputType="textMultiLine"
-                android:lines="8"
-                android:maxLines="10"
-                android:minLines="6"
-                android:padding="20dp"
-                android:autofillHints="no" />
-
-            <Spinner
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:id="@+id/spNature" />
-
-            <Spinner
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:id="@+id/spBreed" />
-
-            <Spinner
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:id="@+id/spFurLenght" />
-
-            <Spinner
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:id="@+id/spFurColor"/>
-
-            <Spinner
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:id="@+id/spSize" />
-
-            <Spinner
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:id="@+id/spSex" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/etMissingFoundDate"
-                android:inputType="date"
-                android:padding="20dp"
-                android:layout_marginTop="10dp"
-                android:importantForAutofill="no" />
-
             <LinearLayout
-                android:id="@+id/llFoundAnimal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="invisible">
-
-                <ImageView
-                    android:id="@+id/ivLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginTop="10dp"
-                    app:srcCompat="@drawable/ic_get_location_foreground"
-                    android:contentDescription="@string/location_simbol_image" />
-
-                <Button
-                    android:id="@+id/btnLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/set_location" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:padding="20dp"
-                    android:hint="@string/dash"
-                    android:id="@+id/tvLat"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:padding="20dp"
-                    android:hint="@string/dash"
-                    android:id="@+id/tvLong"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="50"
-                    android:padding="20dp"
-                    android:hint="@string/dash"
-                    android:id="@+id/tvAddress"/>
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="100dp"
+                android:orientation="vertical">
 
                 <EditText
+                    android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:autofillHints="no"
+                    android:hint="@string/insert_name"
                     android:inputType="textPersonName"
                     android:padding="20dp"
-                    android:layout_marginTop="10dp"
-                    android:hint="@string/street"
-                    android:id="@+id/etLocationStreet"
-                    android:autofillHints="no" />
+                    android:shadowColor="#000000" />
 
                 <EditText
+                    android:id="@+id/etChipId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
-                    android:padding="20dp"
                     android:layout_marginTop="10dp"
-                    android:hint="@string/insert_city"
-                    android:id="@+id/etLocationCity"
-                    android:autofillHints="no" />
+                    android:autofillHints="no"
+                    android:hint="@string/id_chip"
+                    android:inputType="textPersonName"
+                    android:padding="20dp" />
 
                 <Spinner
-                    android:layout_marginTop="10dp"
+                    android:id="@+id/spNature"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:id="@+id/spLocationDistrict" />
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp" />
 
+                <Spinner
+                    android:id="@+id/spBreed"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp" />
+
+                <Spinner
+                    android:id="@+id/spFurLenght"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp" />
+
+                <Spinner
+                    android:id="@+id/spFurColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp" />
+
+                <Spinner
+                    android:id="@+id/spSize"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp" />
+
+                <Spinner
+                    android:id="@+id/spSex"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp" />
+
+                <EditText
+                    android:id="@+id/etDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="10dp"
+                    android:autofillHints="no"
+                    android:gravity="top|start"
+                    android:hint="@string/description"
+                    android:inputType="textMultiLine"
+                    android:lines="8"
+                    android:maxLines="10"
+                    android:minLines="6"
+                    android:padding="20dp" />
+
+                <EditText
+                    android:id="@+id/etMissingFoundDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:importantForAutofill="no"
+                    android:inputType="date"
+                    android:padding="20dp" />
+
+                <LinearLayout
+                    android:id="@+id/llFoundAnimal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                    <ImageView
+                        android:id="@+id/ivLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="10dp"
+                        android:contentDescription="@string/location_simbol_image"
+                        app:srcCompat="@drawable/ic_get_location_foreground" />
+
+                    <Button
+                        android:id="@+id/btnLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/set_location" />
+
+                    <TextView
+                        android:id="@+id/tvLat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="50"
+                        android:hint="@string/dash"
+                        android:padding="20dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tvLong"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="50"
+                        android:hint="@string/dash"
+                        android:padding="20dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tvAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="50"
+                        android:hint="@string/dash"
+                        android:padding="20dp" />
+
+                    <EditText
+                        android:id="@+id/etLocationStreet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:autofillHints="no"
+                        android:hint="@string/street"
+                        android:inputType="textPersonName"
+                        android:padding="20dp" />
+
+                    <EditText
+                        android:id="@+id/etLocationCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:autofillHints="no"
+                        android:hint="@string/insert_city"
+                        android:inputType="textPersonName"
+                        android:padding="20dp" />
+
+                    <Spinner
+                        android:id="@+id/spLocationDistrict"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp" />
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
