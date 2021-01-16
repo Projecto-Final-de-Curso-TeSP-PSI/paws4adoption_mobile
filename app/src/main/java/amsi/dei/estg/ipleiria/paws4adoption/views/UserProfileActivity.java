@@ -10,15 +10,17 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.SignupListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.models.UserProfile;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
 import static amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel.EMAIL;
 import static amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel.PASSWORD;
 import static amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel.USERNAME;
 
-public class UserProfileActivity extends AppCompatActivity implements UserProfileListener{
+public class UserProfileActivity extends AppCompatActivity {
 
     private ImageView ivUserIcon;
     private EditText etFirstName, etLastName, etNif, etPhone,
@@ -26,13 +28,12 @@ public class UserProfileActivity extends AppCompatActivity implements UserProfil
                      etPostalCode, etStreetCode, etCity;
     private Spinner spinnerDistricts;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         initComponents();
-
-        SingletonPawsManager.getInstance(getApplicationContext()).setUserProfileListener(this);
     }
 
     private void initComponents(){
@@ -75,15 +76,15 @@ public class UserProfileActivity extends AppCompatActivity implements UserProfil
         userProfile.setPassword(password);
 
         SingletonPawsManager.getInstance(getApplicationContext()).addUserAPI(userProfile, getApplicationContext());
+
+        finish();
     }
 
+    public void initAttributesSpinners(){
+        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
+    }
 
-    @Override
-    public void onUserProfileRequest(UserProfile userProfile) {
-        if(userProfile != null){
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
+    private boolean areFieldsValid(){
+        return true;
     }
 }

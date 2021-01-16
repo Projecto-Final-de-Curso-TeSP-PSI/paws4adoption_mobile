@@ -15,7 +15,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.UserProfile;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
-public class SignupActivity extends AppCompatActivity implements UserProfileListener {
+public class SignupActivity extends AppCompatActivity {
 
     private ImageView iv;
     private EditText usernameTxt, emailTxt, passwordTxt;
@@ -82,12 +82,6 @@ public class SignupActivity extends AppCompatActivity implements UserProfileList
         intent.putExtra(RockChisel.EMAIL, email);
         intent.putExtra(RockChisel.PASSWORD, password);
         startActivity(intent);
-    }
-
-    @Override
-    public void onUserProfileRequest(UserProfile userProfile) {
-        if(userProfile != null){
-            finish();
-        }
+        finish();
     }
 }

@@ -34,6 +34,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.OrganizationsListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.RequestListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.SignupListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.UploadPhotoListener;
@@ -55,6 +56,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
 
     //Listeners declaration
     LoginListener loginListener;
+    SignupListener signupListener;
     UploadPhotoListener uploadPhotoListener;
     UserProfileListener userProfileListener;
     OrganizationsListener organizationsListener;
@@ -108,6 +110,15 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
      */
     public void setLoginListener(LoginListener loginListener) {
         this.loginListener = loginListener;
+    }
+
+    /**
+     * Method for register the signup listener
+     *
+     * @param signupListener
+     */
+    public void setSignupListener(SignupListener signupListener) {
+        this.signupListener = signupListener;
     }
 
     /**
@@ -1005,7 +1016,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                     public void onResponse(JSONObject response) {
                         try {
                             UserProfile userProfileVindoDaAPI = JsonParser.parserJsonUserProfile(response);
-                            userProfileListener.onUserProfileRequest(userProfileVindoDaAPI);
+                            signupListener.onSuccessfullSignup(userProfileVindoDaAPI);
                         } catch (Exception e){
                             System.out.println("--> Lançou excepção ao receber resposta.");
                             e.printStackTrace();
@@ -1015,7 +1026,7 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
                 new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context, "Erro ao criar novo utilizador.", Toast.LENGTH_SHORT).show();
+                        signupListener.onSignupFail();
                         System.out.println("--> Recebido erro.");
                         error.printStackTrace();
                     }
@@ -1032,14 +1043,4 @@ public class SingletonPawsManager implements OrganizationsListener, AnimalListen
 
         volleyQueue.add(request);
     }
-
-    // Converter para base64 username e password
-    /*
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private String createBasicAuth(final String username, final String password) {
-        final String pair = username + ":" + password;
-
-        return "Basic " + Base64.encodeToString(pair.getBytes(), Base64.DEFAULT);
-    }*/
-
 }

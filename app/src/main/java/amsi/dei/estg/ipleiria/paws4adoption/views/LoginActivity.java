@@ -10,13 +10,14 @@ import android.widget.Toast;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.SignupListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Login;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.UserProfileListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.models.UserProfile;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
-public class LoginActivity extends AppCompatActivity implements LoginListener, UserProfileListener {
+public class LoginActivity extends AppCompatActivity implements LoginListener, SignupListener {
 
     private EditText etUsername;
     private EditText etPassword;
@@ -30,6 +31,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener, U
         etPassword = findViewById(R.id.etPassword);
 
         SingletonPawsManager.getInstance(getApplicationContext()).setLoginListener(this);
+        SingletonPawsManager.getInstance(getApplicationContext()).setSignupListener(this);
     }
 
     /**
@@ -106,9 +108,12 @@ public class LoginActivity extends AppCompatActivity implements LoginListener, U
     }
 
     @Override
-    public void onUserProfileRequest(UserProfile userProfile) {
-        if(userProfile != null){
-            Toast.makeText(getApplicationContext(), "Registado com sucesso!", Toast.LENGTH_SHORT).show();
-        }
+    public void onSuccessfullSignup(UserProfile userProfile) {
+        Toast.makeText(getApplicationContext(), userProfile.getUsername() + ", foi registado com sucesso!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onSignupFail() {
+        Toast.makeText(getApplicationContext(), "Erro ao criar utilizador. Tente novamente.", Toast.LENGTH_LONG).show();
     }
 }
