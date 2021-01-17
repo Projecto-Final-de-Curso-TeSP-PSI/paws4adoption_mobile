@@ -65,8 +65,8 @@
     <string name="select_subspecie">Selecione a sub-espécie</string>
     <string name="select_furcolor">Selecione a cor do pêlo</string>
     <string name="select_fur_length">Selecione o comprimento do pêlo</string>
-    <string name="select_size">Selecione o porte</string>
-    <string name="select_district">Selecione o distrito</string>
+    <string name="prompt_select_size">Selecione o porte</string>
+    <string name="prompt_select_district">Selecione o distrito</string>
 
 
 
@@ -81,7 +81,7 @@
     <string name="insert_city">Introduza a cidade</string>
     <string name="update_missing_animal">Editar Animal Perdido</string>
     <string name="update_found_animal">Editar Animal Perdido</string>
-    <string name="select_furlength">Selecione o tipo de pelagem</string>
+    <string name="prompt_select_furlength">Selecione o tipo de pelagem</string>
     <string name="error_received_message">Erro na mensagem recebida</string>
     <string name="missing_animals">Animais Desaparecidos</string>
     <string name="animais_errantes">Animais Errantes</string>
@@ -97,5 +97,27 @@
     <string name="nif">NIF</string>
     <string name="apelido">Apelido</string>
     <string name="nome">Nome</string>
+    <string name="edit_missing_animal">Editar animal desaparecido</string>
+    <string name="publish_missing_animal">Publicar animal desaparecido</string>
+    <string name="hint_date_missing_animal">Data do desaparecimento (DD-MM-AAAA)</string>
+    <string name="publish_found_animal">Publicar animal abandonado</string>
+    <string name="edit_found_animal">Editar animal abandonado</string>
+    <string name="hint_date_found_animal">Data do avistamento (DD-MM-AAAA)</string>
+    <string name="error_filling_animal">Erro ao preencher animal</string>
+    <string name="validate_msg_animal_name">Introduza um nome válido (mínimo 2 letras)</string>
+    <string name="validate_msg_animal_chip_id">Introduza um chip id válido (15 dígitos))</string>
+    <string name="validate_msg_animal_description">Introduza uma descrição válida (min. 10 caracteres))</string>
+    <string name="validate_msg_enter_specie">Selecione uma espécie</string>
+    <string name="validate_msg_enter_subspecie">Selecione uma sub espécie</string>
+    <string name="validade_animal_enter_size">Selecione o porte</string>
+    <string name="validate_msg_enter_sex">Selecione o sexo</string>
+    <string name="invalid_date">Data inválida</string>
+    <string name="validate_msg_data_cannot_be_future">A data não pode ser superior à atual</string>
+    <string name="validate_msg_invalid_street">Introduza uma rua válida (mínimo 2 letras)</string>
+    <string name="validate_msg_enter_city">Introduza uma cidade válida (mínimo 2 letras)</string>
+    <string name="select_sex">Selecione o sexo</string>
+    <string name="prompt_select_fur_color">Selecione a cor da pelagem</string>
+    <string name="prompt_select_subspecie">Selecione a sub espécie</string>
+    <string name="prompt_select_specie">Selecione a espécie</string>
 
 </resources>

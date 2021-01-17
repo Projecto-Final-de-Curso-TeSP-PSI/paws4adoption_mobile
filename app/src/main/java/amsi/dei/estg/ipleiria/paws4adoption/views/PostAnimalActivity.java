@@ -193,7 +193,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         ArrayList<Attribute> sexArray = new ArrayList<>();
         sexArray.add(new Attribute(1, "M" ));
         sexArray.add(new Attribute(2, "F" ));
-        initSpinner(dataAdapterSex, spSex, "Selecione o sexo", sexArray);
+        initSpinner(dataAdapterSex, spSex, getString(R.string.select_sex), sexArray);
 
 
         etMissingFoundDate = findViewById(R.id.etMissingFoundDate);
@@ -388,52 +388,56 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             if(scenario.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
 
                 if (name.length() < 5) {
-                    etName.setError("Introduza um nome válido (mínimo 2 letras)");
+                    etName.setError(getString(R.string.validate_msg_animal_name));
                     return null;
                 }
 
                 chipId = etChipId.getText().toString();
                 if (chipId.length() > 15) {
-                    etChipId.setError("Introduza um chip id válido (15 dígitos))");
+                    etChipId.setError(getString(R.string.validate_msg_animal_chip_id));
                     return null;
                 }
             }
 
             String description = etDescription.getText().toString();
             if(description.length() < 10){
-                etDescription.setError("Introduza uma descrição válida (min. 10 caracteres))");
+                etDescription.setError(getString(R.string.validate_msg_animal_description));
                 return null;
             }
 
             Attribute specie = (Attribute)spNature.getSelectedItem();
             if(specie.getId() == -1){
-                Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.validate_msg_enter_specie), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute subSpecie = (Attribute)spBreed.getSelectedItem();
             if(subSpecie.getId() == -1){
-                Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.validate_msg_enter_subspecie), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute furColor = (Attribute)spFurColor.getSelectedItem();
             if(furColor.getId() == -1){
+                Toast.makeText(this, "Selecione uma côr de pêlo", Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute furLength = (Attribute)spFurLength.getSelectedItem();
             if(furLength.getId() == -1){
+                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute size = (Attribute)spSize.getSelectedItem();
             if(size.getId() == -1){
+                Toast.makeText(this, getString(R.string.validade_animal_enter_size), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute sex = (Attribute)spSex.getSelectedItem();
             if(sex.getId() == -1){
+                Toast.makeText(this, getString(R.string.validate_msg_enter_sex), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
@@ -444,13 +448,13 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 missingFoundDate = simpleDateFormat.parse(missingFoundDateStr);
                 System.out.println(missingFoundDate);
             } catch (ParseException e) {
-                etMissingFoundDate.setError("Data inválida");
+                etMissingFoundDate.setError(getString(R.string.invalid_date));
                 e.printStackTrace();
                 return null;
             }
 
             if(missingFoundDate.after(Calendar.getInstance().getTime())){
-                Toast.makeText(this, "A data não pode ser superior à atual", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.validate_msg_data_cannot_be_future), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
@@ -477,14 +481,14 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
             if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
                 String locationStreet = etLocationStreet.getText().toString();
-                if(locationStreet.length() < 5){
-                    etName.setError("Introduza uma rua válida (mínimo 2 letras)");
+                if(locationStreet.length() < 2){
+                    etName.setError(getString(R.string.validate_msg_invalid_street));
                     return null;
                 }
 
                 String location_city = etLocationCity.getText().toString();
-                if(location_city.length() < 5){
-                    etName.setError("Introduza uma rua válida (mínimo 2 letras)");
+                if(location_city.length() < 2){
+                    etName.setError(getString(R.string.validate_msg_enter_city));
                     return null;
                 }
 
@@ -561,7 +565,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
         } catch(Exception e){
             System.out.println(Arrays.toString(e.getStackTrace()));
-            Toast.makeText(this, "Erro ao preencher animal", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_filling_animal), Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -582,22 +586,39 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
      */
     private void setScenario() {
 
-//        if(action.equals(RockChisel.ACTION_CREATE)){
-            switch(scenario){
-                case RockChisel.SCENARIO_MISSING_ANIMAL:
-                    setTitle("Publicar animal desaparecido");
-                    etMissingFoundDate.setHint("Data do desaparecimento (DD-MM-AAAA)");
-                    llFoundAnimal.setVisibility(View.GONE);
-                    break;
+        switch(scenario){
 
-                case RockChisel.SCENARIO_FOUND_ANIMAL:
-                    setTitle("Publicar animal abandonado");
-                    etMissingFoundDate.setHint("Data do avistamento (DD-MM-AAAA)");
-                    llFoundAnimal.setVisibility(View.VISIBLE);
-                    break;
-            }
-//        }
+            case RockChisel.SCENARIO_MISSING_ANIMAL:
 
+                switch(action) {
+                    case RockChisel.ACTION_CREATE:
+                        setTitle(getString(R.string.publish_missing_animal));
+                        break;
+                    case RockChisel.ACTION_UPDATE:
+                        setTitle(getString(R.string.edit_missing_animal));
+                        break;
+                }
+
+                etMissingFoundDate.setHint(R.string.hint_date_missing_animal);
+                llFoundAnimal.setVisibility(View.GONE);
+                break;
+
+            case RockChisel.SCENARIO_FOUND_ANIMAL:
+
+                switch(action) {
+                    case RockChisel.ACTION_CREATE:
+                        setTitle(getString(R.string.publish_found_animal));
+                        break;
+                    case RockChisel.ACTION_UPDATE:
+                        setTitle(getString(R.string.edit_found_animal));
+                        break;
+                }
+
+                etMissingFoundDate.setHint(R.string.hint_date_found_animal);
+                llFoundAnimal.setVisibility(View.VISIBLE);
+                break;
+
+        }
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
 
     }
@@ -834,39 +855,39 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     public void onReceivedAttributes(ArrayList<Attribute> attributes, String attributeType) {
 
         switch(attributeType){
+
             case RockChisel.ATTR_SPECIE:
-                initSpinner(dataAdapterNature, spNature, "Selecione a espécie", attributes);
+                initSpinner(dataAdapterNature, spNature, getString(R.string.prompt_select_specie), attributes);
                 afterAttributte();
                 break;
 
             case RockChisel.ATTR_SUBSPECIE:
 
                 boolean initAnimal = spBreed.getCount() == 0 && action.equals(RockChisel.ACTION_UPDATE);
-                initSpinner(dataAdapterBreed, spBreed, "Selecione a sub espécie", attributes);
+                initSpinner(dataAdapterBreed, spBreed, getString(R.string.prompt_select_subspecie), attributes);
                 if(initAnimal) {
                     fillAnimal(editAnimal);
                     implementListeners();
                 }
-
                 break;
 
             case RockChisel.ATTR_FUR_LENGTH:
-                initSpinner(dataAdapterFurLength, spFurLength, getString(R.string.select_furlength), attributes);
+                initSpinner(dataAdapterFurLength, spFurLength, getString(R.string.prompt_select_furlength), attributes);
                 afterAttributte();
                 break;
 
             case RockChisel.ATTR_FUR_COLOR:
-                initSpinner(dataAdapterFurColor, spFurColor, "Selecione a cor da pelagem", attributes);
+                initSpinner(dataAdapterFurColor, spFurColor, getString(R.string.prompt_select_fur_color), attributes);
                 afterAttributte();
                 break;
 
             case RockChisel.ATTR_SIZE:
-                initSpinner(dataAdapterSize, spSize, "Selecione o porte", attributes);
+                initSpinner(dataAdapterSize, spSize, getString(R.string.prompt_select_size), attributes);
                 afterAttributte();
                 break;
 
             case RockChisel.ATTR_DISTRICT:
-                initSpinner(dataAdapterLocationDistrict, spLocationDistrict, "Selecione o distrito", attributes);
+                initSpinner(dataAdapterLocationDistrict, spLocationDistrict, getString(R.string.prompt_select_district), attributes);
                 afterAttributte();
                 break;
         }
@@ -940,8 +961,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     @Override
     public void onUpdateAnimal() {
-//        this.editAnimal = animal;
-//        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, animal.getNature_parent_id());
         finish();
     }
 
