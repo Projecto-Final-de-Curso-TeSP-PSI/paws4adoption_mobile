@@ -18,11 +18,16 @@ import java.util.Objects;
 
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 
+/**
+ * Class that implements an Intent Service, which will provide an array with the address component
+ * from the coordinates provided by intent
+ *
+ * Base code obtain from: https://www.youtube.com/watch?v=ari3iD-3q8c
+ */
 public class FetchAddressIntentService extends IntentService {
 
     private ResultReceiver resultReceiver;
     private String errorMessage;
-
 
     public FetchAddressIntentService(){
         super("FecthAddressIntentService");

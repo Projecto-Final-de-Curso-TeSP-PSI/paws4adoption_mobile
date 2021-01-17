@@ -226,13 +226,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 return false;
             }
         });
-/*
-        spNature.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            }
-        }); */
 
         spNature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -509,6 +503,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         return newAnimalPost;
     }
 
+    /**
+     * Method that send's request forr all the spinners data from the API
+     */
     public void initAttributesSpinners(){
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_LENGTH, RockChisel.ATTR_FUR_LENGTH_SYMLINK, null);
@@ -517,6 +514,10 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
     }
 
+    /**
+     * Fills the animal fields on the page
+     * @param animal
+     */
     public void fillAnimal(Animal animal) {
 
         try{
@@ -571,6 +572,12 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     }
 
+    /**
+     * Get's the spinner index whre the attribute is
+     * @param spNature
+     * @param item_id
+     * @return
+     */
     private int getSpinnerAttributteID(Spinner spNature, int item_id) {
         for (int i = 0; i < spNature.getCount(); i++) {
             Attribute auxAttribute = (Attribute)spNature.getItemAtPosition(i);
@@ -705,65 +712,99 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     //################ LOCATION ################
 
+
     /**
-     * Launches the location service, gets the coordinates and fecths for the address
+     * Code section where are implemented methods related to getting the actual location,
+     * firstly we get the coordinates using Geocoder, and afterwards, we get
+     * an array with the respective address using an intent service by gms
+     *
+     * Base code obtain from: https://www.youtube.com/watch?v=ari3iD-3q8c
      */
-    private void getLocation() {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(3000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        if (Build.VERSION.SDK_INT >= 23 &&
-                (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+        /**
+         * Launches the location service, gets the coordinates and fecths for the address
+         */
+        private void getLocation() {
+            LocationRequest locationRequest = new LocationRequest();
+            locationRequest.setInterval(10000);
+            locationRequest.setFastestInterval(3000);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-            ActivityCompat.requestPermissions(PostAnimalActivity.this,
-                    new String[]{
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                    },
-                    LOCATION_REQUEST);
+            if (Build.VERSION.SDK_INT >= 23 &&
+                    (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+
+                ActivityCompat.requestPermissions(PostAnimalActivity.this,
+                        new String[]{
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                        },
+                        LOCATION_REQUEST);
+            }
+
+            LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
+                    .requestLocationUpdates(locationRequest, new LocationCallback() {
+                        @Override
+                        public void onLocationResult(LocationResult locationResult) {
+                            super.onLocationResult(locationResult);
+
+                            LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
+                                    .removeLocationUpdates(this);
+
+                            if (locationResult != null && locationResult.getLocations().size() > 0) {
+                                int latestLocationIndex = locationResult.getLocations().size() - 1;
+                                latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                                longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                                tvLat.setText("" + latitude);
+                                tvLong.setText("" + longitude);
+
+                                Location location = new Location("providerNA");
+                                location.setLatitude(latitude);
+                                location.setLongitude(longitude);
+                                fetchAddressFromLatLong(location);
+
+                            } else {
+                                //
+                            }
+                        }
+                    }, Looper.getMainLooper());
         }
 
-        LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
-                .requestLocationUpdates(locationRequest, new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        super.onLocationResult(locationResult);
+        /**
+         * Get's the address from the coordinates given
+         * @param location The location coordinates
+         */
+        public void fetchAddressFromLatLong(Location location){
+            Intent intent = new Intent(this, FetchAddressIntentService.class);
+            intent.putExtra(RockChisel.RECEIVER, resultReceiver);
+            intent.putExtra(RockChisel.LOCATION_DATA_EXTRA, location);
+            startService(intent);
+        }
 
-                        LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
-                                .removeLocationUpdates(this);
+        /**
+         * On receiving the result of the address, set's the
+         */
+        private class AddressResultReceiver extends ResultReceiver {
 
-                        if (locationResult != null && locationResult.getLocations().size() > 0) {
-                            int latestLocationIndex = locationResult.getLocations().size() - 1;
-                            latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
-                            longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
-                            tvLat.setText("" + latitude);
-                            tvLong.setText("" + longitude);
+            public AddressResultReceiver(Handler handler){
+                super(handler);
+            }
 
-                            Location location = new Location("providerNA");
-                            location.setLatitude(latitude);
-                            location.setLongitude(longitude);
-                            fetchAddressFromLatLong(location);
-
-                        } else {
-                            //
-                        }
-                    }
-                }, Looper.getMainLooper());
-    }
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                super.onReceiveResult(resultCode, resultData);
+                if(resultCode == RockChisel.SUCCESS_RESULT){
+                    tvAddress.setText(resultData.getString(RockChisel.RESULT_DATAKEY));
+                } else{
+                    Toast.makeText(PostAnimalActivity.this, resultData.getString(RockChisel.RESULT_DATAKEY), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
 
     /**
-     * Get's teh addres from the coordinates given
-     * @param location The location coordinates
+     * End of code section related to getting actual location
      */
-    public void fetchAddressFromLatLong(Location location){
-        Intent intent = new Intent(this, FetchAddressIntentService.class);
-        intent.putExtra(RockChisel.RECEIVER, resultReceiver);
-        intent.putExtra(RockChisel.LOCATION_DATA_EXTRA, location);
-        startService(intent);
-    }
+
 
     /**
      * On the result of the activity, get's the photos colected
@@ -820,26 +861,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
                 }
                 break;
-        }
-    }
-
-    /**
-     * On receiving the result of the address, set's the
-     */
-    private class AddressResultReceiver extends ResultReceiver{
-
-        public AddressResultReceiver(Handler handler){
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            super.onReceiveResult(resultCode, resultData);
-            if(resultCode == RockChisel.SUCCESS_RESULT){
-                tvAddress.setText(resultData.getString(RockChisel.RESULT_DATAKEY));
-            } else{
-                Toast.makeText(PostAnimalActivity.this, resultData.getString(RockChisel.RESULT_DATAKEY), Toast.LENGTH_SHORT).show();
-            }
         }
     }
 
@@ -918,6 +939,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         spinner.setSelection(spinnerArrayAdapter.getPosition(promptObject));
     }
 
+    /**
+     * Method that triggers the request for the animal data, only after all spinners are filled
+     */
     private void afterAttributte(){
         boolean natureCount = spNature.getCount() > 0;
         boolean furcolorCount = spFurColor.getCount() > 0;
