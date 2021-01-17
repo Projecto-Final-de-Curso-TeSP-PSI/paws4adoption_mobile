@@ -17,7 +17,7 @@ public class Vault {
     /**
      * Method for saving the USERNAME and TOKEN on the shared preferences
      * @param context
-     * @param token
+     * @param login
      * @param username
      */
     public static void saveUserPreferences(Context context, Login login, String username){

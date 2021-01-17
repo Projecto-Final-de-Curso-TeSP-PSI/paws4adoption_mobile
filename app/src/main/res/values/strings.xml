@@ -119,5 +119,13 @@
     <string name="prompt_select_fur_color">Selecione a cor da pelagem</string>
     <string name="prompt_select_subspecie">Selecione a sub espécie</string>
     <string name="prompt_select_specie">Selecione a espécie</string>
+    <string name="title_adoption_animal">Animal para Adoção</string>
+    <string name="title_missing_animal">Animal desaparecido</string>
+    <string name="title_found_animal">Animal errante</string>
+    <string name="title_details">\"Detalhes \"</string>
+    <string name="title_my_animal">\"Meu Animal \"</string>
+    <string name="msg_animal_created">Animal criado com sucesso</string>
+    <string name="msg_animal_updated">Animal atualizado com sucesso</string>
+    <string name="msg_animal_deleted">Animal eliminado com sucesso</string>
 
 </resources>

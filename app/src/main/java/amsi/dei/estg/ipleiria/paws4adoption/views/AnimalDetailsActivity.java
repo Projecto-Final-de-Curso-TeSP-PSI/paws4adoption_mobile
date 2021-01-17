@@ -202,7 +202,7 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
             case RockChisel.SCENARIO_GENERAL_LIST:
                 switch(animal.getType()){
                     case RockChisel.SCENARIO_ADOPTION_ANIMAL:
-                        setTitle("Animal para Adoção");
+                        setTitle(getString(R.string.title_adoption_animal));
                         fabUp.setImageResource(R.drawable.ic_baseline_family_restroom_24);
                         fabDown.setImageResource(R.drawable.ic_baseline_hourglass_top_24);
                         layout_organization.setVisibility(LinearLayout.VISIBLE);
@@ -210,7 +210,7 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
                         break;
 
                     case RockChisel.SCENARIO_MISSING_ANIMAL:
-                        setTitle("Animal desaparecido");
+                        setTitle(getString(R.string.title_missing_animal));
                         fabDown.setImageResource(R.drawable.ic_baseline_phone_forwarded_24);
                         fabDown.show();
                         fabUp.setVisibility(View.INVISIBLE);
@@ -220,7 +220,7 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
                         break;
 
                     case RockChisel.SCENARIO_FOUND_ANIMAL:
-                        setTitle("Animal errante");
+                        setTitle(getString(R.string.title_found_animal));
                         fabDown.setImageResource(R.drawable.ic_baseline_phone_forwarded_24);
                         fabDown.show();
                         fabUp.setVisibility(View.INVISIBLE);
@@ -238,7 +238,7 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
                 break;
 
             case RockChisel.SCENARIO_MY_LIST:
-                setTitle("Meu Animal ");
+                setTitle(getString(R.string.title_my_animal));
                 fabUp.setImageResource(R.drawable.ic_baseline_edit_24);
                 fabDown.setImageResource(R.drawable.ic_baseline_delete_24);
         }
@@ -249,7 +249,7 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
      * Method that fills the screen with the animal
      */
     public void fillAnimal(){
-        setTitle("Detalhes " + animal.getName());
+        setTitle(getString(R.string.title_details) + animal.getName());
 
         textView_name.setText(animal.getName());
         textView_chipId.setText(animal.getChipId());
