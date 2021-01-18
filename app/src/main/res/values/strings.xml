@@ -128,5 +128,7 @@
     <string name="msg_animal_updated">Animal atualizado com sucesso</string>
     <string name="msg_animal_deleted">Animal eliminado com sucesso</string>
     <string name="msg_enter_photo">Introduza uma foto</string>
+    <string name="msg_enter_fur_color">Selecione uma côr de pêlo</string>
+    <string name="msg_enter_fur_length">Selecione o tamanho do pêlo</string>
 
 </resources>

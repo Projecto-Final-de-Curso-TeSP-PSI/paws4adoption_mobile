@@ -413,13 +413,13 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
             Attribute furColor = (Attribute)spFurColor.getSelectedItem();
             if(furColor.getId() == -1){
-                Toast.makeText(this, "Selecione uma côr de pêlo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.msg_enter_fur_color), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute furLength = (Attribute)spFurLength.getSelectedItem();
             if(furLength.getId() == -1){
-                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.msg_enter_fur_length), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
