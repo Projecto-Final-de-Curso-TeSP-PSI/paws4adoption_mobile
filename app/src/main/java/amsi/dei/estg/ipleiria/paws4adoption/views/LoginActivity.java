@@ -90,9 +90,6 @@ public class LoginActivity extends AppCompatActivity implements LoginListener, S
         if(login != null){
             System.out.println("onLogin --->" + login.getId());
             Vault.saveUserPreferences(getApplicationContext(), login, username);
-
-            Intent intent = new Intent(getApplicationContext(), MenuMainActivity.class);
-            startActivity(intent);
             finish();
         }
     }
