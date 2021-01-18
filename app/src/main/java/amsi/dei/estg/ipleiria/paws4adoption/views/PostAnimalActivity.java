@@ -193,7 +193,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         ArrayList<Attribute> sexArray = new ArrayList<>();
         sexArray.add(new Attribute(1, "M" ));
         sexArray.add(new Attribute(2, "F" ));
-        initSpinner(dataAdapterSex, spSex, "Selecione o sexo", sexArray);
+        initSpinner(dataAdapterSex, spSex, getString(R.string.select_sex), sexArray);
 
 
         etMissingFoundDate = findViewById(R.id.etMissingFoundDate);
@@ -226,13 +226,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 return false;
             }
         });
-/*
-        spNature.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            }
-        }); */
 
         spNature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -387,53 +381,57 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
             if(scenario.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
 
-                if (name.length() < 5) {
-                    etName.setError("Introduza um nome válido (mínimo 2 letras)");
+                if (name.length() < 2) {
+                    etName.setError(getString(R.string.validate_msg_animal_name));
                     return null;
                 }
 
                 chipId = etChipId.getText().toString();
                 if (chipId.length() > 15) {
-                    etChipId.setError("Introduza um chip id válido (15 dígitos))");
+                    etChipId.setError(getString(R.string.validate_msg_animal_chip_id));
                     return null;
                 }
             }
 
             String description = etDescription.getText().toString();
             if(description.length() < 10){
-                etDescription.setError("Introduza uma descrição válida (min. 10 caracteres))");
+                etDescription.setError(getString(R.string.validate_msg_animal_description));
                 return null;
             }
 
             Attribute specie = (Attribute)spNature.getSelectedItem();
             if(specie.getId() == -1){
-                Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.validate_msg_enter_specie), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute subSpecie = (Attribute)spBreed.getSelectedItem();
             if(subSpecie.getId() == -1){
-                Toast.makeText(this, "Selecione uma espécie", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.validate_msg_enter_subspecie), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute furColor = (Attribute)spFurColor.getSelectedItem();
             if(furColor.getId() == -1){
+                Toast.makeText(this, getString(R.string.msg_enter_fur_color), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute furLength = (Attribute)spFurLength.getSelectedItem();
             if(furLength.getId() == -1){
+                Toast.makeText(this, getString(R.string.msg_enter_fur_length), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute size = (Attribute)spSize.getSelectedItem();
             if(size.getId() == -1){
+                Toast.makeText(this, getString(R.string.validade_animal_enter_size), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             Attribute sex = (Attribute)spSex.getSelectedItem();
             if(sex.getId() == -1){
+                Toast.makeText(this, getString(R.string.validate_msg_enter_sex), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
@@ -444,18 +442,26 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 missingFoundDate = simpleDateFormat.parse(missingFoundDateStr);
                 System.out.println(missingFoundDate);
             } catch (ParseException e) {
-                etMissingFoundDate.setError("Data inválida");
+                etMissingFoundDate.setError(getString(R.string.invalid_date));
                 e.printStackTrace();
                 return null;
             }
 
             if(missingFoundDate.after(Calendar.getInstance().getTime())){
-                Toast.makeText(this, "A data não pode ser superior à atual", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.validate_msg_data_cannot_be_future), Toast.LENGTH_SHORT).show();
                 return null;
             }
 
             if(action.equals(RockChisel.ACTION_UPDATE)){
                 newAnimalPost.setId(animal_id);
+            }
+
+
+            if(action.equals(RockChisel.ACTION_CREATE)){
+                if(this.photo == null){
+                    Toast.makeText(this, getString(R.string.msg_enter_photo), Toast.LENGTH_SHORT).show();
+                    return null;
+                }
             }
 
             String newPhoto = null;
@@ -477,14 +483,14 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
             if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
                 String locationStreet = etLocationStreet.getText().toString();
-                if(locationStreet.length() < 5){
-                    etName.setError("Introduza uma rua válida (mínimo 2 letras)");
+                if(locationStreet.length() < 2){
+                    etName.setError(getString(R.string.validate_msg_invalid_street));
                     return null;
                 }
 
                 String location_city = etLocationCity.getText().toString();
-                if(location_city.length() < 5){
-                    etName.setError("Introduza uma rua válida (mínimo 2 letras)");
+                if(location_city.length() < 2){
+                    etName.setError(getString(R.string.validate_msg_enter_city));
                     return null;
                 }
 
@@ -505,6 +511,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         return newAnimalPost;
     }
 
+    /**
+     * Method that send's request forr all the spinners data from the API
+     */
     public void initAttributesSpinners(){
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_FUR_LENGTH, RockChisel.ATTR_FUR_LENGTH_SYMLINK, null);
@@ -513,6 +522,10 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_DISTRICT, RockChisel.ATTR_DISTRICT_SYMLINK, null);
     }
 
+    /**
+     * Fills the animal fields on the page
+     * @param animal
+     */
     public void fillAnimal(Animal animal) {
 
         try{
@@ -561,12 +574,18 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
         } catch(Exception e){
             System.out.println(Arrays.toString(e.getStackTrace()));
-            Toast.makeText(this, "Erro ao preencher animal", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.error_filling_animal), Toast.LENGTH_SHORT).show();
             finish();
         }
 
     }
 
+    /**
+     * Get's the spinner index whre the attribute is
+     * @param spNature
+     * @param item_id
+     * @return
+     */
     private int getSpinnerAttributteID(Spinner spNature, int item_id) {
         for (int i = 0; i < spNature.getCount(); i++) {
             Attribute auxAttribute = (Attribute)spNature.getItemAtPosition(i);
@@ -582,22 +601,39 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
      */
     private void setScenario() {
 
-//        if(action.equals(RockChisel.ACTION_CREATE)){
-            switch(scenario){
-                case RockChisel.SCENARIO_MISSING_ANIMAL:
-                    setTitle("Publicar animal desaparecido");
-                    etMissingFoundDate.setHint("Data do desaparecimento (DD-MM-AAAA)");
-                    llFoundAnimal.setVisibility(View.GONE);
-                    break;
+        switch(scenario){
 
-                case RockChisel.SCENARIO_FOUND_ANIMAL:
-                    setTitle("Publicar animal abandonado");
-                    etMissingFoundDate.setHint("Data do avistamento (DD-MM-AAAA)");
-                    llFoundAnimal.setVisibility(View.VISIBLE);
-                    break;
-            }
-//        }
+            case RockChisel.SCENARIO_MISSING_ANIMAL:
 
+                switch(action) {
+                    case RockChisel.ACTION_CREATE:
+                        setTitle(getString(R.string.publish_missing_animal));
+                        break;
+                    case RockChisel.ACTION_UPDATE:
+                        setTitle(getString(R.string.edit_missing_animal));
+                        break;
+                }
+
+                etMissingFoundDate.setHint(R.string.hint_date_missing_animal);
+                llFoundAnimal.setVisibility(View.GONE);
+                break;
+
+            case RockChisel.SCENARIO_FOUND_ANIMAL:
+
+                switch(action) {
+                    case RockChisel.ACTION_CREATE:
+                        setTitle(getString(R.string.publish_found_animal));
+                        break;
+                    case RockChisel.ACTION_UPDATE:
+                        setTitle(getString(R.string.edit_found_animal));
+                        break;
+                }
+
+                etMissingFoundDate.setHint(R.string.hint_date_found_animal);
+                llFoundAnimal.setVisibility(View.VISIBLE);
+                break;
+
+        }
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
 
     }
@@ -684,65 +720,99 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
     //################ LOCATION ################
 
+
     /**
-     * Launches the location service, gets the coordinates and fecths for the address
+     * Code section where are implemented methods related to getting the actual location,
+     * firstly we get the coordinates using Geocoder, and afterwards, we get
+     * an array with the respective address using an intent service by gms
+     *
+     * Base code obtain from: https://www.youtube.com/watch?v=ari3iD-3q8c
      */
-    private void getLocation() {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(3000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        if (Build.VERSION.SDK_INT >= 23 &&
-                (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+        /**
+         * Launches the location service, gets the coordinates and fecths for the address
+         */
+        private void getLocation() {
+            LocationRequest locationRequest = new LocationRequest();
+            locationRequest.setInterval(10000);
+            locationRequest.setFastestInterval(3000);
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-            ActivityCompat.requestPermissions(PostAnimalActivity.this,
-                    new String[]{
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                    },
-                    LOCATION_REQUEST);
+            if (Build.VERSION.SDK_INT >= 23 &&
+                    (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+
+                ActivityCompat.requestPermissions(PostAnimalActivity.this,
+                        new String[]{
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                        },
+                        LOCATION_REQUEST);
+            }
+
+            LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
+                    .requestLocationUpdates(locationRequest, new LocationCallback() {
+                        @Override
+                        public void onLocationResult(LocationResult locationResult) {
+                            super.onLocationResult(locationResult);
+
+                            LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
+                                    .removeLocationUpdates(this);
+
+                            if (locationResult != null && locationResult.getLocations().size() > 0) {
+                                int latestLocationIndex = locationResult.getLocations().size() - 1;
+                                latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                                longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                                tvLat.setText("" + latitude);
+                                tvLong.setText("" + longitude);
+
+                                Location location = new Location("providerNA");
+                                location.setLatitude(latitude);
+                                location.setLongitude(longitude);
+                                fetchAddressFromLatLong(location);
+
+                            } else {
+                                //
+                            }
+                        }
+                    }, Looper.getMainLooper());
         }
 
-        LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
-                .requestLocationUpdates(locationRequest, new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        super.onLocationResult(locationResult);
+        /**
+         * Get's the address from the coordinates given
+         * @param location The location coordinates
+         */
+        public void fetchAddressFromLatLong(Location location){
+            Intent intent = new Intent(this, FetchAddressIntentService.class);
+            intent.putExtra(RockChisel.RECEIVER, resultReceiver);
+            intent.putExtra(RockChisel.LOCATION_DATA_EXTRA, location);
+            startService(intent);
+        }
 
-                        LocationServices.getFusedLocationProviderClient(PostAnimalActivity.this)
-                                .removeLocationUpdates(this);
+        /**
+         * On receiving the result of the address, set's the
+         */
+        private class AddressResultReceiver extends ResultReceiver {
 
-                        if (locationResult != null && locationResult.getLocations().size() > 0) {
-                            int latestLocationIndex = locationResult.getLocations().size() - 1;
-                            latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
-                            longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
-                            tvLat.setText("" + latitude);
-                            tvLong.setText("" + longitude);
+            public AddressResultReceiver(Handler handler){
+                super(handler);
+            }
 
-                            Location location = new Location("providerNA");
-                            location.setLatitude(latitude);
-                            location.setLongitude(longitude);
-                            fetchAddressFromLatLong(location);
-
-                        } else {
-                            //
-                        }
-                    }
-                }, Looper.getMainLooper());
-    }
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                super.onReceiveResult(resultCode, resultData);
+                if(resultCode == RockChisel.SUCCESS_RESULT){
+                    tvAddress.setText(resultData.getString(RockChisel.RESULT_DATAKEY));
+                } else{
+                    Toast.makeText(PostAnimalActivity.this, resultData.getString(RockChisel.RESULT_DATAKEY), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
 
     /**
-     * Get's teh addres from the coordinates given
-     * @param location The location coordinates
+     * End of code section related to getting actual location
      */
-    public void fetchAddressFromLatLong(Location location){
-        Intent intent = new Intent(this, FetchAddressIntentService.class);
-        intent.putExtra(RockChisel.RECEIVER, resultReceiver);
-        intent.putExtra(RockChisel.LOCATION_DATA_EXTRA, location);
-        startService(intent);
-    }
+
 
     /**
      * On the result of the activity, get's the photos colected
@@ -802,26 +872,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         }
     }
 
-    /**
-     * On receiving the result of the address, set's the
-     */
-    private class AddressResultReceiver extends ResultReceiver{
-
-        public AddressResultReceiver(Handler handler){
-            super(handler);
-        }
-
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            super.onReceiveResult(resultCode, resultData);
-            if(resultCode == RockChisel.SUCCESS_RESULT){
-                tvAddress.setText(resultData.getString(RockChisel.RESULT_DATAKEY));
-            } else{
-                Toast.makeText(PostAnimalActivity.this, resultData.getString(RockChisel.RESULT_DATAKEY), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
 
     //################ ATTRIBUTES REQUEST FOR THE COMBOBOX's ################
 
@@ -834,39 +884,39 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     public void onReceivedAttributes(ArrayList<Attribute> attributes, String attributeType) {
 
         switch(attributeType){
+
             case RockChisel.ATTR_SPECIE:
-                initSpinner(dataAdapterNature, spNature, "Selecione a espécie", attributes);
+                initSpinner(dataAdapterNature, spNature, getString(R.string.prompt_select_specie), attributes);
                 afterAttributte();
                 break;
 
             case RockChisel.ATTR_SUBSPECIE:
 
                 boolean initAnimal = spBreed.getCount() == 0 && action.equals(RockChisel.ACTION_UPDATE);
-                initSpinner(dataAdapterBreed, spBreed, "Selecione a sub espécie", attributes);
+                initSpinner(dataAdapterBreed, spBreed, getString(R.string.prompt_select_subspecie), attributes);
                 if(initAnimal) {
                     fillAnimal(editAnimal);
                     implementListeners();
                 }
-
                 break;
 
             case RockChisel.ATTR_FUR_LENGTH:
-                initSpinner(dataAdapterFurLength, spFurLength, getString(R.string.select_furlength), attributes);
+                initSpinner(dataAdapterFurLength, spFurLength, getString(R.string.prompt_select_furlength), attributes);
                 afterAttributte();
                 break;
 
             case RockChisel.ATTR_FUR_COLOR:
-                initSpinner(dataAdapterFurColor, spFurColor, "Selecione a cor da pelagem", attributes);
+                initSpinner(dataAdapterFurColor, spFurColor, getString(R.string.prompt_select_fur_color), attributes);
                 afterAttributte();
                 break;
 
             case RockChisel.ATTR_SIZE:
-                initSpinner(dataAdapterSize, spSize, "Selecione o porte", attributes);
+                initSpinner(dataAdapterSize, spSize, getString(R.string.prompt_select_size), attributes);
                 afterAttributte();
                 break;
 
             case RockChisel.ATTR_DISTRICT:
-                initSpinner(dataAdapterLocationDistrict, spLocationDistrict, "Selecione o distrito", attributes);
+                initSpinner(dataAdapterLocationDistrict, spLocationDistrict, getString(R.string.prompt_select_district), attributes);
                 afterAttributte();
                 break;
         }
@@ -897,6 +947,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         spinner.setSelection(spinnerArrayAdapter.getPosition(promptObject));
     }
 
+    /**
+     * Method that triggers the request for the animal data, only after all spinners are filled
+     */
     private void afterAttributte(){
         boolean natureCount = spNature.getCount() > 0;
         boolean furcolorCount = spFurColor.getCount() > 0;
@@ -936,12 +989,12 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     @Override
     public void onCreateAnimal() {
         finish();
+        Toast.makeText(this, "Animal criado com sucesso", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onUpdateAnimal() {
-//        this.editAnimal = animal;
-//        SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SUBSPECIE, RockChisel.ATTR_SUBSPECIE_SYMLINK, animal.getNature_parent_id());
         finish();
     }
 

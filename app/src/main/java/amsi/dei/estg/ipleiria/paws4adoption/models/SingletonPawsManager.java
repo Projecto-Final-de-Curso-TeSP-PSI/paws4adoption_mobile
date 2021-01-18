@@ -378,8 +378,8 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
      * @param animal the animal to be inserted
      */
     public void insertAnimalDB(Animal animal){
-        pawsManagerDBHelper.insertAnimalDB(animal);
-        System.out.println("--> Animal inserted successfully on the DB");
+        if(pawsManagerDBHelper.insertAnimalDB(animal))
+            System.out.println("--> Animal inserted successfully on the DB");
     }
 
     /**
@@ -401,64 +401,64 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
 
 
 
-        if(pawsManagerDBHelper.updateAnimalDB(animal)){
 
 
-            for (Animal animalArr : animals
-            ) {
-                int animalIdArrau = animalArr.getId();
-                int animalAPI = animal.getId();
+//        for (Animal animalArr : animals
+//        ) {
+//            int animalIdArrau = animalArr.getId();
+//            int animalAPI = animal.getId();
+//
+//            if(animalAPI == animalIdArrau){
+//                animalArr = animal;
+//                int a =1;
+//            }
+//        }
 
-                if(animalAPI == animalIdArrau){
-                    animalArr = animal;
-                    int a =1;
-                }
-            }
 
 
 
-//            Animal auxAnimal =  getAnimalDB(animal.getId());
-//            auxAnimal.setId(animal.getId());
-//            auxAnimal.setName(animal.getName());
-//            auxAnimal.setNature_id(animal.getNature_id());
-//            auxAnimal.setNature_name(animal.getNature_name());
-//            auxAnimal.setNature_parent_id(animal.getNature_parent_id());
-//            auxAnimal.setNature_parent_name(animal.getNature_parent_name());
-//            auxAnimal.setFur_length_id(animal.getFur_length_id());
-//            auxAnimal.setFur_length(animal.getFur_length());
-//            auxAnimal.setFur_color_id(animal.getFur_color_id());
-//            auxAnimal.setFur_color(animal.getFur_color());
-//            auxAnimal.setSize_id(animal.getSize_id());
-//            auxAnimal.setSize(animal.getSize());
-//            auxAnimal.setSex(animal.getSex());
-//            auxAnimal.setDescription(animal.getDescription());
-//            auxAnimal.setCreateAt(animal.getCreateAt());
-//            auxAnimal.setPhoto(animal.getPhoto());
-//            auxAnimal.setType(animal.getType());
-//            auxAnimal.setPublisher_id(animal.getPublisher_id());
-//            auxAnimal.setPublisher_name(animal.getPublisher_name());
-//            auxAnimal.setMissingFound_date(animal.getMissingFound_date());
-//            auxAnimal.setFoundAnimal_location_id(animal.getFoundAnimal_location_id());
-//            auxAnimal.setFoundAnimal_street(animal.getFoundAnimal_street());
-//            auxAnimal.setFoundAnimal_city(animal.getFoundAnimal_city());
-//            auxAnimal.setFoundAnimal_district_id(animal.getFoundAnimal_district_id());
-//            auxAnimal.setFoundAnimal_district_name(animal.getFoundAnimal_district_name());
-//            auxAnimal.setOrganization_id(animal.getOrganization_id());
-//            auxAnimal.setOrganization_name(animal.getOrganization_name());
-//            auxAnimal.setOrganization_nif(animal.getOrganization_nif());
-//            auxAnimal.setOrganization_email(animal.getOrganization_email());
-//            auxAnimal.setOrganization_address_id(animal.getOrganization_address_id());
-//            auxAnimal.setOrganization_street(animal.getOrganization_street());
-//            auxAnimal.setOrganization_door_number(animal.getOrganization_door_number());
-//            auxAnimal.setOrganization_floor(animal.getOrganization_floor());
-//            auxAnimal.setOrganization_city(animal.getOrganization_city());
-//            auxAnimal.setOrganization_postal_code(animal.getOrganization_postal_code());
-//            auxAnimal.setOrganization_street_code(animal.getOrganization_street_code());
-//            auxAnimal.setOrganization_district_id(animal.getOrganization_district_id());
-//            auxAnimal.setOrganization_district_name(animal.getOrganization_district_name());
+            Animal auxAnimal =  getAnimalDB(animal.getId());
+            auxAnimal.setId(animal.getId());
+            auxAnimal.setName(animal.getName());
+            auxAnimal.setNature_id(animal.getNature_id());
+            auxAnimal.setNature_name(animal.getNature_name());
+            auxAnimal.setNature_parent_id(animal.getNature_parent_id());
+            auxAnimal.setNature_parent_name(animal.getNature_parent_name());
+            auxAnimal.setFur_length_id(animal.getFur_length_id());
+            auxAnimal.setFur_length(animal.getFur_length());
+            auxAnimal.setFur_color_id(animal.getFur_color_id());
+            auxAnimal.setFur_color(animal.getFur_color());
+            auxAnimal.setSize_id(animal.getSize_id());
+            auxAnimal.setSize(animal.getSize());
+            auxAnimal.setSex(animal.getSex());
+            auxAnimal.setDescription(animal.getDescription());
+            auxAnimal.setCreateAt(animal.getCreateAt());
+            auxAnimal.setPhoto(animal.getPhoto());
+            auxAnimal.setType(animal.getType());
+            auxAnimal.setPublisher_id(animal.getPublisher_id());
+            auxAnimal.setPublisher_name(animal.getPublisher_name());
+            auxAnimal.setMissingFound_date(animal.getMissingFound_date());
+            auxAnimal.setFoundAnimal_location_id(animal.getFoundAnimal_location_id());
+            auxAnimal.setFoundAnimal_street(animal.getFoundAnimal_street());
+            auxAnimal.setFoundAnimal_city(animal.getFoundAnimal_city());
+            auxAnimal.setFoundAnimal_district_id(animal.getFoundAnimal_district_id());
+            auxAnimal.setFoundAnimal_district_name(animal.getFoundAnimal_district_name());
+            auxAnimal.setOrganization_id(animal.getOrganization_id());
+            auxAnimal.setOrganization_name(animal.getOrganization_name());
+            auxAnimal.setOrganization_nif(animal.getOrganization_nif());
+            auxAnimal.setOrganization_email(animal.getOrganization_email());
+            auxAnimal.setOrganization_address_id(animal.getOrganization_address_id());
+            auxAnimal.setOrganization_street(animal.getOrganization_street());
+            auxAnimal.setOrganization_door_number(animal.getOrganization_door_number());
+            auxAnimal.setOrganization_floor(animal.getOrganization_floor());
+            auxAnimal.setOrganization_city(animal.getOrganization_city());
+            auxAnimal.setOrganization_postal_code(animal.getOrganization_postal_code());
+            auxAnimal.setOrganization_street_code(animal.getOrganization_street_code());
+            auxAnimal.setOrganization_district_id(animal.getOrganization_district_id());
+            auxAnimal.setOrganization_district_name(animal.getOrganization_district_name());
 
+        if(pawsManagerDBHelper.updateAnimalDB(auxAnimal))
             System.out.println("--> animal updated successfully on the DB");
-        }
 
     }
 
@@ -484,6 +484,7 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
     public void insertAllAnimalsDB(ArrayList<Animal> animalsList){
         pawsManagerDBHelper.deleteAllAnimalsDB();
         for (Animal animal : animalsList) {
+            //insertAnimalDB(animal);
             insertAnimalDB(animal);
         }
 
@@ -777,7 +778,6 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
                     public void onResponse(JSONObject response) {
                         Animal auxAnimal = JsonParser.toAnimal(response);
                         if (auxAnimal != null) {
-
                             if (animalDetailListener != null) {
                                 animalDetailListener.onGetAnimal(auxAnimal);
                             }
@@ -820,8 +820,13 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
                 public void onResponse(JSONObject response) {
                     Animal auxAnimal = JsonParser.toAnimal(response);
                     if(auxAnimal != null) {
-                        onUpdateAnimalsList(auxAnimal, RockChisel.INSERT_DB);
 
+                        if(animals == null){
+                            animals = new ArrayList<>();
+                        }
+                        animals.add(auxAnimal);
+
+                        onUpdateAnimalsList(auxAnimal, RockChisel.INSERT_DB);
                         if(requestListener != null) {
                             requestListener.onCreateAnimal();
                         }
@@ -1066,7 +1071,7 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
                     @Override
                     public void onResponse(String response) {
                         Login login = JsonParser.parserJsonLogin(response);
-                        Toast.makeText(context, login.getToken(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Login efetuado com sucesso! Bem-vindo " + username, Toast.LENGTH_SHORT).show();
                         loginListener.onValidLogin(login, username);
                     }
                 },

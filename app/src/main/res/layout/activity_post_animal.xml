@@ -220,8 +220,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="10dp"
         android:clickable="true"
-        android:src="@mipmap/ic_submit_round"
+        android:contentDescription="@string/submit"
         android:focusable="true"
-        android:contentDescription="@string/submit" />
+        android:src="@drawable/ic_baseline_send_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

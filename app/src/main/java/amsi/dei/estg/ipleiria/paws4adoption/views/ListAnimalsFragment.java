@@ -125,17 +125,17 @@ public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.
 
     @Override
     public void onCreateAnimalFromList() {
-        Toast.makeText(getContext(), "Animal criado com sucesso", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.msg_animal_created), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onUpdateAnimalFromList() {
-        Toast.makeText(getContext(), "Animal atualizado com sucesso", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.msg_animal_updated), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDeleteAnimalFromList() {
-        Toast.makeText(getContext(), "Animal eliminado com sucesso", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.msg_animal_deleted), Toast.LENGTH_SHORT).show();
     }
 
 }
