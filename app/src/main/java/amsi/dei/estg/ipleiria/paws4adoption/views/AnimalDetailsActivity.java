@@ -238,6 +238,25 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
                 break;
 
             case RockChisel.SCENARIO_MY_LIST:
+
+                switch(animal.getType()){
+                    case RockChisel.SCENARIO_MISSING_ANIMAL:
+                        layout_missingDate.setVisibility(LinearLayout.VISIBLE);
+                        textView_missingDate.setText(animal.getMissingFound_date());
+                        break;
+
+                    case RockChisel.SCENARIO_FOUND_ANIMAL:
+                        layout_foundDate.setVisibility(LinearLayout.VISIBLE);
+                        textView_foundDate.setText(animal.getMissingFound_date());
+                        layout_location.setVisibility(LinearLayout.VISIBLE);
+                        textView_location.setText(
+                                Wrench.encode("", animal.getOrganization_street(), " - ")+
+                                        Wrench.encode("", animal.getFoundAnimal_city(), " ") +
+                                        Wrench.encode("(", animal.getFoundAnimal_district_name(), ")")
+                        );
+                        break;
+                }
+
                 setTitle(getString(R.string.title_my_animal));
                 fabUp.setImageResource(R.drawable.ic_baseline_edit_24);
                 fabDown.setImageResource(R.drawable.ic_baseline_delete_24);

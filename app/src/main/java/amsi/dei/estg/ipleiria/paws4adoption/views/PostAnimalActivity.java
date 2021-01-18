@@ -381,7 +381,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
             if(scenario.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
 
-                if (name.length() < 5) {
+                if (name.length() < 2) {
                     etName.setError(getString(R.string.validate_msg_animal_name));
                     return null;
                 }
