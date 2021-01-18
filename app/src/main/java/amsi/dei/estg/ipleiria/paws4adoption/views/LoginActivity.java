@@ -113,7 +113,5 @@ public class LoginActivity extends AppCompatActivity implements LoginListener, S
     }
 
     @Override
-    public void onSignupFail() {
-        Toast.makeText(getApplicationContext(), "Erro ao criar utilizador. Tente novamente.", Toast.LENGTH_LONG).show();
-    }
+    public void onSignupFail() {}
 }
