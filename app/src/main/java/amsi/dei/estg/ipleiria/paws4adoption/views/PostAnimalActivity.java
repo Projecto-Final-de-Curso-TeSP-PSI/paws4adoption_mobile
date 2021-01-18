@@ -456,6 +456,14 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 newAnimalPost.setId(animal_id);
             }
 
+
+            if(action.equals(RockChisel.ACTION_CREATE)){
+                if(this.photo == null){
+                    Toast.makeText(this, getString(R.string.msg_enter_photo), Toast.LENGTH_SHORT).show();
+                    return null;
+                }
+            }
+
             String newPhoto = null;
             if(this.photo != null){
                 newPhoto = Wrench.bmpToBase64(this.photo);
@@ -981,6 +989,8 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     @Override
     public void onCreateAnimal() {
         finish();
+        Toast.makeText(this, "Animal criado com sucesso", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

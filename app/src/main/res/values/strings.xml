@@ -127,5 +127,6 @@
     <string name="msg_animal_created">Animal criado com sucesso</string>
     <string name="msg_animal_updated">Animal atualizado com sucesso</string>
     <string name="msg_animal_deleted">Animal eliminado com sucesso</string>
+    <string name="msg_enter_photo">Introduza uma foto</string>
 
 </resources>
