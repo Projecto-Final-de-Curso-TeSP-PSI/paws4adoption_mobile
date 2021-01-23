@@ -1,66 +1,107 @@
 package amsi.dei.estg.ipleiria.paws4adoption.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import java.util.ArrayList;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalsListListener;
+import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
+import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MainFragment#newInstance} factory method to
+ * Use the  factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements MqttCallback {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public MainFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MainFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(String param1, String param2) {
-        MainFragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private String scenario = null;
+    private String animal_type = null;
+    private ListView lvMosquittoListNewAdoptionAnimals;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        try {
+            MqttClient client = new MqttClient("tcp://192.168.1.65:1883", "Paws4AdoptionMobileSub", new MemoryPersistence());
+            client.setCallback(this);
+            client.connect();
+            String topic = "NEW_ADOPTION_ANIMAL";
+            client.subscribe(topic);
+        } catch (MqttException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
+
+        Bundle bundle = this.getArguments();
+        if(bundle != null){
+            scenario = bundle.getString(RockChisel.SCENARIO);
+
+            if(!scenario.equals(RockChisel.SCENARIO_MY_LIST))
+                animal_type = bundle.getString(RockChisel.ANIMAL_TYPE);
+        }
+
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        lvMosquittoListNewAdoptionAnimals = rootView.findViewById(R.id.lvMosquittoListNewAdoptionAnimals);
+
+        lvMosquittoListNewAdoptionAnimals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
+                Animal hasAnimal = (Animal) parent.getItemAtPosition(i);
+                System.out.println("--> " + hasAnimal.getName());
+
+                Intent intent = new Intent(getContext(), AnimalDetailsActivity.class);
+                intent.putExtra(RockChisel.SCENARIO, scenario);
+                intent.putExtra(RockChisel.ANIMAL_ID, hasAnimal.getId());
+
+                startActivity(intent);
+            }
+        });
+
+        SingletonPawsManager.getInstance(getContext()).getAllAnimalsAPI(getContext());
+
+        return rootView;
+    }
+
+    @Override
+    public void connectionLost(Throwable cause) {
+
+    }
+
+    @Override
+    public void messageArrived(String topic, MqttMessage message) throws Exception {
+        String payload = new String(message.getPayload());
+        Log.d(TAG, payload);
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken token) {
+        Log.d(TAG, "--> deliveryComplete");
     }
 }
