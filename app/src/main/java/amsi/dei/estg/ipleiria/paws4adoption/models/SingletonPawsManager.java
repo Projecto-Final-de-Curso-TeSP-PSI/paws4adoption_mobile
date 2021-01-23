@@ -759,7 +759,7 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
     }
 
     /**
-     * Get's one animal from teh API
+     * Get's one animal from the API
      * @param context
      */
     public void getAnimalAPI(final Context context, final int animal_id){
