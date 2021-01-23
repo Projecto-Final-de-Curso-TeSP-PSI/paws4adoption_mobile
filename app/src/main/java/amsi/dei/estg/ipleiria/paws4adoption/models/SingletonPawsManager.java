@@ -437,6 +437,7 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
             auxAnimal.setType(animal.getType());
             auxAnimal.setPublisher_id(animal.getPublisher_id());
             auxAnimal.setPublisher_name(animal.getPublisher_name());
+            auxAnimal.setPublisher_district_name(animal.getPublisher_district_name());
             auxAnimal.setMissingFound_date(animal.getMissingFound_date());
             auxAnimal.setFoundAnimal_location_id(animal.getFoundAnimal_location_id());
             auxAnimal.setFoundAnimal_street(animal.getFoundAnimal_street());
