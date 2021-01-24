@@ -146,6 +146,7 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
             new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Intent intent = null;
 
                     switch(scenario) {
 
@@ -154,8 +155,15 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
                             switch (animal.getType()){
 
                                 case RockChisel.ADOPTION_ANIMAL:
-                                    Toast.makeText(AnimalDetailsActivity.this, "Pedido de FAT não implementado!", Toast.LENGTH_SHORT).show();
+                                    if(animal.getType().equals(RockChisel.ADOPTION_ANIMAL)){
+                                        intent = new Intent(getApplicationContext(), SubmRequestActivity.class);
+                                        intent.putExtra(SubmRequestActivity.REQUESTYPE, RockChisel.TFF_REQUEST);
+                                        intent.putExtra(SubmRequestActivity.ANIMAL_ID, animal_id);
+                                        finish();
+                                        startActivity(intent);
+                                    }
                                     break;
+
 
                                 case RockChisel.MISSING_ANIMAL:
                                 case RockChisel.FOUND_ANIMAL:

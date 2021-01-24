@@ -87,7 +87,7 @@ public class RockChisel {
 
     //Request types
     public static final String ADOPTION_REQUEST = "adoption";
-    public static final String TTF_REQUEST = "fat";
+    public static final String TFF_REQUEST = "fat";
     public static final String ANIMAL_REQUEST = "animal_request";
     public static final String ORGANIZATION_REQUEST = "organization_request";
 }
