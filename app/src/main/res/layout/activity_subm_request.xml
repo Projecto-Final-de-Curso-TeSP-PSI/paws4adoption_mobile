@@ -14,32 +14,109 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/imgAnimalPhoto"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="10dp"
-            android:padding="20dp"
-            android:id="@+id/imgAnimalPhoto"/>
+            android:padding="20dp" />
 
         <TextView
+            android:id="@+id/tvAdoptionTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:layout_marginTop="10dp"
-            android:id="@+id/tvAnimalName"/>
+            android:text="TextView"
+            android:textAlignment="center"
+            android:textColor="#D19868"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:layout_marginTop="10dp"
-            android:id="@+id/tvOrganizationName"/>
+            android:orientation="horizontal">
 
-        <TextView
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="20dp"
+                android:text=" Nome: "
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:layout_marginTop="10dp"
-            android:id="@+id/tvUserName"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="20dp"
+                android:text="Morada:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="20dp"
+                android:text="Contacto:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvContanct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="20dp"
+                android:text="TextView"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="20dp" />
+        </LinearLayout>
 
         <EditText
             android:layout_width="match_parent"
@@ -47,7 +124,7 @@
             android:inputType="text|textMultiLine"
             android:padding="20dp"
             android:layout_marginTop="10dp"
-            android:hint="@string/insert_name"
+            android:hint="@string/introduza_a_motiva_o_pela_qual_quer_adotar_este_animal"
             android:id="@+id/etMotivation"/>
 
 

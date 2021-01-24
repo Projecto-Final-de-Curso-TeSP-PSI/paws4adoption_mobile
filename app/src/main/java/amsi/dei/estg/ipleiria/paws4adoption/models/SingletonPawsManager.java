@@ -33,6 +33,7 @@ import java.util.Map;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalDetailListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalsListListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AttributeListener;
+import amsi.dei.estg.ipleiria.paws4adoption.listeners.AdoptionListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.LoginListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.OrganizationDetailListener;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.OrganizationsListListener;
@@ -68,6 +69,7 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
     AnimalDetailListener animalDetailListener;
     AttributeListener attributeListener;
     RequestListener requestListener;
+    AdoptionListener adoptionListener;
 
     //BD Helper's declaration
     PawsManagerDBHelper pawsManagerDBHelper;
@@ -152,8 +154,13 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
         this.userProfileListener = userProfileListener;
     }
 
+    public void setAdoptionListener(AdoptionListener adoptionListener){
+        this.adoptionListener = adoptionListener;
+    }
+
     /**
      * Method for registe the request listener
+     *
      * @param requestListener
      */
     public void setRequestListener(RequestListener requestListener){
@@ -1012,6 +1019,59 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
         return params;
     }
 
+    //################ ADOPTION/TTF ################
+    public void insertAdoptionAPI(final Adoption adoption, final String apiService, final String token, final Context context) {
+        JSONObject bodyParameters = this.getAdoptionParameters(adoption, apiService);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, RockChisel.API_LOCAL_URL + apiService, bodyParameters,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Adoption auxAdoption = JsonParser.toAdoption(response);
+                        if (auxAdoption != null) {
+                            if (adoptionListener != null) {
+                                adoptionListener.onCreateAdoption();
+                            }
+                        } else {
+                            Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
+                        System.out.println("--> Animals: " + Arrays.toString(error.getStackTrace()));
+                    }
+                }) {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        volleyQueue.add(request);
+    }
+
+    public JSONObject getAdoptionParameters(Adoption adoption, String apiService) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put("adopter_id", adoption.getAdopter_id());
+            params.put("adopted_animal_id", adoption.getAdopted_animal_id());
+            params.put("motivation", adoption.getMotivation());
+            params.put("type", adoption.getType());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return params;
+    }
+
 
     //################ ATTRIBUTTES ################
 
@@ -1094,6 +1154,43 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
                 }
         };
 
+        volleyQueue.add(request);
+    }
+
+    public void getUserAPI(final Context context, final int user_id, final String token){
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, mUrlAPIUserProfile + "/" + user_id, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        UserProfile user = JsonParser.parserJsonUserProfile(response);
+                        if (user != null) {
+                            if (userProfileListener != null) {
+                                userProfileListener.onUserProfileRequest(user);
+                            }
+                            System.out.println("--> User: " + response);
+                        } else {
+                            //requestListener.onRequestError("Erro ao obter lista de animais da API");
+                            Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //requestListener.onRequestError("Erro ao obter a lista de animais da API");
+                        Toast.makeText(context, "Erro ao comunicar com a API", Toast.LENGTH_SHORT).show();
+                        System.out.println("--> User: " + Arrays.toString(error.getStackTrace()));
+                    }
+                }) {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
         volleyQueue.add(request);
     }
 

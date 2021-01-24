@@ -23,9 +23,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:padding="2dp"
                 android:text="@string/org_name"
                 android:textAlignment="center"
-                android:padding="2dp"/>
+                android:textColor="#D19868"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvAddress"
