@@ -99,10 +99,13 @@
     <string name="nome">Nome</string>
     <string name="edit_missing_animal">Editar animal desaparecido</string>
     <string name="publish_missing_animal">Publicar animal desaparecido</string>
-    <string name="hint_date_missing_animal">Data do desaparecimento (DD-MM-AAAA)</string>
+
+    <string name="hint_date_missing_animal">Data do desaparecimento</string>
+    <string name="hint_date_found_animal">Data do avistamento</string>
+
     <string name="publish_found_animal">Publicar animal abandonado</string>
     <string name="edit_found_animal">Editar animal abandonado</string>
-    <string name="hint_date_found_animal">Data do avistamento (DD-MM-AAAA)</string>
+
     <string name="error_filling_animal">Erro ao preencher animal</string>
     <string name="validate_msg_animal_name">Introduza um nome válido (mínimo 2 letras)</string>
     <string name="validate_msg_animal_chip_id">Introduza um chip id válido (15 dígitos))</string>
@@ -130,5 +133,6 @@
     <string name="msg_enter_photo">Introduza uma foto</string>
     <string name="msg_enter_fur_color">Selecione uma côr de pêlo</string>
     <string name="msg_enter_fur_length">Selecione o tamanho do pêlo</string>
+    <string name="select_district">Selecione o distrito</string>
 
 </resources>

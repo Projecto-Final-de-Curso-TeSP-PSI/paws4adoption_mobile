@@ -996,10 +996,10 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
             }
             switch(apiService){
                 case RockChisel.MISSING_ANIMALS_API_SERVICE:
-                    params.put("missing_date", "20201220");
+                    params.put("missing_date", animal.getMissingFound_date());
                     break;
                 case RockChisel.FOUND_ANIMALS_API_SERVICE:
-                    params.put("found_date", "20201220");
+                    params.put("found_date", animal.getMissingFound_date());
                     params.put("street", animal.getFoundAnimal_street());
                     params.put("city", animal.getFoundAnimal_city());
                     params.put("district_id", animal.getFoundAnimal_district_id());

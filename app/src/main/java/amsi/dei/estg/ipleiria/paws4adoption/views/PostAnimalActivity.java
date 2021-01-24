@@ -8,6 +8,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -29,6 +31,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,7 +52,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,10 +81,10 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     private static final int FEMALE = 'F';
 
     //################ EXTRA ################
-    public static final String SCENARIO = "scenario";
-    private String scenario = null;
     public static final String ACTION = "action";
     private String action = null;
+    public static final String ANIMAL_TYPE = "animal_type";
+    private String animal_type = null;
     public static final String ANIMAL_ID = "animal";
     private int animal_id = -1;
     private Animal editAnimal;
@@ -113,7 +115,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     ArrayAdapter<Attribute> dataAdapterSex = null;
     private Spinner spSex;
 
-    private EditText etMissingFoundDate;
+    private TextView tvMissingFoundDate;
 
     private EditText etLocationStreet;
     private EditText etLocationCity;
@@ -134,6 +136,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     private String currentPhotoPath;
     private Bitmap photo;
 
+    private DatePickerDialog datePickerDialog;
+    private Button dateButton;
+
     /**
      * On Create method of the Activity
      * @param savedInstanceState
@@ -143,7 +148,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_animal);
 
-        scenario = getIntent().getStringExtra(SCENARIO);
+        animal_type = getIntent().getStringExtra(ANIMAL_TYPE);
         action = getIntent().getStringExtra(ACTION);
         animal_id = getIntent().getIntExtra(ANIMAL_ID, 0);
 
@@ -196,7 +201,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         initSpinner(dataAdapterSex, spSex, getString(R.string.select_sex), sexArray);
 
 
-        etMissingFoundDate = findViewById(R.id.etMissingFoundDate);
+        tvMissingFoundDate = findViewById(R.id.tvMissingFoundDate);
+        dateButton = findViewById(R.id.btnMissingFoundDate);
+        dateButton.setText(Wrench.getTodaysDate());
 
         etLocationStreet = findViewById(R.id.etLocationStreet);
         etLocationCity = findViewById(R.id.etLocationCity);
@@ -209,7 +216,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         btnUploadPhoto = findViewById(R.id.btnUpload);
         fab = findViewById(R.id.fabSubmit);
         btnLocation = findViewById(R.id.btnLocation);
-
     }
 
     /**
@@ -323,7 +329,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
                 switch(action){
                     case RockChisel.ACTION_CREATE:
-                        switch(scenario){
+                        switch(animal_type){
                             case RockChisel.SCENARIO_MISSING_ANIMAL:
                                 SingletonPawsManager.getInstance(getApplicationContext()).insertAnimalAPI(newAnimalPost, RockChisel.MISSING_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()),  getApplicationContext());
                                 break;
@@ -333,7 +339,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                         }
                         break;
                     case RockChisel.ACTION_UPDATE:
-                        switch(scenario){
+                        switch(animal_type){
                             case RockChisel.SCENARIO_MISSING_ANIMAL:
                                 SingletonPawsManager.getInstance(getApplicationContext()).updateAnimalAPI(newAnimalPost, RockChisel.MISSING_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()),  getApplicationContext());
                                 break;
@@ -379,7 +385,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             String name = etName.getText().toString();
             String chipId = etChipId.getText().toString();
 
-            if(scenario.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
+            if(animal_type.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
 
                 if (name.length() < 2) {
                     etName.setError(getString(R.string.validate_msg_animal_name));
@@ -435,22 +441,9 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                 return null;
             }
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date missingFoundDate;
-            String missingFoundDateStr = etMissingFoundDate.getText().toString();
-            try {
-                missingFoundDate = simpleDateFormat.parse(missingFoundDateStr);
-                System.out.println(missingFoundDate);
-            } catch (ParseException e) {
-                etMissingFoundDate.setError(getString(R.string.invalid_date));
-                e.printStackTrace();
-                return null;
-            }
 
-            if(missingFoundDate.after(Calendar.getInstance().getTime())){
-                Toast.makeText(this, getString(R.string.validate_msg_data_cannot_be_future), Toast.LENGTH_SHORT).show();
-                return null;
-            }
+            String missingFoundDate = Wrench.makeDateString_yyyyMMdd(dateButton.getText().toString());
+
 
             if(action.equals(RockChisel.ACTION_UPDATE)){
                 newAnimalPost.setId(animal_id);
@@ -478,10 +471,10 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             newAnimalPost.setFur_color_id(furColor.getId());
             newAnimalPost.setSize_id(size.getId());
             newAnimalPost.setSex(sex.getName());
-            newAnimalPost.setMissingFound_date(missingFoundDate.toString());
+            newAnimalPost.setMissingFound_date(missingFoundDate);
 
 
-            if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
+            if(animal_type.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
                 String locationStreet = etLocationStreet.getText().toString();
                 if(locationStreet.length() < 2){
                     etName.setError(getString(R.string.validate_msg_invalid_street));
@@ -496,6 +489,7 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
                 Attribute location_district = (Attribute)spLocationDistrict.getSelectedItem();
                 if(location_district.getId() == -1){
+                    Toast.makeText(this, getString(R.string.select_district), Toast.LENGTH_SHORT).show();
                     return null;
                 }
 
@@ -561,10 +555,16 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(ivPhoto);
 
+            String dateString = animal.getMissingFound_date();
+            dateButton.setText(Wrench.makeDateString_ddMMyyyy(dateString));
 
-            etMissingFoundDate.setText(animal.getMissingFound_date());
+            initDatePicker(
+                    Wrench.getDatePart_yyyyMMdd(dateString, Wrench.DAY),
+                    Wrench.getDatePart_yyyyMMdd(dateString, Wrench.MONTH),
+                    Wrench.getDatePart_yyyyMMdd(dateString, Wrench.YEAR)
+            );
 
-            if(scenario.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
+            if(animal_type.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
                 etLocationStreet.setText(animal.getFoundAnimal_street());
                 etLocationCity.setText(animal.getFoundAnimal_city());
 
@@ -601,42 +601,103 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
      */
     private void setScenario() {
 
-        switch(scenario){
+        switch (action){
 
-            case RockChisel.SCENARIO_MISSING_ANIMAL:
+            case RockChisel.ACTION_CREATE:
+                Calendar calendar =  Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
 
-                switch(action) {
-                    case RockChisel.ACTION_CREATE:
+                initDatePicker(day, month + 1, year);
+
+                switch(animal_type){
+
+                    case RockChisel.SCENARIO_MISSING_ANIMAL:
                         setTitle(getString(R.string.publish_missing_animal));
+                        //datePickerDialog.setTitle(R.string.hint_date_missing_animal);
                         break;
-                    case RockChisel.ACTION_UPDATE:
-                        setTitle(getString(R.string.edit_missing_animal));
+
+                    case RockChisel.FOUND_ANIMAL:
+                        setTitle(getString(R.string.publish_found_animal));
+                        //datePickerDialog.setTitle(R.string.hint_date_found_animal);
                         break;
                 }
+                break;
 
-                etMissingFoundDate.setHint(R.string.hint_date_missing_animal);
+            case RockChisel.ACTION_UPDATE:
+                switch(animal_type){
+                    case RockChisel.SCENARIO_MISSING_ANIMAL:
+                        setTitle(getString(R.string.edit_missing_animal));
+                        break;
+                    case RockChisel.FOUND_ANIMAL:
+                        setTitle(getString(R.string.edit_found_animal));
+                        break;
+                }
+                break;
+
+        }
+
+        switch(animal_type){
+
+            case RockChisel.SCENARIO_MISSING_ANIMAL:
+                tvMissingFoundDate.setText(R.string.hint_date_missing_animal);
                 llFoundAnimal.setVisibility(View.GONE);
                 break;
 
             case RockChisel.SCENARIO_FOUND_ANIMAL:
-
-                switch(action) {
-                    case RockChisel.ACTION_CREATE:
-                        setTitle(getString(R.string.publish_found_animal));
-                        break;
-                    case RockChisel.ACTION_UPDATE:
-                        setTitle(getString(R.string.edit_found_animal));
-                        break;
-                }
-
-                etMissingFoundDate.setHint(R.string.hint_date_found_animal);
+                tvMissingFoundDate.setText(R.string.hint_date_found_animal);
                 llFoundAnimal.setVisibility(View.VISIBLE);
                 break;
 
         }
+
         SingletonPawsManager.getInstance(getApplicationContext()).getAttributesAPI(getApplicationContext(), RockChisel.ATTR_SPECIE, RockChisel.ATTR_SPECIE_SYMLINK, null);
 
     }
+
+    //################ DATE ################
+
+    /**
+     * Method that intiate the date picker with the passed date by parameters
+     * @param day
+     * @param month
+     * @param year
+     */
+    private void initDatePicker(int day, int month, int year) {
+
+        final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                month = month +1;
+                String date = Wrench.makeDateString_ddMMyyyy(day, month, year);
+                dateButton.setText(date);
+            }
+        };
+
+        month = month - 1;
+        datePickerDialog =  new DatePickerDialog(this, R.style.MyDatePickerDialogTheme, dateSetListener, year, month, day);
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        datePickerDialog.getDatePicker().setSpinnersShown(true);
+    }
+
+    /**
+     * OnClick event for the Date Picker
+     * @param view
+     */
+    public void openDatePicker(View view) {
+
+        String date_yyyyMMdd = Wrench.makeDateString_yyyyMMdd(dateButton.getText().toString());
+
+        datePickerDialog.getDatePicker().updateDate(
+                Wrench.getDatePart_yyyyMMdd(date_yyyyMMdd, Wrench.YEAR),
+                Wrench.getDatePart_yyyyMMdd(date_yyyyMMdd, Wrench.MONTH) - 1,
+                Wrench.getDatePart_yyyyMMdd(date_yyyyMMdd, Wrench.DAY)
+        );
+
+        datePickerDialog.show();
+    }
+
 
     //################ PHOTO ################
 
@@ -719,7 +780,6 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
 
 
     //################ LOCATION ################
-
 
     /**
      * Code section where are implemented methods related to getting the actual location,

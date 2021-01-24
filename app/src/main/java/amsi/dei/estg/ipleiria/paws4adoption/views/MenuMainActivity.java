@@ -146,7 +146,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
                     if(FortuneTeller.isLoggedUser(getApplicationContext())){
                         intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
-                        intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_FOUND_ANIMAL);
+                        intent.putExtra(PostAnimalActivity.ANIMAL_TYPE, RockChisel.FOUND_ANIMAL);
                         intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
                     } else{
                         intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -164,7 +164,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
                     if(FortuneTeller.isLoggedUser(getApplicationContext())){
                         intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
-                        intent.putExtra(PostAnimalActivity.SCENARIO, RockChisel.SCENARIO_MISSING_ANIMAL);
+                        intent.putExtra(PostAnimalActivity.ANIMAL_TYPE, RockChisel.MISSING_ANIMAL);
                         intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_CREATE);
                     } else{
                         intent = new Intent(getApplicationContext(), LoginActivity.class);

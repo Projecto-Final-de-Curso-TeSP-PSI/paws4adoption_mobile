@@ -127,7 +127,7 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
 
                         case RockChisel.SCENARIO_MY_LIST:
                             intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
-                            intent.putExtra(PostAnimalActivity.SCENARIO, animal.getType());
+                            intent.putExtra(PostAnimalActivity.ANIMAL_TYPE, animal.getType());
                             intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
                             intent.putExtra(PostAnimalActivity.ANIMAL_ID, animal_id);
                             finish();
