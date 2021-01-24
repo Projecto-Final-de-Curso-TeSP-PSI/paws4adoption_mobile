@@ -130,5 +130,6 @@
     <string name="msg_enter_photo">Introduza uma foto</string>
     <string name="msg_enter_fur_color">Selecione uma côr de pêlo</string>
     <string name="msg_enter_fur_length">Selecione o tamanho do pêlo</string>
+    <string name="introduza_a_motiva_o_pela_qual_quer_adotar_este_animal">Introduza a motivação pela qual quer adotar este animal</string>
 
 </resources>

@@ -48,6 +48,7 @@ public class RockChisel {
 
     public static final String MISSING_ANIMALS_API_SERVICE = "missing-animals";
     public static final String FOUND_ANIMALS_API_SERVICE = "found-animals";
+    public static final String ADOPTIONS_API_SERVICE = "adoptions";
 
     //API SymLink
     public static final String ATTR_SPECIE_SYMLINK = "name";
@@ -85,6 +86,8 @@ public class RockChisel {
     public static final String FOUND_ANIMAL = "foundAnimal";
 
     //Request types
+    public static final String ADOPTION_REQUEST = "adoption";
+    public static final String TTF_REQUEST = "fat";
     public static final String ANIMAL_REQUEST = "animal_request";
     public static final String ORGANIZATION_REQUEST = "organization_request";
 }

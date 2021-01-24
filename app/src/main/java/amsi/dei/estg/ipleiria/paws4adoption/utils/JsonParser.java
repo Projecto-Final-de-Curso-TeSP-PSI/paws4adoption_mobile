@@ -1,6 +1,8 @@
 package amsi.dei.estg.ipleiria.paws4adoption.utils;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.graphics.ColorSpace;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
+import amsi.dei.estg.ipleiria.paws4adoption.models.Adoption;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Login;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Organization;
@@ -238,6 +241,23 @@ public class JsonParser {
 
         return animalsList;
 
+    }
+
+    public static Adoption toAdoption(JSONObject adoption){
+        Adoption auxAdoption = null;
+        try{
+            Integer id = adoption.getInt("id");
+            Integer adopted_animal_id = adoption.getInt("adopted_animal_id");
+            Integer adopter_id = adoption.getInt("adopter_id");
+            String motivation = adoption.getString("motivation");
+            String type =adoption.getString("type");
+
+            auxAdoption = new Adoption(id, adopted_animal_id, adopter_id, motivation, type);
+        }catch (JSONException jsonException) {
+            jsonException.printStackTrace();
+            return null;
+        }
+        return auxAdoption;
     }
 
     /**

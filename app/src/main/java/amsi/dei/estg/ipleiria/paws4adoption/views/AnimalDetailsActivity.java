@@ -121,7 +121,11 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
 
                         case RockChisel.SCENARIO_GENERAL_LIST:
                             if(animal.getType().equals(RockChisel.ADOPTION_ANIMAL)){
-                                Toast.makeText(AnimalDetailsActivity.this, "Pedido de adoção não implementado!", Toast.LENGTH_SHORT).show();
+                                intent = new Intent(getApplicationContext(), SubmRequestActivity.class);
+                                intent.putExtra(SubmRequestActivity.REQUESTYPE, RockChisel.ADOPTION_REQUEST);
+                                intent.putExtra(SubmRequestActivity.ANIMAL_ID, animal_id);
+                                finish();
+                                startActivity(intent);
                             }
                             break;
 
