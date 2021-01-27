@@ -1,10 +1,15 @@
 package amsi.dei.estg.ipleiria.paws4adoption.views;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +20,22 @@ import android.widget.ListView;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
+import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListAnimalsAdapter;
+import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListNewAdoptionAnimalsAdapter;
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalsListListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
 import static android.content.ContentValues.TAG;
 
@@ -39,31 +49,55 @@ public class MainFragment extends Fragment implements MqttCallback {
     private String scenario = null;
     private String animal_type = null;
     private ListView lvMosquittoListNewAdoptionAnimals;
+    private ArrayList<Animal> latestAdoptionAnimals;
+    private Handler mHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            MqttClient client = new MqttClient("tcp://192.168.1.65:1883", "Paws4AdoptionMobileSub", new MemoryPersistence());
-            client.setCallback(this);
-            client.connect();
-            String topic = "NEW_ADOPTION_ANIMAL";
-            client.subscribe(topic);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
+
+        latestAdoptionAnimals = new ArrayList<>();
+
+        mHandler = new Handler();
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Bundle bundle = this.getArguments();
-        if(bundle != null){
-            scenario = bundle.getString(RockChisel.SCENARIO);
+//        Bundle bundle = this.getArguments();
+//        if(bundle != null){
+//            scenario = bundle.getString(RockChisel.SCENARIO);
+//
+//            System.out.println("-->" + scenario);
+//
+//            if(!scenario.equals(RockChisel.SCENARIO_MY_LIST))
+//                animal_type = bundle.getString(RockChisel.ANIMAL_TYPE);
+//        }
 
-            if(!scenario.equals(RockChisel.SCENARIO_MY_LIST))
-                animal_type = bundle.getString(RockChisel.ANIMAL_TYPE);
+        try {
+            String[] url = new String[1];
+            url[0] = "tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883";
+            MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
+            mqttConnectOptions.setCleanSession(false);
+//            mqttConnectOptions.setServerURIs(url);
+
+            MqttClient client = new MqttClient("tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883", "Paws4AdoptionMobileSub", new MemoryPersistence());
+
+            if (!client.isConnected()){
+                client.setCallback(this);
+                client.connect(mqttConnectOptions);
+                String topic = "NEW_ADOPTION_ANIMAL";
+                client.subscribe(topic);
+            }
+        } catch (MqttException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -77,16 +111,18 @@ public class MainFragment extends Fragment implements MqttCallback {
                 System.out.println("--> " + hasAnimal.getName());
 
                 Intent intent = new Intent(getContext(), AnimalDetailsActivity.class);
-                intent.putExtra(RockChisel.SCENARIO, scenario);
+                intent.putExtra(RockChisel.SCENARIO, RockChisel.ADOPTION_ANIMAL);
                 intent.putExtra(RockChisel.ANIMAL_ID, hasAnimal.getId());
 
                 startActivity(intent);
             }
         });
 
-        SingletonPawsManager.getInstance(getContext()).getAllAnimalsAPI(getContext());
-
         return rootView;
+    }
+
+    private void runOnUiThread(Runnable runnable) {
+
     }
 
     @Override
@@ -98,10 +134,63 @@ public class MainFragment extends Fragment implements MqttCallback {
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         String payload = new String(message.getPayload());
         Log.d(TAG, payload);
+
+        JSONObject adoptionAnimalJson = new JSONObject(payload);
+
+        Animal auxAnimal = new Animal();
+        auxAnimal.setId(adoptionAnimalJson.getInt("id"));
+        auxAnimal.setName(adoptionAnimalJson.getString("name"));
+        auxAnimal.setNature_parent_name(adoptionAnimalJson.getString("parent_nature_name"));
+        auxAnimal.setNature_name(adoptionAnimalJson.getString("nature_name"));
+
+        latestAdoptionAnimals.add(auxAnimal);
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                lvMosquittoListNewAdoptionAnimals.setAdapter(new ListNewAdoptionAnimalsAdapter(getContext(), latestAdoptionAnimals));
+            }
+        });
+
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try{
+//                    lvMosquittoListNewAdoptionAnimals.setAdapter(new ListNewAdoptionAnimalsAdapter(getContext(), latestAdoptionAnimals));
+//                } catch (Exception e){
+//                    System.err.println("--> " + e.getMessage());
+//                }
+//            }
+//        });
+
+
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setSmallIcon(R.drawable.notification_icon)
+//                .setContentTitle("My First Notification")
+//                .setContentText("Teste de texto comprido que não cabe apenas numa linha... Much longer text that cannot fit one line...")
+//                .setStyle(new NotificationCompat.BigTextStyle()
+//                        .bigText("Teste de texto comprido que não cabe apenas numa linha... Much longer text that cannot fit one line..."))
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         Log.d(TAG, "--> deliveryComplete");
     }
+
+//    private void createNotificationChannel() {
+//        // Create the NotificationChannel, but only on API 26+ because
+//        // the NotificationChannel class is new and not in the support library
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            CharSequence name = getString(R.string.new_adoption_animal);
+//            String description = getString(R.string.new_adoption_animal_desc);
+//            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+//            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+//            channel.setDescription(description);
+//            // Register the channel with the system; you can't change the importance
+//            // or other notification behaviors after this
+//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//            notificationManager.createNotificationChannel(channel);
+//        }
+//    }
 }

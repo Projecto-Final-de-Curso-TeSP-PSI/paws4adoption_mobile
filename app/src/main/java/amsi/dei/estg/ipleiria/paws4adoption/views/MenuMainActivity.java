@@ -108,6 +108,9 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         switch (menuItem .getItemId()) {
             case R.id.navHome:
                 fragment = new MainFragment();
+                bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_GENERAL_LIST);
+                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_ADOPTION_ANIMAL);
+                fragment.setArguments(bundle);
                 setTitle("Home");
                 break;
 
