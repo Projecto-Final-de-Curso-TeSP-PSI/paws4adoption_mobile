@@ -9,7 +9,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,19 +21,27 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import amsi.dei.estg.ipleiria.paws4adoption.utils.NetworkStateReceiver;
 import amsi.dei.estg.ipleiria.paws4adoption.views.MainFragment;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
-public class MenuMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MenuMainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener,
+        NetworkStateReceiver.NetworkStateReceiverListener {
 
     public static String token;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private FragmentManager fragmentManager;
     private String typeAnimal;
+    private NetworkStateReceiver networkStateReceiver;
+    private Menu menu;
+    private View hview;
+    private TextView usernameDisplay;
+    private MenuItem navLoginItem;
 
     /**
      * On create state of the activity
@@ -43,35 +54,29 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_main);
 
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        this.registerReceiver(networkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         navigationView = findViewById(R.id.nav_view);
-
         drawer = findViewById(R.id.drawer_layout);
+        menu = navigationView.getMenu();
+        hview = navigationView.getHeaderView(0);
+        usernameDisplay = hview.findViewById(R.id.tvUsername);
+        navLoginItem = menu.findItem(R.id.navLogin);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.ndOpen, R.string.ndClose){
-//            @Override
-//            public void onDrawerOpened(View drawerView) {
-//                super.onDrawerOpened(drawerView);
-////                app.sendScreenView("Menu");
-//                setScenario();
-//
-//            }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                setScenario();
             }
         };
         toggle.syncState();
         drawer.addDrawerListener(toggle);
-
-
-
-
-
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -81,9 +86,13 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
         navigationView.setCheckedItem(R.id.navHome);
 
-            fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
+    }
 
-        //setScenario();
+    public void onDestroy(){
+        super.onDestroy();
+        networkStateReceiver.removeListener(this);
+        this.unregisterReceiver(networkStateReceiver);
     }
 
     /**
@@ -231,34 +240,23 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-    /**
-     * Method that implements changes to the current activity according the internet state (availabe/or not) and user (guest/logged)
-     */
-    public void setScenario(){
+    @Override
+    public void networkAvailable() {
+        Log.d("Internet Status", "---> Habemus INTERNET!");
+        String loginAwareness = getString(R.string.user_prefix) + Vault.getLoggedUser(getApplicationContext());
 
-        Menu menu = navigationView.getMenu();
-        View hview = navigationView.getHeaderView(0);
-
-        TextView usernameDisplay = hview.findViewById(R.id.tvUsername);
-        MenuItem navLoginItem = menu.findItem(R.id.navLogin);
-
-        if(FortuneTeller.isInternetConnection(getApplicationContext())){
-
-            if(FortuneTeller.isLoggedUser(getApplicationContext())){
-
-                String loginAwareness = getString(R.string.user_prefix) + Vault.getLoggedUser(getApplicationContext());
-
-                usernameDisplay.setText(loginAwareness);
-                navLoginItem.setTitle(R.string.logout);
-            } else {
-                usernameDisplay.setText(R.string.empty);
-                navLoginItem.setTitle(R.string.login);
-            }
+        if(FortuneTeller.isLoggedUser(getApplicationContext())){
+            usernameDisplay.setText(loginAwareness);
+            navLoginItem.setTitle(R.string.logout);
+        } else {
+            usernameDisplay.setText(R.string.empty);
+            navLoginItem.setTitle(R.string.login);
         }
-        else{
-            usernameDisplay.setText(R.string.internet_connection_down);
-        }
-
     }
 
+    @Override
+    public void networkUnavailable() {
+        Log.d("Internet Status", "---> Não temos net!");
+        usernameDisplay.setText(R.string.internet_connection_down);
+    }
 }

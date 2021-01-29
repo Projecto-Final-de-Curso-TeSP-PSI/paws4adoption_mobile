@@ -70,22 +70,11 @@ public class MainFragment extends Fragment implements MqttCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        Bundle bundle = this.getArguments();
-//        if(bundle != null){
-//            scenario = bundle.getString(RockChisel.SCENARIO);
-//
-//            System.out.println("-->" + scenario);
-//
-//            if(!scenario.equals(RockChisel.SCENARIO_MY_LIST))
-//                animal_type = bundle.getString(RockChisel.ANIMAL_TYPE);
-//        }
-
         try {
             String[] url = new String[1];
             url[0] = "tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883";
             MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
             mqttConnectOptions.setCleanSession(false);
-//            mqttConnectOptions.setServerURIs(url);
 
             MqttClient client = new MqttClient("tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883", "Paws4AdoptionMobileSub", new MemoryPersistence());
 
