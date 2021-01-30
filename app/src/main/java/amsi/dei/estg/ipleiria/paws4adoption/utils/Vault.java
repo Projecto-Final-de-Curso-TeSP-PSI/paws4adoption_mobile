@@ -32,7 +32,7 @@ public class Vault {
     }
 
     /**
-     * Method that clear a preference group in the shared poreferences
+     * Method that clear a preference group in the shared preferences
      * @param context
      * @param group
      */
