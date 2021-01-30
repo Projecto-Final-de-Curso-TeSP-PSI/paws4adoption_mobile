@@ -12,11 +12,13 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.media.MediaScannerConnection;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,14 +66,17 @@ import amsi.dei.estg.ipleiria.paws4adoption.listeners.RequestListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Attribute;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.NetworkStateReceiver;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.services.FetchAddressIntentService;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 
-public class PostAnimalActivity extends AppCompatActivity implements AttributeListener, RequestListener {
+public class PostAnimalActivity extends AppCompatActivity
+        implements AttributeListener, RequestListener, NetworkStateReceiver.NetworkStateReceiverListener {
 
+    private NetworkStateReceiver networkStateReceiver;
     //################ PERMISSIONS REQUEST TYPES ################
     private static final int GALLERY_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
@@ -148,6 +153,10 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_animal);
 
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        this.registerReceiver(networkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
         animal_type = getIntent().getStringExtra(ANIMAL_TYPE);
         action = getIntent().getStringExtra(ACTION);
         animal_id = getIntent().getIntExtra(ANIMAL_ID, 0);
@@ -167,15 +176,12 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
         setScenario();
 
         resultReceiver = new AddressResultReceiver(new Handler());
-
-
     }
 
     /**
      * Method where we set all the graphical components variables
      */
     private void importGraphicalElements() {
-
 
         llFoundAnimal = findViewById(R.id.llFoundAnimal);
 
@@ -849,7 +855,18 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
             startService(intent);
         }
 
-        /**
+    @Override
+    public void networkAvailable() {
+
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Toast.makeText(getApplicationContext(), "Sem Internet", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    /**
          * On receiving the result of the address, set's the
          */
         private class AddressResultReceiver extends ResultReceiver {
@@ -1062,7 +1079,5 @@ public class PostAnimalActivity extends AppCompatActivity implements AttributeLi
     public void onDeleteAnimal() {
         finish();
     }
-
-
 }
 

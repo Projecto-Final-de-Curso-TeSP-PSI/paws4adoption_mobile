@@ -3,6 +3,8 @@ package amsi.dei.estg.ipleiria.paws4adoption.views;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,13 +22,16 @@ import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalDetailListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.NetworkStateReceiver;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 
-public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDetailListener {
+public class AnimalDetailsActivity extends AppCompatActivity
+        implements AnimalDetailListener, NetworkStateReceiver.NetworkStateReceiverListener {
 
     //################ INTENT PARAMETERS ################
+    private NetworkStateReceiver networkStateReceiver;
     private int animal_id = -1;
     private String scenario = null;
 
@@ -47,6 +52,10 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animal_details);
+
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        this.registerReceiver(networkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         scenario = getIntent().getStringExtra(RockChisel.SCENARIO);
         animal_id = getIntent().getIntExtra(RockChisel.ANIMAL_ID, 0);
@@ -201,12 +210,12 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
      */
     public void setScenario(){
 
-        if(!FortuneTeller.isInternetConnection(getApplicationContext())){
-            fabAdd.setVisibility(View.GONE);
-            fabUp.setVisibility(View.GONE);
-            fabDown.setVisibility(View.GONE);
-            return;
-        }
+//        if(!FortuneTeller.isInternetConnection(getApplicationContext())){
+////            fabAdd.setVisibility(View.GONE);
+////            fabUp.setVisibility(View.GONE);
+////            fabDown.setVisibility(View.GONE);
+//            return;
+//        }
 
 
         switch (scenario){
@@ -321,5 +330,20 @@ public class AnimalDetailsActivity extends AppCompatActivity implements AnimalDe
     @Override
     public void onUpdateAnimalFromList() {
         finish();
+    }
+
+    @Override
+    public void networkAvailable() {
+        fabAdd.setVisibility(View.VISIBLE);
+//        fabUp.setVisibility(View.VISIBLE);
+//        fabDown.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void networkUnavailable() {
+        areFabsVisible = false;
+        fabAdd.setVisibility(View.GONE);
+        fabUp.setVisibility(View.GONE);
+        fabDown.setVisibility(View.GONE);
     }
 }
