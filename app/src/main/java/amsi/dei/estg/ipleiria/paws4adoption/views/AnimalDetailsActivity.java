@@ -30,8 +30,6 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 public class AnimalDetailsActivity extends AppCompatActivity
         implements AnimalDetailListener, NetworkStateReceiver.NetworkStateReceiverListener {
 
-    private static final String HERE = "animalDetails";
-
     //################ INTENT PARAMETERS ################
     private NetworkStateReceiver networkStateReceiver;
     private int animal_id = -1;
@@ -140,7 +138,6 @@ public class AnimalDetailsActivity extends AppCompatActivity
                                 startActivity(intent);
                             } else{
                                 intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                intent.putExtra(LoginActivity.WHERE_FROM, AnimalDetailsActivity.HERE);
                                 startActivity(intent);
                             }
 
@@ -189,7 +186,6 @@ public class AnimalDetailsActivity extends AppCompatActivity
 
                                         } else {
                                             intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                            intent.putExtra(LoginActivity.WHERE_FROM, AnimalDetailsActivity.HERE);
                                             startActivity(intent);
                                         }
 
