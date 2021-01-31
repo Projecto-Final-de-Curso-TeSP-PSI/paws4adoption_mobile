@@ -395,78 +395,52 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
      */
     public void updateAnimalDB(Animal animal){
 
-        if(animals == null){
+        if(animals == null)
             return;
-        }
 
-
-
-
-//        if(!animals.inde(animal)){
-//            return;
-//        }
-
-
-
-
-
-//        for (Animal animalArr : animals
-//        ) {
-//            int animalIdArrau = animalArr.getId();
-//            int animalAPI = animal.getId();
-//
-//            if(animalAPI == animalIdArrau){
-//                animalArr = animal;
-//                int a =1;
-//            }
-//        }
-
-
-
-
-            Animal auxAnimal =  getAnimalDB(animal.getId());
-            auxAnimal.setId(animal.getId());
-            auxAnimal.setName(animal.getName());
-            auxAnimal.setNature_id(animal.getNature_id());
-            auxAnimal.setNature_name(animal.getNature_name());
-            auxAnimal.setNature_parent_id(animal.getNature_parent_id());
-            auxAnimal.setNature_parent_name(animal.getNature_parent_name());
-            auxAnimal.setFur_length_id(animal.getFur_length_id());
-            auxAnimal.setFur_length(animal.getFur_length());
-            auxAnimal.setFur_color_id(animal.getFur_color_id());
-            auxAnimal.setFur_color(animal.getFur_color());
-            auxAnimal.setSize_id(animal.getSize_id());
-            auxAnimal.setSize(animal.getSize());
-            auxAnimal.setSex(animal.getSex());
-            auxAnimal.setDescription(animal.getDescription());
-            auxAnimal.setCreateAt(animal.getCreateAt());
-            auxAnimal.setPhoto(animal.getPhoto());
-            auxAnimal.setType(animal.getType());
-            auxAnimal.setPublisher_id(animal.getPublisher_id());
-            auxAnimal.setPublisher_name(animal.getPublisher_name());
-            auxAnimal.setMissingFound_date(animal.getMissingFound_date());
-            auxAnimal.setFoundAnimal_location_id(animal.getFoundAnimal_location_id());
-            auxAnimal.setFoundAnimal_street(animal.getFoundAnimal_street());
-            auxAnimal.setFoundAnimal_city(animal.getFoundAnimal_city());
-            auxAnimal.setFoundAnimal_district_id(animal.getFoundAnimal_district_id());
-            auxAnimal.setFoundAnimal_district_name(animal.getFoundAnimal_district_name());
-            auxAnimal.setOrganization_id(animal.getOrganization_id());
-            auxAnimal.setOrganization_name(animal.getOrganization_name());
-            auxAnimal.setOrganization_nif(animal.getOrganization_nif());
-            auxAnimal.setOrganization_email(animal.getOrganization_email());
-            auxAnimal.setOrganization_address_id(animal.getOrganization_address_id());
-            auxAnimal.setOrganization_street(animal.getOrganization_street());
-            auxAnimal.setOrganization_door_number(animal.getOrganization_door_number());
-            auxAnimal.setOrganization_floor(animal.getOrganization_floor());
-            auxAnimal.setOrganization_city(animal.getOrganization_city());
-            auxAnimal.setOrganization_postal_code(animal.getOrganization_postal_code());
-            auxAnimal.setOrganization_street_code(animal.getOrganization_street_code());
-            auxAnimal.setOrganization_district_id(animal.getOrganization_district_id());
-            auxAnimal.setOrganization_district_name(animal.getOrganization_district_name());
+        Animal auxAnimal =  getAnimalDB(animal.getId());
+        auxAnimal.setId(animal.getId());
+        auxAnimal.setName(animal.getName());
+        auxAnimal.setNature_id(animal.getNature_id());
+        auxAnimal.setNature_name(animal.getNature_name());
+        auxAnimal.setNature_parent_id(animal.getNature_parent_id());
+        auxAnimal.setNature_parent_name(animal.getNature_parent_name());
+        auxAnimal.setFur_length_id(animal.getFur_length_id());
+        auxAnimal.setFur_length(animal.getFur_length());
+        auxAnimal.setFur_color_id(animal.getFur_color_id());
+        auxAnimal.setFur_color(animal.getFur_color());
+        auxAnimal.setSize_id(animal.getSize_id());
+        auxAnimal.setSize(animal.getSize());
+        auxAnimal.setSex(animal.getSex());
+        auxAnimal.setDescription(animal.getDescription());
+        auxAnimal.setCreateAt(animal.getCreateAt());
+        auxAnimal.setPhoto(animal.getPhoto());
+        auxAnimal.setType(animal.getType());
+        auxAnimal.setPublisher_id(animal.getPublisher_id());
+        auxAnimal.setPublisher_name(animal.getPublisher_name());
+        auxAnimal.setPublisher_district_name(animal.getPublisher_district_name());
+        auxAnimal.setMissingFound_date(animal.getMissingFound_date());
+        auxAnimal.setFoundAnimal_location_id(animal.getFoundAnimal_location_id());
+        auxAnimal.setFoundAnimal_street(animal.getFoundAnimal_street());
+        auxAnimal.setFoundAnimal_city(animal.getFoundAnimal_city());
+        auxAnimal.setFoundAnimal_district_id(animal.getFoundAnimal_district_id());
+        auxAnimal.setFoundAnimal_district_name(animal.getFoundAnimal_district_name());
+        auxAnimal.setOrganization_id(animal.getOrganization_id());
+        auxAnimal.setOrganization_name(animal.getOrganization_name());
+        auxAnimal.setOrganization_nif(animal.getOrganization_nif());
+        auxAnimal.setOrganization_email(animal.getOrganization_email());
+        auxAnimal.setOrganization_address_id(animal.getOrganization_address_id());
+        auxAnimal.setOrganization_street(animal.getOrganization_street());
+        auxAnimal.setOrganization_door_number(animal.getOrganization_door_number());
+        auxAnimal.setOrganization_floor(animal.getOrganization_floor());
+        auxAnimal.setOrganization_city(animal.getOrganization_city());
+        auxAnimal.setOrganization_postal_code(animal.getOrganization_postal_code());
+        auxAnimal.setOrganization_street_code(animal.getOrganization_street_code());
+        auxAnimal.setOrganization_district_id(animal.getOrganization_district_id());
+        auxAnimal.setOrganization_district_name(animal.getOrganization_district_name());
 
         if(pawsManagerDBHelper.updateAnimalDB(auxAnimal))
             System.out.println("--> animal updated successfully on the DB");
-
     }
 
     /**
@@ -509,7 +483,6 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
     public void getAllOrganizationsAPI(final Context context){
 
         if(!FortuneTeller.isInternetConnection(context)){
-            Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
             if(organizationsListListener != null){
                 organizationsListListener.onRefreshOrganizationsList(this.getAllOrganizationsDB());
             }
@@ -548,7 +521,6 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
     public void getOrganizationAPI(final Context context, final int organization_id){
 
         if(!FortuneTeller.isInternetConnection(context)){
-            Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
             //Carregar dados da base de dados
             if (organizationDetailListener != null) {
                 organizationDetailListener.onGetOrganization(this.getOrganizationDB(organization_id));
@@ -732,7 +704,6 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
     public void getAllAnimalsAPI(final Context context){
 
         if(!FortuneTeller.isInternetConnection(context)){
-            Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
             //Carregar dados da base de dados
             if(animalsListListener != null){
                 animalsListListener.onRefreshAnimalsList(this.getAllAnimalsDB());
@@ -772,7 +743,6 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
     public void getAnimalAPI(final Context context, final int animal_id){
 
         if(!FortuneTeller.isInternetConnection(context)){
-            Toast.makeText(context, "Não existe ligação à internet", Toast.LENGTH_SHORT).show();
             //Carregar dados da base de dados
             if(animalDetailListener != null){
                 animalDetailListener.onGetAnimal(this.getAnimalDB(animal_id));
@@ -1002,10 +972,10 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
             }
             switch(apiService){
                 case RockChisel.MISSING_ANIMALS_API_SERVICE:
-                    params.put("missing_date", "20201220");
+                    params.put("missing_date", animal.getMissingFound_date());
                     break;
                 case RockChisel.FOUND_ANIMALS_API_SERVICE:
-                    params.put("found_date", "20201220");
+                    params.put("found_date", animal.getMissingFound_date());
                     params.put("street", animal.getFoundAnimal_street());
                     params.put("city", animal.getFoundAnimal_city());
                     params.put("district_id", animal.getFoundAnimal_district_id());

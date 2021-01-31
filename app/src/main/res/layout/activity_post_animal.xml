@@ -78,37 +78,43 @@
                     android:id="@+id/spNature"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/colorPrimary"/>
 
                 <Spinner
                     android:id="@+id/spBreed"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/colorPrimary"/>
 
                 <Spinner
                     android:id="@+id/spFurLenght"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/colorPrimary"/>
 
                 <Spinner
                     android:id="@+id/spFurColor"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/colorPrimary"/>
 
                 <Spinner
                     android:id="@+id/spSize"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/colorPrimary"/>
 
                 <Spinner
                     android:id="@+id/spSex"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/colorPrimary"/>
 
                 <EditText
                     android:id="@+id/etDescription"
@@ -124,14 +130,21 @@
                     android:minLines="6"
                     android:padding="20dp" />
 
-                <EditText
-                    android:id="@+id/etMissingFoundDate"
+                <TextView
+                    android:id="@+id/tvMissingFoundDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/btnMissingFoundDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:importantForAutofill="no"
-                    android:inputType="date"
-                    android:padding="20dp" />
+                    style="@style/Widget.AppCompat.Spinner"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:foregroundTint="@color/colorAccent"
+                    android:textAlignment="center"
+                    android:text="kjhsfkjhsdf"
+                    android:onClick="openDatePicker"/>
 
                 <LinearLayout
                     android:id="@+id/llFoundAnimal"
@@ -147,6 +160,7 @@
                         android:layout_marginTop="10dp"
                         android:contentDescription="@string/location_simbol_image"
                         app:srcCompat="@drawable/ic_get_location_foreground" />
+
 
                     <Button
                         android:id="@+id/btnLocation"
@@ -204,7 +218,8 @@
                         android:id="@+id/spLocationDistrict"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:layout_marginTop="10dp" />
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="@color/colorPrimary"/>
 
                 </LinearLayout>
             </LinearLayout>
@@ -222,6 +237,6 @@
         android:clickable="true"
         android:contentDescription="@string/submit"
         android:focusable="true"
-        android:src="@drawable/ic_baseline_send_24" />
+        app:srcCompat="@drawable/ic_baseline_send_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -11,7 +11,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
@@ -158,6 +161,7 @@ public class JsonParser {
                 String foundAnimal_district_name = null;
                 Integer publisher_id = null;
                 String publisher_name = null;
+                String publisher_district_name = null;
                 String organization_name = null;
                 Integer organization_id = null;
                 Integer organization_nif = null;
@@ -208,6 +212,12 @@ public class JsonParser {
                         JSONObject owner = missingAnimal.getJSONObject("owner");
                         publisher_id = owner.getInt("id");
                         publisher_name = owner.getString("fullName");
+
+                        JSONObject ownerAddress = owner.getJSONObject("address");
+
+                        JSONObject ownerDistrict = ownerAddress.getJSONObject("district");
+                        publisher_district_name = ownerDistrict.getString("name");
+
                         break;
 
                     case "foundAnimal":
@@ -231,7 +241,7 @@ public class JsonParser {
 
 
 
-                Animal auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
+                Animal auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, publisher_district_name, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
                 animalsList.add(auxAnimal);
             }
         } catch(JSONException e){
@@ -305,6 +315,7 @@ public class JsonParser {
                 String foundAnimal_district_name = null;
                 Integer publisher_id = null;
                 String publisher_name = null;
+                String publisher_district_name = null;
                 String organization_name = null;
                 Integer organization_id = null;
                 Integer organization_nif = null;
@@ -354,6 +365,12 @@ public class JsonParser {
                         JSONObject owner = missingAnimal.getJSONObject("owner");
                         publisher_id = owner.getInt("id");
                         publisher_name = owner.getString("fullName");
+
+                        JSONObject ownerAddress = owner.getJSONObject("address");
+
+                        JSONObject ownerDistrict = ownerAddress.getJSONObject("district");
+                        publisher_district_name = ownerDistrict.getString("name");
+
                         break;
 
                     case "foundAnimal":
@@ -375,7 +392,7 @@ public class JsonParser {
                         break;
                 }
 
-                auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
+                auxAnimal = new Animal(id, name, chipId, nature_id, nature_name, nature_parent_id, nature_parent_name, fur_length_id, fur_length_name, fur_color_id, fur_color_name, size_id, size_name, sex, description, createAt, photo, type, publisher_id, publisher_name, publisher_district_name, missingFound_date, foundAnimal_location_id, foundAnimal_street, foundAnimal_city, foundAnimal_district_id, foundAnimal_district_name, organization_id, organization_name, organization_nif, organization_email, organization_address_id, organization_street, organization_door_number, organization_floor, organization_city, organization_postal_code, organization_street_code, organization_district_id, organization_district_name);
 
             } catch (JSONException jsonException) {
                 jsonException.printStackTrace();

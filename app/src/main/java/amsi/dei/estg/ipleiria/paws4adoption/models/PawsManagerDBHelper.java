@@ -57,6 +57,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
 
     private static final String PUBLISHER_ID = "publisher_id";
     private static final String PUBLISHER_NAME = "publisher_name";
+    private static final String PUBLISHER_DISTRICT_NAME = "publisher_district_name";
     private static final String MISSING_FOUND_DATE = "missingFound_date";
     private static final String FOUND_ANIMAL_LOCATION_ID = "foundAnimal_location_id";
     private static final String FOUND_ANIMAL_STREET = "foundAnimal_street";
@@ -139,6 +140,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
                         TYPE + " TEXT NOT NULL," +
                         PUBLISHER_ID + " INT NOT NULL," +
                         PUBLISHER_NAME + " TEXT NOT NULL," +
+                        PUBLISHER_DISTRICT_NAME + " TEXT," +
                         MISSING_FOUND_DATE + " TEXT," +
                         FOUND_ANIMAL_LOCATION_ID + " INT," +
                         FOUND_ANIMAL_STREET + " TEXT," +
@@ -316,6 +318,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
                         TYPE,
                         PUBLISHER_ID,
                         PUBLISHER_NAME,
+                        PUBLISHER_DISTRICT_NAME,
                         MISSING_FOUND_DATE,
                         FOUND_ANIMAL_LOCATION_ID,
                         FOUND_ANIMAL_STREET,
@@ -363,24 +366,25 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
                         cursor.getInt(18),
                         cursor.getString(19),
                         cursor.getString(20),
-                        cursor.getInt(21),
-                        cursor.getString(22),
+                        cursor.getString(21),
+                        cursor.getInt(22),
                         cursor.getString(23),
-                        cursor.getInt(24),
-                        cursor.getString(25),
-                        cursor.getInt(26),
-                        cursor.getString(27),
-                        cursor.getInt(28),
-                        cursor.getString(29),
-                        cursor.getInt(30),
-                        cursor.getString(31),
+                        cursor.getString(24),
+                        cursor.getInt(25),
+                        cursor.getString(26),
+                        cursor.getInt(27),
+                        cursor.getString(28),
+                        cursor.getInt(29),
+                        cursor.getString(30),
+                        cursor.getInt(31),
                         cursor.getString(32),
                         cursor.getString(33),
                         cursor.getString(34),
-                        cursor.getInt(35),
+                        cursor.getString(35),
                         cursor.getInt(36),
                         cursor.getInt(37),
-                        cursor.getString(38)
+                        cursor.getInt(38),
+                        cursor.getString(39)
                 );
                 animals.add(auxAnimal);
             } while (cursor.moveToNext());
@@ -418,6 +422,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
                 TYPE,
                 PUBLISHER_ID,
                 PUBLISHER_NAME,
+                PUBLISHER_DISTRICT_NAME,
                 MISSING_FOUND_DATE,
                 FOUND_ANIMAL_LOCATION_ID,
                 FOUND_ANIMAL_STREET,
@@ -461,24 +466,25 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
                         cursor.getInt(18),
                         cursor.getString(19),
                         cursor.getString(20),
-                        cursor.getInt(21),
-                        cursor.getString(22),
+                        cursor.getString(21),
+                        cursor.getInt(22),
                         cursor.getString(23),
-                        cursor.getInt(24),
-                        cursor.getString(25),
-                        cursor.getInt(26),
-                        cursor.getString(27),
+                        cursor.getString(24),
+                        cursor.getInt(25),
+                        cursor.getString(26),
                         cursor.getInt(27),
-                        cursor.getString(29),
-                        cursor.getInt(30),
-                        cursor.getString(31),
+                        cursor.getString(28),
+                        cursor.getInt(29),
+                        cursor.getString(30),
+                        cursor.getInt(31),
                         cursor.getString(32),
                         cursor.getString(33),
                         cursor.getString(34),
-                        cursor.getInt(35),
+                        cursor.getString(35),
                         cursor.getInt(36),
                         cursor.getInt(37),
-                        cursor.getString(38)
+                        cursor.getInt(38),
+                        cursor.getString(39)
                 );
 
         return auxAnimal;
@@ -511,6 +517,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         values.put(TYPE, animal.getType());
         values.put(PUBLISHER_ID, animal.getPublisher_id());
         values.put(PUBLISHER_NAME, animal.getPublisher_name());
+        values.put(PUBLISHER_DISTRICT_NAME, animal.getPublisher_district_name());
         values.put(MISSING_FOUND_DATE, animal.getMissingFound_date());
         values.put(FOUND_ANIMAL_LOCATION_ID, animal.getFoundAnimal_location_id());
         values.put(FOUND_ANIMAL_STREET, animal.getFoundAnimal_street());
@@ -562,6 +569,7 @@ public class PawsManagerDBHelper extends SQLiteOpenHelper {
         values.put(TYPE, animal.getType());
         values.put(PUBLISHER_ID, animal.getPublisher_id());
         values.put(PUBLISHER_NAME, animal.getPublisher_name());
+        values.put(PUBLISHER_DISTRICT_NAME, animal.getPublisher_district_name());
         values.put(MISSING_FOUND_DATE, animal.getMissingFound_date());
         values.put(FOUND_ANIMAL_LOCATION_ID, animal.getFoundAnimal_location_id());
         values.put(FOUND_ANIMAL_STREET, animal.getFoundAnimal_street());

@@ -49,7 +49,8 @@
         <activity android:name=".views.PostAnimalActivity"
             android:parentActivityName=".views.MenuMainActivity" />
 
-        <activity android:name=".views.SubmRequestActivity" />
+        <activity android:name=".views.SubmRequestActivity"
+            android:parentActivityName=".views.MenuMainActivity"/>
 
         <activity android:name=".views.AnimalDetailsActivity"
             android:parentActivityName=".views.MenuMainActivity"/>

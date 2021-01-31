@@ -3,17 +3,23 @@ package amsi.dei.estg.ipleiria.paws4adoption.views;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListAnimalsAdapter;
@@ -31,13 +37,16 @@ public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.
     private String animal_type = null;
 
     private ListView lvListAdoptionAnimal;
+    private SearchView searchView;
+
+    private ArrayList<Animal> listAnimals;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
 
         Bundle bundle = this.getArguments();
         if(bundle != null){
@@ -72,6 +81,57 @@ public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.
 
         return rootView;
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_search_by_district, menu);
+
+        MenuItem searchByDistrict = menu.findItem(R.id.searchByDistrict);
+
+        searchView = (SearchView) searchByDistrict.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ArrayList<Animal> tempAnimals = new ArrayList<>();
+
+                for(Animal animal : listAnimals){
+
+                    switch(animal.getType()){
+
+                        case RockChisel.ADOPTION_ANIMAL:
+                            if(animal.getOrganization_district_name().toLowerCase().contains(newText.toLowerCase())){
+                                tempAnimals.add(animal);
+                            }
+                            break;
+
+                        case RockChisel.MISSING_ANIMAL:
+                            if(animal.getPublisher_district_name().toLowerCase().contains(newText.toLowerCase())){
+                                tempAnimals.add(animal);
+                            }
+                            break;
+
+                        case RockChisel.FOUND_ANIMAL:
+                            if(animal.getFoundAnimal_district_name().toLowerCase().contains(newText.toLowerCase())){
+                                tempAnimals.add(animal);
+                            }
+                            break;
+                    }
+
+                }
+
+                lvListAdoptionAnimal.setAdapter(new ListAnimalsAdapter(getContext(), tempAnimals));
+                return true;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
@@ -115,6 +175,7 @@ public class ListAnimalsFragment extends Fragment implements SwipeRefreshLayout.
                 break;
         }
 
+        listAnimals = newListAnimals;
         lvListAdoptionAnimal.setAdapter(new ListAnimalsAdapter(getContext(), newListAnimals));
     }
 
