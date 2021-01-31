@@ -336,20 +336,20 @@ public class PostAnimalActivity extends AppCompatActivity
                 switch(action){
                     case RockChisel.ACTION_CREATE:
                         switch(animal_type){
-                            case RockChisel.SCENARIO_MISSING_ANIMAL:
+                            case RockChisel.MISSING_ANIMAL:
                                 SingletonPawsManager.getInstance(getApplicationContext()).insertAnimalAPI(newAnimalPost, RockChisel.MISSING_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()),  getApplicationContext());
                                 break;
-                            case RockChisel.SCENARIO_FOUND_ANIMAL:
+                            case RockChisel.FOUND_ANIMAL:
                                 SingletonPawsManager.getInstance(getApplicationContext()).insertAnimalAPI(newAnimalPost, RockChisel.FOUND_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()), getApplicationContext());
                                 break;
                         }
                         break;
                     case RockChisel.ACTION_UPDATE:
                         switch(animal_type){
-                            case RockChisel.SCENARIO_MISSING_ANIMAL:
+                            case RockChisel.MISSING_ANIMAL:
                                 SingletonPawsManager.getInstance(getApplicationContext()).updateAnimalAPI(newAnimalPost, RockChisel.MISSING_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()),  getApplicationContext());
                                 break;
-                            case RockChisel.SCENARIO_FOUND_ANIMAL:
+                            case RockChisel.FOUND_ANIMAL:
                                 SingletonPawsManager.getInstance(getApplicationContext()).updateAnimalAPI(newAnimalPost, RockChisel.FOUND_ANIMALS_API_SERVICE, Vault.getAuthToken(getApplicationContext()), getApplicationContext());
                                 break;
                         }
@@ -391,7 +391,7 @@ public class PostAnimalActivity extends AppCompatActivity
             String name = etName.getText().toString();
             String chipId = etChipId.getText().toString();
 
-            if(animal_type.equals(RockChisel.SCENARIO_MISSING_ANIMAL)) {
+            if(animal_type.equals(RockChisel.MISSING_ANIMAL)) {
 
                 if (name.length() < 2) {
                     etName.setError(getString(R.string.validate_msg_animal_name));
@@ -480,7 +480,7 @@ public class PostAnimalActivity extends AppCompatActivity
             newAnimalPost.setMissingFound_date(missingFoundDate);
 
 
-            if(animal_type.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
+            if(animal_type.equals(RockChisel.FOUND_ANIMAL)){
                 String locationStreet = etLocationStreet.getText().toString();
                 if(locationStreet.length() < 2){
                     etName.setError(getString(R.string.validate_msg_invalid_street));
@@ -570,7 +570,7 @@ public class PostAnimalActivity extends AppCompatActivity
                     Wrench.getDatePart_yyyyMMdd(dateString, Wrench.YEAR)
             );
 
-            if(animal_type.equals(RockChisel.SCENARIO_FOUND_ANIMAL)){
+            if(animal_type.equals(RockChisel.FOUND_ANIMAL)){
                 etLocationStreet.setText(animal.getFoundAnimal_street());
                 etLocationCity.setText(animal.getFoundAnimal_city());
 
@@ -619,7 +619,7 @@ public class PostAnimalActivity extends AppCompatActivity
 
                 switch(animal_type){
 
-                    case RockChisel.SCENARIO_MISSING_ANIMAL:
+                    case RockChisel.MISSING_ANIMAL:
                         setTitle(getString(R.string.publish_missing_animal));
                         //datePickerDialog.setTitle(R.string.hint_date_missing_animal);
                         break;
@@ -633,7 +633,7 @@ public class PostAnimalActivity extends AppCompatActivity
 
             case RockChisel.ACTION_UPDATE:
                 switch(animal_type){
-                    case RockChisel.SCENARIO_MISSING_ANIMAL:
+                    case RockChisel.MISSING_ANIMAL:
                         setTitle(getString(R.string.edit_missing_animal));
                         break;
                     case RockChisel.FOUND_ANIMAL:
@@ -646,12 +646,12 @@ public class PostAnimalActivity extends AppCompatActivity
 
         switch(animal_type){
 
-            case RockChisel.SCENARIO_MISSING_ANIMAL:
+            case RockChisel.MISSING_ANIMAL:
                 tvMissingFoundDate.setText(R.string.hint_date_missing_animal);
                 llFoundAnimal.setVisibility(View.GONE);
                 break;
 
-            case RockChisel.SCENARIO_FOUND_ANIMAL:
+            case RockChisel.FOUND_ANIMAL:
                 tvMissingFoundDate.setText(R.string.hint_date_found_animal);
                 llFoundAnimal.setVisibility(View.VISIBLE);
                 break;

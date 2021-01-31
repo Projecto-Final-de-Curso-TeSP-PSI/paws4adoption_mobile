@@ -240,7 +240,7 @@ public class AnimalDetailsActivity extends AppCompatActivity
 
             case RockChisel.SCENARIO_GENERAL_LIST:
                 switch(animal.getType()){
-                    case RockChisel.SCENARIO_ADOPTION_ANIMAL:
+                    case RockChisel.ADOPTION_ANIMAL:
                         setTitle(getString(R.string.title_adoption_animal));
                         fabUp.setImageResource(R.drawable.ic_baseline_family_restroom_24);
                         fabDown.setImageResource(R.drawable.ic_baseline_hourglass_top_24);
@@ -248,7 +248,7 @@ public class AnimalDetailsActivity extends AppCompatActivity
                         textView_organization.setText(animal.getOrganization_name());
                         break;
 
-                    case RockChisel.SCENARIO_MISSING_ANIMAL:
+                    case RockChisel.MISSING_ANIMAL:
                         setTitle(getString(R.string.title_missing_animal));
                         fabDown.setImageResource(R.drawable.ic_baseline_phone_forwarded_24);
                         fabDown.show();
@@ -258,7 +258,7 @@ public class AnimalDetailsActivity extends AppCompatActivity
                         textView_missingDate.setText(animal.getMissingFound_date());
                         break;
 
-                    case RockChisel.SCENARIO_FOUND_ANIMAL:
+                    case RockChisel.FOUND_ANIMAL:
                         setTitle(getString(R.string.title_found_animal));
                         fabDown.setImageResource(R.drawable.ic_baseline_phone_forwarded_24);
                         fabDown.show();
@@ -279,12 +279,12 @@ public class AnimalDetailsActivity extends AppCompatActivity
             case RockChisel.SCENARIO_MY_LIST:
 
                 switch(animal.getType()){
-                    case RockChisel.SCENARIO_MISSING_ANIMAL:
+                    case RockChisel.MISSING_ANIMAL:
                         layout_missingDate.setVisibility(LinearLayout.VISIBLE);
                         textView_missingDate.setText(animal.getMissingFound_date());
                         break;
 
-                    case RockChisel.SCENARIO_FOUND_ANIMAL:
+                    case RockChisel.FOUND_ANIMAL:
                         layout_foundDate.setVisibility(LinearLayout.VISIBLE);
                         textView_foundDate.setText(animal.getMissingFound_date());
                         layout_location.setVisibility(LinearLayout.VISIBLE);

@@ -139,7 +139,7 @@ public class MenuMainActivity extends AppCompatActivity
             case R.id.navSearchAdoption:
                 fragment = new ListAnimalsFragment();
                 bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_GENERAL_LIST);
-                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_ADOPTION_ANIMAL);
+                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.ADOPTION_ANIMAL);
                 fragment.setArguments(bundle);
                 setTitle(menuItem.getTitle());
                 break;
@@ -147,7 +147,7 @@ public class MenuMainActivity extends AppCompatActivity
             case R.id.navSearchMissing:
                 fragment = new ListAnimalsFragment();
                 bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_GENERAL_LIST);
-                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_MISSING_ANIMAL);
+                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.MISSING_ANIMAL);
                 fragment.setArguments(bundle);
                 setTitle(menuItem.getTitle());
                 break;
@@ -155,7 +155,7 @@ public class MenuMainActivity extends AppCompatActivity
             case R.id.navSearchFound:
                 fragment = new ListAnimalsFragment();
                 bundle.putString(RockChisel.SCENARIO, RockChisel.SCENARIO_GENERAL_LIST);
-                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.SCENARIO_FOUND_ANIMAL);
+                bundle.putString(RockChisel.ANIMAL_TYPE, RockChisel.FOUND_ANIMAL);
                 fragment.setArguments(bundle);
                 setTitle(menuItem.getTitle());
                 break;
