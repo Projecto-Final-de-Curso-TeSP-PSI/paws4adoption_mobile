@@ -17,12 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
 import amsi.dei.estg.ipleiria.paws4adoption.utils.NetworkStateReceiver;
-import amsi.dei.estg.ipleiria.paws4adoption.views.MainFragment;
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
@@ -77,8 +75,27 @@ public class MenuMainActivity extends AppCompatActivity
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
+                if(FortuneTeller.isLoggedUser(getApplicationContext())){
+                    String loginAwareness = getString(R.string.user_prefix) + Vault.getLoggedUsername(getApplicationContext());
+                    usernameDisplay.setText(loginAwareness);
+
+                    usernameDisplay.setVisibility(View.VISIBLE);
+
+                    navLoginItem.setTitle(R.string.logout);
+                } else {
+                    usernameDisplay.setVisibility(View.GONE);
+
+                    navLoginItem.setTitle(R.string.login);
+                }
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                super.onDrawerStateChanged(newState);
+
             }
         };
+
         toggle.syncState();
         drawer.addDrawerListener(toggle);
 
@@ -86,7 +103,7 @@ public class MenuMainActivity extends AppCompatActivity
 
         fragmentManager = getSupportFragmentManager();
         fragment = new MainFragment();
-        setTitle("Home");
+        setTitle(getString(R.string.title_main_fragment));
 
         navigationView.setCheckedItem(R.id.navHome);
 
@@ -111,10 +128,12 @@ public class MenuMainActivity extends AppCompatActivity
         Intent intent = null;
         Bundle bundle = new Bundle();
 
+        navigationView.setCheckedItem(menuItem.getItemId());
+
         switch (menuItem .getItemId()) {
             case R.id.navHome:
                 fragment = new MainFragment();
-                setTitle("Home");
+                setTitle(R.string.title_main_fragment);
                 break;
 
             case R.id.navSearchAdoption:
@@ -184,6 +203,7 @@ public class MenuMainActivity extends AppCompatActivity
 
                 if (FortuneTeller.isLoggedUser(getApplicationContext())) {
                     Vault.clearUserPreferences(getApplicationContext());
+                    usernameDisplay.setVisibility(View.GONE);
                 } else {
                     intent = new Intent(getApplicationContext(), LoginActivity.class);
                 }
@@ -205,18 +225,25 @@ public class MenuMainActivity extends AppCompatActivity
     @Override
     public void networkAvailable() {
         Log.d("Internet Status", "---> Habemus INTERNET!");
-        String loginAwareness = getString(R.string.user_prefix) + Vault.getLoggedUser(getApplicationContext());
+
+        String loginAwareness = getString(R.string.user_prefix) + Vault.getLoggedUsername(getApplicationContext());
 
         navLoginItem.setEnabled(true);
         navMyAnimals.setEnabled(true);
         navPostLostAnimal.setEnabled(true);
         navPostWanderingAnimal.setEnabled(true);
 
+
         if(FortuneTeller.isLoggedUser(getApplicationContext())){
             usernameDisplay.setText(loginAwareness);
+            usernameDisplay.setVisibility(View.VISIBLE);
+
+
             navLoginItem.setTitle(R.string.logout);
         } else {
             usernameDisplay.setText(R.string.empty);
+            usernameDisplay.setVisibility(View.GONE);
+
             navLoginItem.setTitle(R.string.login);
         }
     }
@@ -228,10 +255,14 @@ public class MenuMainActivity extends AppCompatActivity
         Vault.clearUserPreferences(getApplicationContext());
 
         navLoginItem.setEnabled(false);
+        navLoginItem.setTitle(R.string.login);
+
         navMyAnimals.setEnabled(false);
         navPostLostAnimal.setEnabled(false);
         navPostWanderingAnimal.setEnabled(false);
 
         usernameDisplay.setText(R.string.internet_connection_down);
+        usernameDisplay.setVisibility(View.VISIBLE);
     }
+
 }

@@ -30,6 +30,8 @@ import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 public class AnimalDetailsActivity extends AppCompatActivity
         implements AnimalDetailListener, NetworkStateReceiver.NetworkStateReceiverListener {
 
+    private static final String HERE = "animalDetails";
+
     //################ INTENT PARAMETERS ################
     private NetworkStateReceiver networkStateReceiver;
     private int animal_id = -1;
@@ -129,22 +131,32 @@ public class AnimalDetailsActivity extends AppCompatActivity
                     switch(scenario){
 
                         case RockChisel.SCENARIO_GENERAL_LIST:
-                            if(animal.getType().equals(RockChisel.ADOPTION_ANIMAL)){
+//                            if(animal.getType().equals(RockChisel.ADOPTION_ANIMAL)){
+                            if(FortuneTeller.isLoggedUser(getApplicationContext())){
                                 intent = new Intent(getApplicationContext(), SubmRequestActivity.class);
                                 intent.putExtra(SubmRequestActivity.REQUESTYPE, RockChisel.ADOPTION_REQUEST);
                                 intent.putExtra(SubmRequestActivity.ANIMAL_ID, animal_id);
                                 finish();
                                 startActivity(intent);
+                            } else{
+                                intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                intent.putExtra(LoginActivity.WHERE_FROM, AnimalDetailsActivity.HERE);
+                                startActivity(intent);
                             }
+
                             break;
 
                         case RockChisel.SCENARIO_MY_LIST:
-                            intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
-                            intent.putExtra(PostAnimalActivity.ANIMAL_TYPE, animal.getType());
-                            intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
-                            intent.putExtra(PostAnimalActivity.ANIMAL_ID, animal_id);
-                            finish();
-                            startActivity(intent);
+
+
+                                intent = new Intent(getApplicationContext(), PostAnimalActivity.class);
+                                intent.putExtra(PostAnimalActivity.ANIMAL_TYPE, animal.getType());
+                                intent.putExtra(PostAnimalActivity.ACTION, RockChisel.ACTION_UPDATE);
+                                intent.putExtra(PostAnimalActivity.ANIMAL_ID, animal_id);
+                                finish();
+                                startActivity(intent);
+
+
                             break;
 
                     }
@@ -163,21 +175,31 @@ public class AnimalDetailsActivity extends AppCompatActivity
 
                             switch (animal.getType()){
 
-                                case RockChisel.ADOPTION_ANIMAL:
-                                    if(animal.getType().equals(RockChisel.ADOPTION_ANIMAL)){
-                                        intent = new Intent(getApplicationContext(), SubmRequestActivity.class);
-                                        intent.putExtra(SubmRequestActivity.REQUESTYPE, RockChisel.TFF_REQUEST);
-                                        intent.putExtra(SubmRequestActivity.ANIMAL_ID, animal_id);
-                                        finish();
-                                        startActivity(intent);
-                                    }
-                                    break;
+                                    case RockChisel.ADOPTION_ANIMAL:
+
+                                        if(FortuneTeller.isLoggedUser(getApplicationContext())) {
+
+                                            if(animal.getType().equals(RockChisel.ADOPTION_ANIMAL)){
+                                                intent = new Intent(getApplicationContext(), SubmRequestActivity.class);
+                                                intent.putExtra(SubmRequestActivity.REQUESTYPE, RockChisel.TFF_REQUEST);
+                                                intent.putExtra(SubmRequestActivity.ANIMAL_ID, animal_id);
+                                                finish();
+                                                startActivity(intent);
+                                            }
+
+                                        } else {
+                                            intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            intent.putExtra(LoginActivity.WHERE_FROM, AnimalDetailsActivity.HERE);
+                                            startActivity(intent);
+                                        }
+
+                                        break;
 
 
-                                case RockChisel.MISSING_ANIMAL:
-                                case RockChisel.FOUND_ANIMAL:
-                                    Toast.makeText(AnimalDetailsActivity.this, "Pedido de contato não implementado!", Toast.LENGTH_SHORT).show();
-                                    break;
+                                    case RockChisel.MISSING_ANIMAL:
+                                    case RockChisel.FOUND_ANIMAL:
+                                        Toast.makeText(AnimalDetailsActivity.this, "Pedido de contato não implementado!", Toast.LENGTH_SHORT).show();
+                                        break;
                             }
                             break;
 

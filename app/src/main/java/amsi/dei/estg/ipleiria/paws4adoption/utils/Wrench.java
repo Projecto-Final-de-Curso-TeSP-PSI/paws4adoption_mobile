@@ -19,13 +19,13 @@ public class Wrench {
 
 
     /**
-     * Enconde0's an bmp to aBase64 String
+     * Enconde's an bmp to a Base64 String
      * @param bmp
      * @return
      */
     public static String bmpToBase64(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 1, baos);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 10, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
         return encodedImage;
@@ -63,8 +63,8 @@ public class Wrench {
      * Encode's the string on the database with a before and after aditional string
      * Cleans the null values from the data
      * @param before the before value to be added to the string
-     * @param str the string to be encoded am
-     * @param after teh after value to be added to the string
+     * @param str the string to be encoded
+     * @param after the after value to be added to the string
      * @return
      */
     public static String encode(String before, String str, String after) {

@@ -6,20 +6,22 @@
     android:background="@color/colorAccent"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:layout_marginTop="12dp"
+    android:layout_marginTop="36dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
         android:id="@+id/ivLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        app:srcCompat="@drawable/paws4adoption_logo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:paddingLeft="10dp"
+        app:srcCompat="@drawable/paws4adoption_logo_h"
         android:textColor="@color/design_default_color_background"/>
 
     <TextView
         android:id="@+id/tvUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:text=""
         android:textColor="#000000"/>
 

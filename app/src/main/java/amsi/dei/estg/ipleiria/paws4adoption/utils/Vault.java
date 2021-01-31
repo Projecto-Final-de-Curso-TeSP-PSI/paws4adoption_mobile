@@ -73,7 +73,7 @@ public class Vault {
      *
      * @return string|null
      */
-    public static String getLoggedUser(Context context) {
+    public static String getLoggedUsername(Context context) {
         String username;
         try{
             SharedPreferences sharedPreferences = context.getSharedPreferences(RockChisel.USER_PREFERENCES, Context.MODE_PRIVATE);
