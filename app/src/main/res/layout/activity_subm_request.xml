@@ -131,13 +131,13 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/fabSubmit"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="bottom|end"
-    android:layout_margin="10dp"
-    android:clickable="true"
-    android:src="@mipmap/ic_submit_round"
-    android:focusable="true"/>
+        android:id="@+id/fabSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:srcCompat="@drawable/ic_baseline_send_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
