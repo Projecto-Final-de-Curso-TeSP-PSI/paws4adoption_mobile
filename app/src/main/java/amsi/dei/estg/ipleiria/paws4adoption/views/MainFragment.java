@@ -3,6 +3,8 @@ package amsi.dei.estg.ipleiria.paws4adoption.views;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -27,6 +29,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import amsi.dei.estg.ipleiria.paws4adoption.R;
 import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListAnimalsAdapter;
@@ -34,6 +37,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListNewAdoptionAnimalsAdapt
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalsListListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.NetworkStateReceiver;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 
@@ -44,17 +48,25 @@ import static android.content.ContentValues.TAG;
  * Use the  factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends Fragment implements MqttCallback {
+public class MainFragment extends Fragment
+        implements MqttCallback, NetworkStateReceiver.NetworkStateReceiverListener {
 
     private String scenario = null;
     private String animal_type = null;
     private ListView lvMosquittoListNewAdoptionAnimals;
     private ArrayList<Animal> latestAdoptionAnimals;
     private Handler mHandler;
+    private NetworkStateReceiver networkStateReceiver;
+    private MqttClient client;
+    private MqttConnectOptions mqttConnectOptions;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        Objects.requireNonNull(getActivity()).registerReceiver(networkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         latestAdoptionAnimals = new ArrayList<>();
 
@@ -73,10 +85,10 @@ public class MainFragment extends Fragment implements MqttCallback {
         try {
             String[] url = new String[1];
             url[0] = "tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883";
-            MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
+            mqttConnectOptions = new MqttConnectOptions();
             mqttConnectOptions.setCleanSession(false);
 
-            MqttClient client = new MqttClient("tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883", "Paws4AdoptionMobileSub", new MemoryPersistence());
+            client = new MqttClient("tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883", "Paws4AdoptionMobileSub", new MemoryPersistence());
 
             if (!client.isConnected()){
                 client.setCallback(this);
@@ -165,6 +177,27 @@ public class MainFragment extends Fragment implements MqttCallback {
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         Log.d(TAG, "--> deliveryComplete");
+    }
+
+    @Override
+    public void networkAvailable() {
+        Log.d("net", "---> Com net");
+        try {
+            if (!client.isConnected()){
+                client.setCallback(this);
+                client.connect(mqttConnectOptions);
+                String topic = "NEW_ADOPTION_ANIMAL";
+                client.subscribe(topic);
+            }
+        } catch (MqttException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Log.d("unet", "---> Sem net");
     }
 
 //    private void createNotificationChannel() {
