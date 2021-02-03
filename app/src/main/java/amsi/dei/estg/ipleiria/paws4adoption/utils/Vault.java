@@ -7,6 +7,14 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Login;
 
 /**
@@ -100,4 +108,27 @@ public class Vault {
         return token;
     }
 
+    public static void setLatestAnimals(Context context, ArrayList<Animal> latestAnimals){
+        SharedPreferences sharedPreferences =
+                context.getSharedPreferences("mosquitto",
+                        Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<Animal>>(){}.getType();
+        editor.putString("mosquittoList", gson.toJson(latestAnimals, type));
+        editor.apply();
+    }
+
+    public static ArrayList<Animal> getLatestAnimals(Context context) {
+        ArrayList<Animal> latestAnimals;
+        try{
+            SharedPreferences sharedPreferences = context.getSharedPreferences("mosquitto", Context.MODE_PRIVATE);
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<Animal>>(){}.getType();
+            latestAnimals = gson.fromJson(sharedPreferences.getString("mosquittoList", null), type);
+        } catch(Exception e){
+            return null;
+        }
+        return latestAnimals;
+    }
 }

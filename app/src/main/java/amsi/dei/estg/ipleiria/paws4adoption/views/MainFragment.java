@@ -4,10 +4,12 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.ColorInt;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
@@ -73,10 +75,29 @@ public class MainFragment extends Fragment
         mHandler = new Handler();
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        Vault.setLatestAnimals(getContext(), latestAdoptionAnimals);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ArrayList<Animal> savedAnimals = Vault.getLatestAnimals(getContext());
+        if ( savedAnimals != null){
+            for (int i = 0; i < savedAnimals.size() && latestAdoptionAnimals.size() < 5 ; i++){
+                latestAdoptionAnimals.add(savedAnimals.get(i));
+            }
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    lvMosquittoListNewAdoptionAnimals.setAdapter(new ListNewAdoptionAnimalsAdapter(getContext(), latestAdoptionAnimals));
+                }
+            });
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -144,7 +165,10 @@ public class MainFragment extends Fragment
         auxAnimal.setNature_parent_name(adoptionAnimalJson.getString("parent_nature_name"));
         auxAnimal.setNature_name(adoptionAnimalJson.getString("nature_name"));
 
-        latestAdoptionAnimals.add(auxAnimal);
+        latestAdoptionAnimals.add(0, auxAnimal);
+        if (latestAdoptionAnimals.size() > 5){
+            latestAdoptionAnimals.remove(5);
+        }
 
         mHandler.post(new Runnable() {
             @Override
@@ -182,6 +206,8 @@ public class MainFragment extends Fragment
     @Override
     public void networkAvailable() {
         Log.d("net", "---> Com net");
+        lvMosquittoListNewAdoptionAnimals.setEnabled(true);
+        lvMosquittoListNewAdoptionAnimals.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLigth));
         try {
             if (!client.isConnected()){
                 client.setCallback(this);
@@ -198,6 +224,8 @@ public class MainFragment extends Fragment
     @Override
     public void networkUnavailable() {
         Log.d("unet", "---> Sem net");
+        lvMosquittoListNewAdoptionAnimals.setEnabled(false);
+        lvMosquittoListNewAdoptionAnimals.setBackgroundColor(Color.WHITE);
     }
 
 //    private void createNotificationChannel() {
