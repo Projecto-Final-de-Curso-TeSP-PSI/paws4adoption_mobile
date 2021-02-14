@@ -82,6 +82,7 @@ public class MainFragment extends Fragment
     public void onPause(){
         super.onPause();
         Vault.setLatestAnimals(getContext(), latestAdoptionAnimals);
+        latestAdoptionAnimals.clear();
     }
 
     @Override
@@ -172,8 +173,6 @@ public class MainFragment extends Fragment
                 latestAdoptionAnimals.remove(5);
             }
         }
-
-
 
         mHandler.post(new Runnable() {
             @Override
@@ -294,13 +293,11 @@ public class MainFragment extends Fragment
 
     public void connectToMosquitto(){
         try {
-
-
             if (!client.isConnected()){
                 client.setCallback(this);
                 client.connect(mqttConnectOptions);
                 String topic = "NEW_ADOPTION_ANIMAL";
-                client.subscribe(topic, 0);
+                client.subscribe(topic, 1);
             }
         } catch (MqttException e) {
             System.err.println(e.getMessage());
