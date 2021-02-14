@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -39,6 +40,7 @@ import amsi.dei.estg.ipleiria.paws4adoption.adapters.ListNewAdoptionAnimalsAdapt
 import amsi.dei.estg.ipleiria.paws4adoption.listeners.AnimalsListListener;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.FortuneTeller;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.NetworkStateReceiver;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
@@ -51,8 +53,9 @@ import static android.content.ContentValues.TAG;
  * create an instance of this fragment.
  */
 public class MainFragment extends Fragment
-        implements MqttCallback, NetworkStateReceiver.NetworkStateReceiverListener {
+        implements MqttCallback /*, NetworkStateReceiver.NetworkStateReceiverListener*/ {
 
+    public static final String TAG = "MainFragment";
     private String scenario = null;
     private String animal_type = null;
     private ListView lvMosquittoListNewAdoptionAnimals;
@@ -66,9 +69,9 @@ public class MainFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        networkStateReceiver = new NetworkStateReceiver();
+        /*networkStateReceiver = new NetworkStateReceiver();
         networkStateReceiver.addListener(this);
-        Objects.requireNonNull(getActivity()).registerReceiver(networkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        Objects.requireNonNull(getActivity()).registerReceiver(networkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));*/
 
         latestAdoptionAnimals = new ArrayList<>();
 
@@ -87,7 +90,9 @@ public class MainFragment extends Fragment
         ArrayList<Animal> savedAnimals = Vault.getLatestAnimals(getContext());
         if ( savedAnimals != null){
             for (int i = 0; i < savedAnimals.size() && latestAdoptionAnimals.size() < 5 ; i++){
-                latestAdoptionAnimals.add(savedAnimals.get(i));
+                if(latestAdoptionAnimals.contains(savedAnimals.get(i)) == false){
+                    latestAdoptionAnimals.add(savedAnimals.get(i));
+                }
             }
 
             mHandler.post(new Runnable() {
@@ -103,23 +108,19 @@ public class MainFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        String[] url = new String[1];
+        url[0] = "tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883";
+        mqttConnectOptions = new MqttConnectOptions();
+        mqttConnectOptions.setCleanSession(false);
+
         try {
-            String[] url = new String[1];
-            url[0] = "tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883";
-            mqttConnectOptions = new MqttConnectOptions();
-            mqttConnectOptions.setCleanSession(false);
-
             client = new MqttClient("tcp://"+RockChisel.COMPUTER_LOCAL_IP+":1883", "Paws4AdoptionMobileSub", new MemoryPersistence());
-
-            if (!client.isConnected()){
-                client.setCallback(this);
-                client.connect(mqttConnectOptions);
-                String topic = "NEW_ADOPTION_ANIMAL";
-                client.subscribe(topic);
-            }
         } catch (MqttException e) {
-            System.err.println(e.getMessage());
             e.printStackTrace();
+        }
+
+        if(FortuneTeller.isInternetConnection(Objects.requireNonNull(getContext()))){
+            connectToMosquitto();
         }
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -133,7 +134,7 @@ public class MainFragment extends Fragment
                 System.out.println("--> " + hasAnimal.getName());
 
                 Intent intent = new Intent(getContext(), AnimalDetailsActivity.class);
-                intent.putExtra(RockChisel.SCENARIO, RockChisel.ADOPTION_ANIMAL);
+                intent.putExtra(RockChisel.SCENARIO, RockChisel.SCENARIO_GENERAL_LIST);
                 intent.putExtra(RockChisel.ANIMAL_ID, hasAnimal.getId());
 
                 startActivity(intent);
@@ -165,10 +166,14 @@ public class MainFragment extends Fragment
         auxAnimal.setNature_parent_name(adoptionAnimalJson.getString("parent_nature_name"));
         auxAnimal.setNature_name(adoptionAnimalJson.getString("nature_name"));
 
-        latestAdoptionAnimals.add(0, auxAnimal);
-        if (latestAdoptionAnimals.size() > 5){
-            latestAdoptionAnimals.remove(5);
+        if(latestAdoptionAnimals.contains(auxAnimal) == false) {
+            latestAdoptionAnimals.add(0, auxAnimal);
+            if (latestAdoptionAnimals.size() > 5){
+                latestAdoptionAnimals.remove(5);
+            }
         }
+
+
 
         mHandler.post(new Runnable() {
             @Override
@@ -203,11 +208,62 @@ public class MainFragment extends Fragment
         Log.d(TAG, "--> deliveryComplete");
     }
 
-    @Override
+    public void netUnavailable(){
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                lvMosquittoListNewAdoptionAnimals.setEnabled(false);
+                lvMosquittoListNewAdoptionAnimals.setBackgroundColor(Color.WHITE);
+            }
+        });
+    }
+
+
+    public void netAvailable(){
+        Log.d("net", "---> Com net");
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                lvMosquittoListNewAdoptionAnimals.setEnabled(true);
+                lvMosquittoListNewAdoptionAnimals.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLigth));
+            }
+        });
+
+        connectToMosquitto();
+//        try {
+//            if (!client.isConnected()){
+//                client.setCallback(this);
+//                client.connect(mqttConnectOptions);
+//                String topic = "NEW_ADOPTION_ANIMAL";
+//                client.subscribe(topic);
+//            }
+//        } catch (MqttException e) {
+//            System.err.println(e.getMessage());
+//            e.printStackTrace();
+//
+//            mHandler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Toast.makeText(getContext(), "Erro ao ligar ao Mosquitto", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//
+//        }
+    }
+    /*@Overrid
     public void networkAvailable() {
         Log.d("net", "---> Com net");
-        lvMosquittoListNewAdoptionAnimals.setEnabled(true);
-        lvMosquittoListNewAdoptionAnimals.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLigth));
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                lvMosquittoListNewAdoptionAnimals.setEnabled(true);
+                lvMosquittoListNewAdoptionAnimals.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLigth));
+            }
+        });
+
+
         try {
             if (!client.isConnected()){
                 client.setCallback(this);
@@ -218,6 +274,14 @@ public class MainFragment extends Fragment
         } catch (MqttException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
+
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(), "Erro ao ligar ao Mosquitto", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
 
@@ -226,8 +290,29 @@ public class MainFragment extends Fragment
         Log.d("unet", "---> Sem net");
         lvMosquittoListNewAdoptionAnimals.setEnabled(false);
         lvMosquittoListNewAdoptionAnimals.setBackgroundColor(Color.WHITE);
-    }
+    }*/
 
+    public void connectToMosquitto(){
+        try {
+
+
+            if (!client.isConnected()){
+                client.setCallback(this);
+                client.connect(mqttConnectOptions);
+                String topic = "NEW_ADOPTION_ANIMAL";
+                client.subscribe(topic, 0);
+            }
+        } catch (MqttException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(), "Erro ao ligar ao Mosquitto", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
 //    private void createNotificationChannel() {
 //        // Create the NotificationChannel, but only on API 26+ because
 //        // the NotificationChannel class is new and not in the support library

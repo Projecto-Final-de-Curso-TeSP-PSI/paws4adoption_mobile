@@ -75,18 +75,21 @@ public class MenuMainActivity extends AppCompatActivity
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
-                if(FortuneTeller.isLoggedUser(getApplicationContext())){
-                    String loginAwareness = getString(R.string.user_prefix) + Vault.getLoggedUsername(getApplicationContext());
-                    usernameDisplay.setText(loginAwareness);
 
-                    usernameDisplay.setVisibility(View.VISIBLE);
+                if(FortuneTeller.isInternetConnection(getApplicationContext()))
+                    if(FortuneTeller.isLoggedUser(getApplicationContext())){
+                        String loginAwareness = getString(R.string.user_prefix) + Vault.getLoggedUsername(getApplicationContext());
+                        usernameDisplay.setText(loginAwareness);
 
-                    navLoginItem.setTitle(R.string.logout);
-                } else {
-                    usernameDisplay.setVisibility(View.GONE);
+                        usernameDisplay.setVisibility(View.VISIBLE);
 
-                    navLoginItem.setTitle(R.string.login);
-                }
+                        navLoginItem.setTitle(R.string.logout);
+                    } else {
+                        usernameDisplay.setVisibility(View.GONE);
+
+                        navLoginItem.setTitle(R.string.login);
+                    }
+
             }
 
             @Override
@@ -107,7 +110,7 @@ public class MenuMainActivity extends AppCompatActivity
 
         navigationView.setCheckedItem(R.id.navHome);
 
-        fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment, "MainFragment").commit();
     }
 
     public void onDestroy(){
@@ -127,11 +130,13 @@ public class MenuMainActivity extends AppCompatActivity
         Fragment fragment = null;
         Intent intent = null;
         Bundle bundle = new Bundle();
+        String tag = "";
 
         navigationView.setCheckedItem(menuItem.getItemId());
 
         switch (menuItem .getItemId()) {
             case R.id.navHome:
+                tag = "MainFragment";
                 fragment = new MainFragment();
                 setTitle(R.string.title_main_fragment);
                 break;
@@ -211,7 +216,7 @@ public class MenuMainActivity extends AppCompatActivity
         }
 
         if (fragment != null)
-            fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment, tag).commit();
 
         if(intent != null)
             startActivity(intent);
@@ -234,7 +239,7 @@ public class MenuMainActivity extends AppCompatActivity
         navPostWanderingAnimal.setEnabled(true);
 
 
-        if(FortuneTeller.isLoggedUser(getApplicationContext())){
+        if (FortuneTeller.isLoggedUser(getApplicationContext())) {
             usernameDisplay.setText(loginAwareness);
             usernameDisplay.setVisibility(View.VISIBLE);
 
@@ -245,6 +250,11 @@ public class MenuMainActivity extends AppCompatActivity
             usernameDisplay.setVisibility(View.GONE);
 
             navLoginItem.setTitle(R.string.login);
+        }
+
+        MainFragment mainFragmentDemo = (MainFragment) getSupportFragmentManager().findFragmentByTag(MainFragment.TAG);
+        if(mainFragmentDemo != null){
+            mainFragmentDemo.netAvailable();
         }
     }
 
@@ -263,6 +273,11 @@ public class MenuMainActivity extends AppCompatActivity
 
         usernameDisplay.setText(R.string.internet_connection_down);
         usernameDisplay.setVisibility(View.VISIBLE);
+
+        MainFragment mainFragmentDemo = (MainFragment) getSupportFragmentManager().findFragmentByTag(MainFragment.TAG);
+        if(mainFragmentDemo != null){
+            mainFragmentDemo.netUnavailable();
+        }
     }
 
 }
