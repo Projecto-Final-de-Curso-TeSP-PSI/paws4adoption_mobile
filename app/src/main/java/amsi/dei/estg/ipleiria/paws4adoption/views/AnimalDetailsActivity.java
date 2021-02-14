@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,6 +33,8 @@ public class AnimalDetailsActivity extends AppCompatActivity
 
     //################ INTENT PARAMETERS ################
     private NetworkStateReceiver networkStateReceiver;
+    private Handler mHandler;
+
     private int animal_id = -1;
     private String scenario = null;
 
@@ -52,6 +55,8 @@ public class AnimalDetailsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animal_details);
+
+        mHandler = new Handler();
 
         networkStateReceiver = new NetworkStateReceiver();
         networkStateReceiver.addListener(this);
@@ -352,16 +357,27 @@ public class AnimalDetailsActivity extends AppCompatActivity
 
     @Override
     public void networkAvailable() {
-        fabAdd.setVisibility(View.VISIBLE);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                fabAdd.setVisibility(View.VISIBLE);
+            }
+        });
+
 //        fabUp.setVisibility(View.VISIBLE);
 //        fabDown.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void networkUnavailable() {
-        areFabsVisible = false;
-        fabAdd.setVisibility(View.GONE);
-        fabUp.setVisibility(View.GONE);
-        fabDown.setVisibility(View.GONE);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                areFabsVisible = false;
+                fabAdd.setVisibility(View.GONE);
+                fabUp.setVisibility(View.GONE);
+                fabDown.setVisibility(View.GONE);
+            }
+        });
     }
 }

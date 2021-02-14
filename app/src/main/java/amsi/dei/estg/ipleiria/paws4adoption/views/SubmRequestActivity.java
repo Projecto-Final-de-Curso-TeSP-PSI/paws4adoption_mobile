@@ -2,6 +2,8 @@ package amsi.dei.estg.ipleiria.paws4adoption.views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -21,11 +23,15 @@ import amsi.dei.estg.ipleiria.paws4adoption.models.Adoption;
 import amsi.dei.estg.ipleiria.paws4adoption.models.Animal;
 import amsi.dei.estg.ipleiria.paws4adoption.models.SingletonPawsManager;
 import amsi.dei.estg.ipleiria.paws4adoption.models.UserProfile;
+import amsi.dei.estg.ipleiria.paws4adoption.utils.NetworkStateReceiver;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.RockChisel;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Vault;
 import amsi.dei.estg.ipleiria.paws4adoption.utils.Wrench;
 
-public class SubmRequestActivity extends AppCompatActivity implements UserProfileListener, AdoptionListener, AnimalDetailListener {
+public class SubmRequestActivity extends AppCompatActivity implements UserProfileListener, AdoptionListener, AnimalDetailListener,
+        NetworkStateReceiver.NetworkStateReceiverListener {
+
+    private NetworkStateReceiver networkStateReceiver;
 
     public static final String REQUESTYPE = "requestType";
     private String requestType = null;
@@ -44,6 +50,10 @@ public class SubmRequestActivity extends AppCompatActivity implements UserProfil
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subm_request);
+
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        this.registerReceiver(networkStateReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         requestType = getIntent().getStringExtra(REQUESTYPE);
         action = getIntent().getStringExtra(ACTION);
@@ -160,5 +170,16 @@ public class SubmRequestActivity extends AppCompatActivity implements UserProfil
     @Override
     public void onUpdateAnimalFromList() {
 
+    }
+
+    @Override
+    public void networkAvailable() {
+
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Toast.makeText(getApplicationContext(), "Sem Internet", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

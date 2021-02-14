@@ -872,7 +872,7 @@ public class SingletonPawsManager implements OrganizationsListListener, AnimalsL
                             animalsListListener.onUpdateAnimalFromList();
                         }
 
-                        Toast.makeText(context, "Animal atualizado com sucesso", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "Animal atualizado com sucesso", Toast.LENGTH_SHORT).show();
                         //requestListener.onRequestSuccess("Animal atualizado com sucesso");
                     } else {
                         //requestListener.onRequestError("Erro ao atualizar o animal");
