@@ -78,31 +78,24 @@ public class MainFragment extends Fragment
         mHandler = new Handler();
     }
 
-    @Override
-    public void onPause(){
-        super.onPause();
-        Vault.setLatestAnimals(getContext(), latestAdoptionAnimals);
-        latestAdoptionAnimals.clear();
-    }
+//    @Override
+//    public void onPause(){
+//        super.onPause();
+//        Vault.setLatestAnimals(getContext(), latestAdoptionAnimals);
+//        latestAdoptionAnimals.clear();
+//    }
 
     @Override
     public void onResume() {
         super.onResume();
-        ArrayList<Animal> savedAnimals = Vault.getLatestAnimals(getContext());
-        if ( savedAnimals != null){
-            for (int i = 0; i < savedAnimals.size() && latestAdoptionAnimals.size() < 5 ; i++){
-                if(latestAdoptionAnimals.contains(savedAnimals.get(i)) == false){
-                    latestAdoptionAnimals.add(savedAnimals.get(i));
-                }
-            }
+        latestAdoptionAnimals = Vault.getLatestAnimals(getContext());
 
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    lvMosquittoListNewAdoptionAnimals.setAdapter(new ListNewAdoptionAnimalsAdapter(getContext(), latestAdoptionAnimals));
-                }
-            });
-        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                lvMosquittoListNewAdoptionAnimals.setAdapter(new ListNewAdoptionAnimalsAdapter(getContext(), latestAdoptionAnimals));
+            }
+        });
     }
 
     @Override
@@ -167,12 +160,16 @@ public class MainFragment extends Fragment
         auxAnimal.setNature_parent_name(adoptionAnimalJson.getString("parent_nature_name"));
         auxAnimal.setNature_name(adoptionAnimalJson.getString("nature_name"));
 
+        latestAdoptionAnimals = Vault.getLatestAnimals(getContext());
+
         if(latestAdoptionAnimals.contains(auxAnimal) == false) {
             latestAdoptionAnimals.add(0, auxAnimal);
             if (latestAdoptionAnimals.size() > 5){
                 latestAdoptionAnimals.remove(5);
             }
         }
+
+        Vault.setLatestAnimals(getContext(), latestAdoptionAnimals);
 
         mHandler.post(new Runnable() {
             @Override
