@@ -88,7 +88,9 @@ public class MainFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        latestAdoptionAnimals = Vault.getLatestAnimals(getContext());
+        if (Vault.getLatestAnimals(getContext()) != null){
+            latestAdoptionAnimals = Vault.getLatestAnimals(getContext());
+        }
 
         mHandler.post(new Runnable() {
             @Override
@@ -160,7 +162,9 @@ public class MainFragment extends Fragment
         auxAnimal.setNature_parent_name(adoptionAnimalJson.getString("parent_nature_name"));
         auxAnimal.setNature_name(adoptionAnimalJson.getString("nature_name"));
 
-        latestAdoptionAnimals = Vault.getLatestAnimals(getContext());
+        if(Vault.getLatestAnimals(getContext()) != null){
+            latestAdoptionAnimals = Vault.getLatestAnimals(getContext());
+        }
 
         if(latestAdoptionAnimals.contains(auxAnimal) == false) {
             latestAdoptionAnimals.add(0, auxAnimal);
